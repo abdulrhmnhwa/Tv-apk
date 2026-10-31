@@ -46,7 +46,7 @@ public class MainActivity extends Activity {
     private WebView w;
     private LinearLayout row;
     private PackageManager pm;
-    private int itemW, iconS, firstApp = 3;
+    private int itemW, iconS, firstApp = 4;
     private final BroadcastReceiver pkgR = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) { load(); }
     };
@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         t1.setTypeface(Typeface.DEFAULT_BOLD);
         t1.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.2f);
         TextView t2 = new TextView(this);
-        t2.setText("   اضغط مطولاً على أي تطبيق لإدارته أو حذفه");
+        t2.setText("   اضغط مطولاً على تطبيق لإدارته، أو على 🔔 لتجربة الصوت");
         t2.setTextColor(0xFFA9C2B4);
         t2.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.12f);
         head.addView(t1);
@@ -116,6 +116,7 @@ public class MainActivity extends Activity {
 
         setContentView(root);
         w.loadUrl("file:///android_asset/index.html");
+        Scheduler.schedule(this);
         load();
     }
 
@@ -149,6 +150,15 @@ public class MainActivity extends Activity {
         row.addView(cell("الإعدادات", null, "⚙️", () -> go(new Intent(Settings.ACTION_SETTINGS)), null));
         row.addView(cell("الشبكة", null, "📶", () -> go(new Intent(Settings.ACTION_WIFI_SETTINGS)), null));
         row.addView(cell("المصادر", null, "🔌", this::inputs, null));
+        final View[] ad = new View[1];
+        ad[0] = cell("الأذان", null, Prefs.on(this) ? "🔔" : "🔕", () -> {
+            boolean n = !Prefs.on(this);
+            Prefs.set(this, n);
+            ((TextView) ((ViewGroup) ad[0]).getChildAt(0)).setText(n ? "🔔" : "🔕");
+            Scheduler.schedule(this);
+            Toast.makeText(this, n ? "تكبير الأذان مفعّل" : "تكبير الأذان متوقف", Toast.LENGTH_SHORT).show();
+        }, () -> Takbeer.play(getApplicationContext(), () -> {}));
+        row.addView(ad[0]);
         for (final Item i : l) {
             row.addView(cell(i.label, i.icon, null, () -> go(i.intent),
                     () -> go(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + i.pkg)))));
