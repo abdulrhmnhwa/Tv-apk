@@ -13,6 +13,15 @@ public class Scheduler {
     public static final String ACT = "sy.homs.dash.ADHAN";
     static final double LAT = 34.7324, LNG = 36.7137, R = Math.PI / 180;
     static final int TZ = 3;
+    static final String[] NAMES = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
+    static int idx = 0;
+
+    static String fmt(long ms) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        c.setTimeInMillis(ms + TZ * 3600000L);
+        int H = c.get(Calendar.HOUR_OF_DAY), M = c.get(Calendar.MINUTE);
+        return (H % 12 == 0 ? 12 : H % 12) + ":" + (M < 10 ? "0" : "") + M + (H >= 12 ? " م" : " ص");
+    }
 
     /** الفجر، الشروق، الظهر، العصر، المغرب، العشاء بالساعات (توقيت سوريا) */
     static double[] times(int y, int m, int d) {
@@ -52,7 +61,7 @@ public class Scheduler {
             long base = mid.getTimeInMillis() - TZ * 3600000L;
             for (int i : new int[]{0, 2, 3, 4, 5}) {
                 long tr = base + (long) (t[i] * 3600000);
-                if (tr > now + 20000) return tr;
+                if (tr > now + 20000) { idx = i; return tr; }
             }
         }
         return -1;
@@ -65,12 +74,11 @@ public class Scheduler {
         if (!Prefs.on(c)) { am.cancel(pi); return; }
         long t = next(System.currentTimeMillis());
         if (t < 0) return;
+        c.getSharedPreferences("p", 0).edit().putLong("next", t).putString("nn", NAMES[idx]).apply();
         try {
-            if (Build.VERSION.SDK_INT >= 31 && !am.canScheduleExactAlarms())
-                am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
-            else
-                am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
-        } catch (SecurityException e) {
+            PendingIntent show = PendingIntent.getActivity(c, 1, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+            am.setAlarmClock(new AlarmManager.AlarmClockInfo(t, show), pi);
+        } catch (Exception e) {
             am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, t, pi);
         }
     }

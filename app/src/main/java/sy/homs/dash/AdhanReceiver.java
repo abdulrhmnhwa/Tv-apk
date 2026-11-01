@@ -9,6 +9,7 @@ public class AdhanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context c, Intent i) {
         if (Scheduler.ACT.equals(i.getAction()) && Prefs.on(c)) {
+            c.getSharedPreferences("p", 0).edit().putLong("last", System.currentTimeMillis()).apply();
             try {
                 PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
                 PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK

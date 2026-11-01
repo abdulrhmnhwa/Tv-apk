@@ -20,3 +20,7 @@
 - الأيقونة 🔔 في الشريط: ضغطة للتشغيل/الإيقاف، ضغطة مطولة لتجربة الصوت.
 - لصوت حقيقي ضع takbeer.mp3 داخل app/src/main/assets قبل البناء، وإلا يستخدم نطق الجهاز.
 - اختبار الإيقاظ: adb shell am broadcast -a sy.homs.dash.ADHAN -n sy.homs.dash/.AdhanReceiver
+
+## إصدار 2.2: إعدادات ضرورية للإيقاظ (مرة واحدة عبر ADB)
+adb shell appops set sy.homs.dash SYSTEM_ALERT_WINDOW allow
+adb shell cmd deviceidle whitelist +sy.homs.dash

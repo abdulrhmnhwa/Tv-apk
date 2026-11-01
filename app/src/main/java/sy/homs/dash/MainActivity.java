@@ -1,6 +1,7 @@
 package sy.homs.dash;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
 
     private WebView w;
     private LinearLayout row;
+    private TextView status;
     private PackageManager pm;
     private int itemW, iconS, firstApp = 4;
     private final BroadcastReceiver pkgR = new BroadcastReceiver() {
@@ -54,7 +56,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         pm = getPackageManager();
         DisplayMetrics dm = getResources().getDisplayMetrics();
         int sw = dm.widthPixels, sh = dm.heightPixels;
@@ -97,8 +99,13 @@ public class MainActivity extends Activity {
         t2.setText("   اضغط مطولاً على تطبيق لإدارته، أو على 🔔 لتجربة الصوت");
         t2.setTextColor(0xFFA9C2B4);
         t2.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.12f);
+        status = new TextView(this);
+        status.setTextColor(GOLD);
+        status.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.12f);
+        status.setPadding(itemW / 2, 0, 0, 0);
         head.addView(t1);
         head.addView(t2);
+        head.addView(status);
         rail.addView(head);
 
         HorizontalScrollView sv = new HorizontalScrollView(this);
@@ -236,14 +243,27 @@ public class MainActivity extends Activity {
     private void inputs() {
         try {
             TvInputManager m = (TvInputManager) getSystemService(Context.TV_INPUT_SERVICE);
-            for (TvInputInfo i : m.getTvInputList()) {
-                if (i.getType() == TvInputInfo.TYPE_HDMI) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, TvContract.buildChannelUriForPassthroughInput(i.getId())));
-                    return;
-                }
-            }
-        } catch (Throwable ignored) {}
-        Toast.makeText(this, "استخدم زر INPUT في الريموت", Toast.LENGTH_LONG).show();
+            final List<TvInputInfo> l = m.getTvInputList();
+            if (l.isEmpty()) { Toast.makeText(this, "لا توجد مصادر إدخال مسجلة في النظام", Toast.LENGTH_LONG).show(); return; }
+            String[] names = new String[l.size()];
+            for (int i = 0; i < names.length; i++) names[i] = String.valueOf(l.get(i).loadLabel(this));
+            new AlertDialog.Builder(this).setTitle("اختر المصدر").setItems(names, (d, w2) -> {
+                TvInputInfo t = l.get(w2);
+                go(new Intent(Intent.ACTION_VIEW, t.isPassthroughInput()
+                        ? TvContract.buildChannelUriForPassthroughInput(t.getId())
+                        : TvContract.buildChannelsUriForInput(t.getId())));
+            }).show();
+        } catch (Throwable e) {
+            Toast.makeText(this, "تعذر قراءة المصادر", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void updateStatus() {
+        android.content.SharedPreferences p = getSharedPreferences("p", 0);
+        long nx = p.getLong("next", 0), ls = p.getLong("last", 0);
+        status.setText(Prefs.on(this) && nx > 0
+                ? "التالي: " + p.getString("nn", "") + " " + Scheduler.fmt(nx) + (ls > 0 ? " · آخر تنبيه: " + Scheduler.fmt(ls) : " · لم يُسجَّل تنبيه بعد")
+                : "التكبير متوقف");
     }
 
     @Override
@@ -278,7 +298,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); w.resumeTimers(); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); w.resumeTimers(); Scheduler.schedule(this); updateStatus(); }
     @Override protected void onPause() { w.onPause(); super.onPause(); }
     @Override protected void onDestroy() { w.destroy(); super.onDestroy(); }
 }
