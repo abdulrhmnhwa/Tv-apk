@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.media.tv.TvContract;
@@ -21,15 +22,19 @@ import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +43,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class MainActivity extends Activity {
     private static final int GOLD = 0xFFD6B25E, GREEN = 0xFF0F4D36;
@@ -47,8 +53,11 @@ public class MainActivity extends Activity {
     private WebView w;
     private LinearLayout row;
     private TextView status;
+    static MainActivity cur;
+    private View black;
+    private boolean sleeping;
     private PackageManager pm;
-    private int itemW, iconS, firstApp = 4;
+    private int itemW, iconS, firstApp = 5;
     private final BroadcastReceiver pkgR = new BroadcastReceiver() {
         @Override public void onReceive(Context c, Intent i) { load(); }
     };
@@ -121,7 +130,14 @@ public class MainActivity extends Activity {
         rail.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1f));
         root.addView(rail, new LinearLayout.LayoutParams(-1, 0, 42f));
 
-        setContentView(root);
+        FrameLayout fl = new FrameLayout(this);
+        fl.addView(root, new FrameLayout.LayoutParams(-1, -1));
+        black = new View(this);
+        black.setBackgroundColor(Color.BLACK);
+        black.setVisibility(View.GONE);
+        fl.addView(black, new FrameLayout.LayoutParams(-1, -1));
+        setContentView(fl);
+        cur = this;
         w.loadUrl("file:///android_asset/index.html");
         Scheduler.schedule(this);
         load();
@@ -156,7 +172,8 @@ public class MainActivity extends Activity {
         row.removeAllViews();
         row.addView(cell("الإعدادات", null, "⚙️", () -> go(new Intent(Settings.ACTION_SETTINGS)), null));
         row.addView(cell("الشبكة", null, "📶", () -> go(new Intent(Settings.ACTION_WIFI_SETTINGS)), null));
-        row.addView(cell("المصادر", null, "🔌", this::inputs, null));
+        row.addView(cell("المصادر", null, "🔌", this::inputs, this::pickSource));
+        row.addView(cell("إطفاء الشاشة", null, "🌙", this::sleep, null));
         final View[] ad = new View[1];
         ad[0] = cell("الأذان", null, Prefs.on(this) ? "🔔" : "🔕", () -> {
             boolean n = !Prefs.on(this);
@@ -241,21 +258,100 @@ public class MainActivity extends Activity {
     }
 
     private void inputs() {
-        try {
-            TvInputManager m = (TvInputManager) getSystemService(Context.TV_INPUT_SERVICE);
-            final List<TvInputInfo> l = m.getTvInputList();
-            if (l.isEmpty()) { Toast.makeText(this, "لا توجد مصادر إدخال مسجلة في النظام", Toast.LENGTH_LONG).show(); return; }
-            String[] names = new String[l.size()];
-            for (int i = 0; i < names.length; i++) names[i] = String.valueOf(l.get(i).loadLabel(this));
-            new AlertDialog.Builder(this).setTitle("اختر المصدر").setItems(names, (d, w2) -> {
-                TvInputInfo t = l.get(w2);
-                go(new Intent(Intent.ACTION_VIEW, t.isPassthroughInput()
-                        ? TvContract.buildChannelUriForPassthroughInput(t.getId())
-                        : TvContract.buildChannelsUriForInput(t.getId())));
-            }).show();
-        } catch (Throwable e) {
-            Toast.makeText(this, "تعذر قراءة المصادر", Toast.LENGTH_LONG).show();
+        String s = getSharedPreferences("p", 0).getString("src", null);
+        if (s == null) { pickSource(); return; }
+        String[] x = s.split("/");
+        go(new Intent().setClassName(x[0], x[1]).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+    }
+
+    /** يبحث عن شاشات النظام المحتملة للمصادر لتجربتها وحفظ الصحيحة */
+    private void pickSource() {
+        Toast.makeText(this, "جارِ البحث عن شاشة المصادر…", Toast.LENGTH_SHORT).show();
+        new Thread(() -> {
+            final TreeMap<String, String> m = new TreeMap<>();
+            java.util.regex.Pattern k = java.util.regex.Pattern.compile("source|input|signal|hdmi|livetv|tvapp|tvui|tvsetting|atv|dtv|channel|hisi|wisdom|launcher");
+            try {
+                for (android.content.pm.PackageInfo p : pm.getInstalledPackages(PackageManager.GET_ACTIVITIES)) {
+                    if (p.activities == null || p.packageName.equals(getPackageName())) continue;
+                    for (android.content.pm.ActivityInfo a : p.activities) {
+                        String id = a.packageName + "/" + a.name;
+                        if (a.exported && a.enabled && k.matcher(id.toLowerCase()).find())
+                            m.put(id, a.name.substring(a.name.lastIndexOf('.') + 1) + "\n" + a.packageName);
+                    }
+                }
+            } catch (Throwable ignored) {}
+            final List<String> ids = new ArrayList<>(m.keySet()), labels = new ArrayList<>(m.values());
+            runOnUiThread(() -> showPicker(ids, labels));
+        }).start();
+    }
+
+    private void showPicker(final List<String> ids, List<String> labels) {
+        if (ids.isEmpty()) { Toast.makeText(this, "لم أجد شاشات مناسبة", Toast.LENGTH_LONG).show(); return; }
+        LinearLayout box = new LinearLayout(this);
+        box.setOrientation(LinearLayout.VERTICAL);
+        box.setPadding(itemW / 4, itemW / 4, itemW / 4, itemW / 4);
+        TextView hd = new TextView(this);
+        hd.setText("ضغطة = تجربة الشاشة   ·   ضغطة مطولة = حفظها كزر المصادر");
+        hd.setTextColor(GOLD);
+        hd.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.13f);
+        box.addView(hd);
+        ListView lv = new ListView(this);
+        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, labels) {
+            @Override public View getView(int p, View c, ViewGroup g) {
+                TextView t = (TextView) super.getView(p, c, g);
+                t.setTextColor(Color.WHITE);
+                t.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemW * 0.11f);
+                return t;
+            }
+        });
+        box.addView(lv, new LinearLayout.LayoutParams(-1, 0, 1f));
+        final AlertDialog d = new AlertDialog.Builder(this).setView(box).create();
+        lv.setOnItemClickListener((a, v, p, id) -> {
+            String[] x = ids.get(p).split("/");
+            go(new Intent().setClassName(x[0], x[1]).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        });
+        lv.setOnItemLongClickListener((a, v, p, id) -> {
+            getSharedPreferences("p", 0).edit().putString("src", ids.get(p)).apply();
+            Toast.makeText(this, "تم حفظ: " + ids.get(p), Toast.LENGTH_LONG).show();
+            d.dismiss();
+            return true;
+        });
+        d.getWindow().setBackgroundDrawable(new ColorDrawable(0xFF0B3B2B));
+        d.show();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        d.getWindow().setLayout((int) (dm.widthPixels * 0.75f), (int) (dm.heightPixels * 0.85f));
+    }
+
+    private void sleep() {
+        sleeping = true;
+        black.setVisibility(View.VISIBLE);
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = 0.01f;
+        getWindow().setAttributes(lp);
+    }
+
+    void wake() {
+        if (!sleeping) return;
+        sleeping = false;
+        black.setVisibility(View.GONE);
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.screenBrightness = -1f;
+        getWindow().setAttributes(lp);
+        focusFirst();
+    }
+
+    static void wakeNow() {
+        final MainActivity a = cur;
+        if (a != null) a.runOnUiThread(a::wake);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent e) {
+        if (sleeping) {
+            if (e.getAction() == KeyEvent.ACTION_DOWN) wake();
+            return true;
         }
+        return super.dispatchKeyEvent(e);
     }
 
     private void updateStatus() {
@@ -269,6 +365,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(Intent i) {
         super.onNewIntent(i);
+        if (sleeping) wake();
         focusFirst();
     }
 
@@ -300,5 +397,5 @@ public class MainActivity extends Activity {
 
     @Override protected void onResume() { super.onResume(); w.onResume(); w.resumeTimers(); Scheduler.schedule(this); updateStatus(); }
     @Override protected void onPause() { w.onPause(); super.onPause(); }
-    @Override protected void onDestroy() { w.destroy(); super.onDestroy(); }
+    @Override protected void onDestroy() { if (cur == this) cur = null; w.destroy(); super.onDestroy(); }
 }
