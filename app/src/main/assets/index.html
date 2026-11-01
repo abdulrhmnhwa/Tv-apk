@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!-- saved from url=(0074)file:///C:/Users/Abdul/Desktop/HomsTVfinal1/app/src/main/assets/index.html -->
-<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>لوحة حمص</title>
 <style>
@@ -53,26 +53,26 @@ header{position:relative;height:2.4rem;flex:none}
 </head>
 <body>
 <header>
-<svg id="nw" viewBox="0 0 24 24" class=""><path d="M2 8.8a15 15 0 0 1 20 0"></path><path d="M5.5 12.5a10 10 0 0 1 13 0"></path><path d="M9 16.2a5 5 0 0 1 6 0"></path><circle cx="12" cy="20" r="1" fill="currentColor"></circle><line id="sl" x1="3" y1="3" x2="21" y2="21"></line></svg>
-<img id="eg" src="./index_files/eagle.png" alt="">
+<svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg>
+<img id="eg" src="eagle.png" alt="">
 </header>
 <main>
 <section class="card c1">
-  <div class="city"><h1>حمص عاصمة الثورة</h1></div>
-  <div class="clock"><span id="hm">11:58</span><small id="sec">09 ص</small></div>
-  <div class="dates" id="dates"><span>الأحد</span> 1 تشرين الثاني 2026<br>21 جمادى الأولى 1448 هـ</div>
-  <div class="info" id="info">💡 ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل</div>
+  <div class="city"><span><b>حمص عاصمة الثورة</b></span></div>
+  <div class="clock"><span id="hm">--:--</span><small id="sec"></small></div>
+  <div class="dates" id="dates"></div>
+  <div class="info" id="info"></div>
 </section>
 <section class="card c2">
-  <div class="tag" id="wtag">الآن في حمص</div>
-  <div class="ic" id="wi">☁️</div>
-  <div class="t" id="wt">19°</div>
-  <div class="d" id="wd">غائم</div>
-  <div class="m" id="wm">العظمى 23° · الصغرى 14°<br>رطوبة 73% · رياح 11 كم/س</div>
+  <div class="tag" id="wtag"></div>
+  <div class="ic" id="wi"></div>
+  <div class="t" id="wt">--°</div>
+  <div class="d" id="wd"></div>
+  <div class="m" id="wm"></div>
 </section>
 <section class="card c3" style="padding:.8rem 1.1rem">
-  <div class="next"><b id="nn">الظهر</b><span>بعد </span><em id="nc">00:19:35</em></div>
-  <div id="pl"><div class="p"><span>الفجر</span><span class="tm"><i>ص</i><b>5:30</b></span></div><div class="p"><span>الشروق</span><span class="tm"><i>ص</i><b>6:55</b></span></div><div class="p on"><span>الظهر</span><span class="tm"><i>م</i><b>12:18</b></span></div><div class="p"><span>العصر</span><span class="tm"><i>م</i><b>3:18</b></span></div><div class="p"><span>المغرب</span><span class="tm"><i>م</i><b>5:41</b></span></div><div class="p"><span>العشاء</span><span class="tm"><i>م</i><b>7:01</b></span></div></div>
+  <div class="next"><b id="nn">--</b><span>بعد </span><em id="nc">--</em></div>
+  <div id="pl"></div>
 </section>
 </main>
 <script>
@@ -95,12 +95,12 @@ function pt(y,m,d){
  var asr=Math.atan(1/(1+Math.tan(Math.abs(LAT*R-dec))))/R;
  return [noon-h(-18),noon-h(-.833),noon,noon+h(asr),noon+h(-.833),noon+h(-17)];
 }
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
 function z(n){return n<10?"0"+n:n}
 var key="",lastT="",dyn=["",""];
 var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
 var qb=Math.round((Math.atan2(Math.sin(dl)*Math.cos(k1),Math.cos(p1)*Math.sin(k1)-Math.sin(p1)*Math.cos(k1)*Math.cos(dl))/R+360)%360);
-var facts=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة البعث، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","التوقيت في سوريا ثابت على GMT+3 طوال العام"];
+var facts=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","هذا البرنامج من تطوير المهندس عبدالرحمن حوا وهو مجاني تماما, ادعو لي بالتوفيق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","التوقيت في سوريا ثابت على GMT+3 طوال العام"];
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",net);window.addEventListener("offline",net);net();
 function tick(){
@@ -132,6 +132,5 @@ function weather(){
 tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
 })();
 </script>
-
-
-</body></html>
+</body>
+</html>
