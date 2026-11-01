@@ -9,20 +9,14 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:min(1.15vw,2.9vh);height:100%}
 body{height:100%;overflow:hidden;display:flex;flex-direction:column;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:radial-gradient(rgba(214,178,94,.09) 1px,transparent 1px) 0 0/2vw 2vw,linear-gradient(160deg,#0b3b2b,#04170f)}
-.flag i{display:block;height:.3rem}
-.flag i:nth-child(1){background:#1d7a4f}.flag i:nth-child(2){background:#f4f1e8}.flag i:nth-child(3){background:#000}
-main{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr 1.05fr;gap:1.1rem;padding:1rem 1.6rem 0}
+main{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr 1.05fr;gap:1.1rem;padding:.2rem 1.6rem 0}
 .card{background:rgba(255,255,255,.06);border:1px solid rgba(214,178,94,.45);border-radius:1rem;padding:1rem 1.3rem;display:flex;flex-direction:column;min-height:0}
 .c1{justify-content:space-between}
 .city{display:flex;justify-content:space-between;align-items:center;font-size:1.7rem;color:var(--gold)}
-.stars{color:var(--red);font-size:1.3rem;letter-spacing:.2rem}
-.net{font-size:1rem;color:var(--mut);margin-inline-end:.8rem}
-.dot{display:inline-block;width:.7rem;height:.7rem;border-radius:50%;background:#e04b4b;margin-inline-start:.4rem}
-.dot.on{background:#3ddc84}
 .clock{font-size:7.4rem;line-height:1;font-weight:700;text-align:center;direction:ltr}
 .clock small{font-size:2rem;color:var(--gold);margin-inline-start:.5rem}
 .dates{text-align:center;font-size:1.5rem;line-height:1.6}.dates span{color:var(--gold)}
-.info{text-align:center;font-size:1.15rem;color:var(--mut);min-height:2.4rem}
+.info{text-align:center;font-size:1.25rem;line-height:1.5;color:var(--w);min-height:3.8rem;opacity:.85}
 .c2{align-items:center;justify-content:center;text-align:center}
 .c2 .tag{font-size:1.1rem;color:var(--gold)}
 .c2 .ic{font-size:4.6rem;line-height:1.2}
@@ -38,13 +32,20 @@ main{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr 1.05fr;ga
 .p span:last-child{direction:ltr;font-weight:700}
 .p.on{background:var(--g);border:1px solid var(--gold)}
 .p.on span:first-child:before{content:"◄ ";color:var(--gold)}
+header{position:relative;height:2.4rem;flex:none}
+#nw{position:absolute;left:1.6rem;top:.45rem;width:1.5rem;height:1.5rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
+#eg{position:absolute;left:50%;top:.2rem;height:2.1rem;width:auto;transform:translateX(-50%);opacity:.6}
 </style>
 </head>
 <body>
-<div class="flag"><i></i><i></i><i></i></div>
+<header>
+<svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg>
+<img id="eg" src="eagle.png" alt="">
+</header>
 <main>
 <section class="card c1">
-  <div class="city"><span>حمص · سوريا</span><span><span class="net"><b class="dot" id="nd"></b><span id="nt"></span></span><span class="stars">★ ★ ★</span></span></div>
+  <div class="city"><span>حمص · سوريا</span></div>
   <div class="clock"><span id="hm">--:--</span><small id="sec"></small></div>
   <div class="dates" id="dates"></div>
   <div class="info" id="info"></div>
@@ -83,11 +84,11 @@ function pt(y,m,d){
 }
 function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return H+":"+(M<10?"0":"")+M+" "+p}
 function z(n){return n<10?"0"+n:n}
-var key="",lastI=-1;
+var key="",lastT="",dyn=["",""];
 var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
 var qb=Math.round((Math.atan2(Math.sin(dl)*Math.cos(k1),Math.cos(p1)*Math.sin(k1)-Math.sin(p1)*Math.cos(k1)*Math.cos(dl))/R+360)%360);
-var facts=["حمص ثالث أكبر المدن السورية وتقع على نهر العاصي","قلعة الحصن قرب حمص من مواقع التراث العالمي","الجامع النوري الكبير من أبرز معالم حمص التاريخية","التوقيت في سوريا ثابت على GMT+3 طوال العام"];
-function net(){var o=navigator.onLine;$("nd").className="dot"+(o?" on":"");$("nt").textContent=o?"متصل":"غير متصل"}
+var facts=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة البعث، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","التوقيت في سوريا ثابت على GMT+3 طوال العام"];
+function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",net);window.addEventListener("offline",net);net();
 function tick(){
  var n=new Date(Date.now()+TZ*36e5),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate(),H=n.getUTCHours(),Mi=n.getUTCMinutes(),S=n.getUTCSeconds();
@@ -102,11 +103,11 @@ function tick(){
   var hj="";try{hj=new Intl.DateTimeFormat("ar-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(n)}catch(e){}
   $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(hj?"<br>"+hj:"");
   var dayLen=T[4]-T[1],dh=Math.floor(dayLen),dm=Math.round((dayLen-dh)*60);
-  facts[4]="اتجاه القبلة من حمص: "+qb+"° من الشمال";
-  facts[5]="طول النهار اليوم: "+dh+" ساعة و"+dm+" دقيقة";
+  dyn[0]="اتجاه القبلة من حمص: "+qb+"° من الشمال";
+  dyn[1]="طول النهار اليوم: "+dh+" ساعة و"+dm+" دقيقة";
   if(!window.wLive){var c=CLI[M];$("wt").textContent=Math.round((c[0]+c[1])/2)+"°";$("wd").textContent="متوسط شهر "+MON[M];$("wm").textContent="العظمى "+c[0]+"° · الصغرى "+c[1]+"°";$("wi").textContent=c[0]>27?"☀️":c[0]>17?"⛅":"☁️";$("wtag").textContent="معدلات مناخية"}
  }
- var fi=Math.floor(Date.now()/15000)%facts.length;if(fi!==lastI&&facts[fi]){lastI=fi;$("info").textContent="💡 "+facts[fi]}
+ var all=facts.concat(dyn).filter(Boolean),fi=Math.floor(Date.now()/12000)%all.length,tx="💡 "+all[fi];if(tx!==lastT){lastT=tx;$("info").textContent=tx}
 }
 function wc(c){if(c===0)return["صافٍ","☀️"];if(c<3)return["غائم جزئياً","⛅"];if(c===3)return["غائم","☁️"];if(c<50)return["ضباب","🌫️"];if(c<68)return["مطر","🌧️"];if(c<78)return["ثلوج","❄️"];if(c<83)return["زخات مطر","🌦️"];return["عاصفة رعدية","⛈️"]}
 function weather(){
