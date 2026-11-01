@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8">
+<!-- saved from url=(0074)file:///C:/Users/Abdul/Desktop/HomsTVfinal1/app/src/main/assets/index.html -->
+<html lang="ar" dir="rtl"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>لوحة حمص</title>
 <style>
@@ -9,7 +9,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{font-size:min(1.15vw,2.9vh);height:100%}
 body{height:100%;overflow:hidden;display:flex;flex-direction:column;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:radial-gradient(rgba(214,178,94,.09) 1px,transparent 1px) 0 0/2vw 2vw,linear-gradient(160deg,#0b3b2b,#04170f)}
-main{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr 1.05fr;gap:1.1rem;padding:.2rem 1.6rem 0}
+main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr 1.05fr;gap:1.1rem;padding:.2rem 1.6rem 0}
 .card{background:rgba(255,255,255,.06);border:1px solid rgba(214,178,94,.45);border-radius:1rem;padding:1rem 1.3rem;display:flex;flex-direction:column;min-height:0}
 .c1{justify-content:space-between}
 .city{display:flex;justify-content:space-between;align-items:center;font-size:1.7rem;color:var(--gold)}
@@ -36,30 +36,43 @@ header{position:relative;height:2.4rem;flex:none}
 #nw{position:absolute;left:1.6rem;top:.45rem;width:1.5rem;height:1.5rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 #nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
 #eg{position:absolute;left:50%;top:.2rem;height:2.1rem;width:auto;transform:translateX(-50%);opacity:.6}
+.c1{order:2;position:relative;overflow:hidden}
+.c2{order:1}
+.c3{order:3}
+.c2,.c3{position:relative;overflow:hidden}
+.c2::before,.c3::before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:center/contain no-repeat;pointer-events:none}
+.c2::before{background-image:url(map.webp);background-size:auto 100%;opacity:.11}
+.c3::before{background-image:url(mosque.webp);opacity:.13}
+.c2>*,.c3>*{position:relative}
+.c1::before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:url(tower.webp) center bottom/auto 100% no-repeat;opacity:.13;pointer-events:none}
+.c1>*{position:relative}
+.tm{display:flex;direction:ltr;align-items:baseline;gap:.5rem;font-weight:700}
+.tm i{font-style:normal;font-weight:400;font-size:1.3rem;color:var(--mut)}
+.tm b{font-weight:700}
 </style>
 </head>
 <body>
 <header>
-<svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg>
-<img id="eg" src="eagle.png" alt="">
+<svg id="nw" viewBox="0 0 24 24" class=""><path d="M2 8.8a15 15 0 0 1 20 0"></path><path d="M5.5 12.5a10 10 0 0 1 13 0"></path><path d="M9 16.2a5 5 0 0 1 6 0"></path><circle cx="12" cy="20" r="1" fill="currentColor"></circle><line id="sl" x1="3" y1="3" x2="21" y2="21"></line></svg>
+<img id="eg" src="./index_files/eagle.png" alt="">
 </header>
 <main>
 <section class="card c1">
-  <div class="city"><span>حمص · سوريا</span></div>
-  <div class="clock"><span id="hm">--:--</span><small id="sec"></small></div>
-  <div class="dates" id="dates"></div>
-  <div class="info" id="info"></div>
+  <div class="city"><h1>حمص عاصمة الثورة</h1></div>
+  <div class="clock"><span id="hm">11:58</span><small id="sec">09 ص</small></div>
+  <div class="dates" id="dates"><span>الأحد</span> 1 تشرين الثاني 2026<br>21 جمادى الأولى 1448 هـ</div>
+  <div class="info" id="info">💡 ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل</div>
 </section>
 <section class="card c2">
-  <div class="tag" id="wtag"></div>
-  <div class="ic" id="wi"></div>
-  <div class="t" id="wt">--°</div>
-  <div class="d" id="wd"></div>
-  <div class="m" id="wm"></div>
+  <div class="tag" id="wtag">الآن في حمص</div>
+  <div class="ic" id="wi">☁️</div>
+  <div class="t" id="wt">19°</div>
+  <div class="d" id="wd">غائم</div>
+  <div class="m" id="wm">العظمى 23° · الصغرى 14°<br>رطوبة 73% · رياح 11 كم/س</div>
 </section>
 <section class="card c3" style="padding:.8rem 1.1rem">
-  <div class="next"><b id="nn">--</b><span>بعد </span><em id="nc">--</em></div>
-  <div id="pl"></div>
+  <div class="next"><b id="nn">الظهر</b><span>بعد </span><em id="nc">00:19:35</em></div>
+  <div id="pl"><div class="p"><span>الفجر</span><span class="tm"><i>ص</i><b>5:30</b></span></div><div class="p"><span>الشروق</span><span class="tm"><i>ص</i><b>6:55</b></span></div><div class="p on"><span>الظهر</span><span class="tm"><i>م</i><b>12:18</b></span></div><div class="p"><span>العصر</span><span class="tm"><i>م</i><b>3:18</b></span></div><div class="p"><span>المغرب</span><span class="tm"><i>م</i><b>5:41</b></span></div><div class="p"><span>العشاء</span><span class="tm"><i>م</i><b>7:01</b></span></div></div>
 </section>
 </main>
 <script>
@@ -82,7 +95,7 @@ function pt(y,m,d){
  var asr=Math.atan(1/(1+Math.tan(Math.abs(LAT*R-dec))))/R;
  return [noon-h(-18),noon-h(-.833),noon,noon+h(asr),noon+h(-.833),noon+h(-17)];
 }
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return H+":"+(M<10?"0":"")+M+" "+p}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
 function z(n){return n<10?"0"+n:n}
 var key="",lastT="",dyn=["",""];
 var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
@@ -99,7 +112,7 @@ function tick(){
  var rem=Math.max(0,Math.round((tt-nh)*3600)),rh=Math.floor(rem/3600),rm=Math.floor(rem%3600/60),rs=rem%60;
  $("nn").textContent=NAMES[ni];$("nc").textContent=z(rh)+":"+z(rm)+":"+z(rs);
  var kk=Dd+"-"+ni;
- if(kk!==key){key=kk;var s="";for(i=0;i<6;i++)s+='<div class="p'+(i===ni?' on':'')+'"><span>'+NAMES[i]+'</span><span>'+f(T[i])+'</span></div>';$("pl").innerHTML=s;
+ if(kk!==key){key=kk;var s="";for(i=0;i<6;i++)s+='<div class="p'+(i===ni?' on':'')+'"><span>'+NAMES[i]+'</span><span class="tm">'+f(T[i])+'</span></div>';$("pl").innerHTML=s;
   var hj="";try{hj=new Intl.DateTimeFormat("ar-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"long",year:"numeric",timeZone:"UTC"}).format(n)}catch(e){}
   $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(hj?"<br>"+hj:"");
   var dayLen=T[4]-T[1],dh=Math.floor(dayLen),dm=Math.round((dayLen-dh)*60);
@@ -119,5 +132,6 @@ function weather(){
 tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
 })();
 </script>
-</body>
-</html>
+
+
+</body></html>
