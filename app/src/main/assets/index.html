@@ -58,7 +58,7 @@ header{position:relative;height:2.4rem;flex:none}
 </header>
 <main>
 <section class="card c1">
-  <div class="city"><span>حمص · سوريا</span></div>
+  <div class="city"><h1>حمص عاصمة الثورة</h1></div>
   <div class="clock"><span id="hm">--:--</span><small id="sec"></small></div>
   <div class="dates" id="dates"></div>
   <div class="info" id="info"></div>
@@ -95,7 +95,7 @@ function pt(y,m,d){
  var asr=Math.atan(1/(1+Math.tan(Math.abs(LAT*R-dec))))/R;
  return [noon-h(-18),noon-h(-.833),noon,noon+h(asr),noon+h(-.833),noon+h(-17)];
 }
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
 function z(n){return n<10?"0"+n:n}
 var key="",lastT="",dyn=["",""];
 var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
