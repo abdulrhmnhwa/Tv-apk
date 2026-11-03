@@ -2,176 +2,313 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>حمص عاصمة الثورة</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>مواقيت حمص</title>
 <style>
 :root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
-*{box-sizing:border-box;margin:0;padding:0}
-html{font-size:min(1.1vw,1.95vh);height:100%}
-body{height:100%;overflow:hidden;display:flex;flex-direction:column;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:radial-gradient(rgba(214,178,94,.09) 1px,transparent 1px) 0 0/2vw 2vw,linear-gradient(160deg,#0b3b2b,#04170f)}
-#dim{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;opacity:0;pointer-events:none;z-index:9}
-header{position:relative;height:3.2rem;flex:none}
-#nw{position:absolute;left:1.8rem;top:.8rem;width:1.8rem;height:1.8rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{font-size:clamp(14px,4.1vw,18px)}
+body{min-height:100vh;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
+button,select{font:inherit;color:inherit}
+#app{padding:0 .85rem 5.8rem;max-width:34rem;margin:0 auto}
+.tab{display:none}.tab.on{display:block}
+.top{position:relative;display:flex;align-items:center;justify-content:space-between;height:3.2rem}
+.top h1{font-size:1.15rem;color:var(--gold);font-weight:700}
+.top .ic{display:flex;align-items:center;gap:.6rem;font-size:1.1rem}
+#eg{position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65}
+#nw{width:1.35rem;height:1.35rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 #nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
-#ad{position:absolute;left:4.4rem;top:.7rem;font-size:1.6rem;line-height:1.9rem}
-#eg{position:absolute;left:50%;top:.3rem;height:2.7rem;width:auto;transform:translateX(-50%);opacity:.6}
-main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:1.3rem;padding:.2rem 1.8rem 1.8rem}
-.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border:1px solid rgba(214,178,94,.42);border-radius:1.3rem;padding:1.3rem 1.5rem;display:flex;flex-direction:column;min-height:0}
-.card::before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:center/auto 100% no-repeat;pointer-events:none}
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border:1px solid rgba(214,178,94,.4);border-radius:1.1rem;padding:1rem;margin-top:.8rem}
+.card::before{content:"";position:absolute;inset:0;background:center/auto 100% no-repeat;pointer-events:none;opacity:.12}
 .card>*{position:relative}
-.c2{order:1}.c1{order:2}.c3{order:3}
-.c1::before{background-image:url(tower.webp);background-position:center bottom;opacity:.13}
-.c2::before{background-image:url(map.webp);opacity:.11}
-.c3::before{background-image:url(mosque.webp);background-size:contain;opacity:.13}
-.c1{justify-content:space-between}
-.city{text-align:center;font-size:2.3rem;color:var(--gold);font-weight:700}
-.clock{display:flex;justify-content:center;align-items:center;gap:1rem;direction:ltr}
-.ap{display:flex;flex-direction:column;align-items:center;line-height:1.15}
-.ap i{font-style:normal;font-weight:700;font-size:2.4rem;color:var(--gold)}
-.ap em{font-style:normal;font-size:1.9rem;color:var(--mut)}
-#hm{font-size:8.4rem;line-height:1;font-weight:700}
-.dates{text-align:center;font-size:1.8rem;line-height:1.65}.dates span{color:var(--gold)}
-.info{text-align:center;font-size:1.5rem;line-height:1.55;min-height:6.2rem;display:flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-top:1px solid rgba(214,178,94,.3);color:var(--w);opacity:.9}
-.info.v{color:var(--gold);font-size:1.65rem}
-.c2{align-items:center;justify-content:space-around;text-align:center}
-.c2 .tag{font-size:1.2rem;color:var(--gold)}
-.c2 .ic{font-size:5rem;line-height:1.1}
-.c2 .t{font-size:6.8rem;font-weight:700;line-height:1;direction:ltr}
-.c2 .d{font-size:2.2rem}
-.c2 .m{font-size:1.35rem;color:var(--mut);line-height:1.7}
-#fc{display:none;width:100%;justify-content:space-between;border-top:1px solid rgba(214,178,94,.3);padding-top:.8rem}
-.fc{display:flex;flex-direction:column;align-items:center;gap:.1rem;font-size:1.2rem;flex:1}
-.fc u{text-decoration:none;font-size:2rem;line-height:1.3}
-.fc b{font-size:1.4rem}.fc s{text-decoration:none;color:var(--mut);font-size:1.2rem}
-.moon{font-size:1.3rem;color:var(--mut)}
-.next{text-align:center;padding-bottom:.8rem;border-bottom:1px solid rgba(214,178,94,.35);margin-bottom:.5rem;min-height:5.6rem}
-.next b{display:block;font-size:2.5rem;color:var(--gold)}
-.next span{font-size:1.3rem;color:var(--mut)}.next em{font-style:normal;font-size:2.4rem;direction:ltr;display:inline-block}
-#pl{flex:1;display:flex;flex-direction:column;justify-content:space-around;min-height:0}
-.p{display:flex;justify-content:space-between;align-items:center;font-size:2.3rem;padding:.25rem 1rem;border-radius:.7rem}
-.p small{font-size:1.1rem;color:var(--mut);margin-inline-start:.6rem}
+.bt::before{background-image:url(tower.webp);background-position:right bottom}
+.bm::before{background-image:url(mosque.webp);background-size:contain;opacity:.1}
+.bp::before{background-image:url(map.webp);opacity:.1}
+.h{font-size:1.02rem;color:var(--gold);margin-bottom:.6rem;display:flex;justify-content:space-between;align-items:center}
+.h small{color:var(--mut);font-size:.8rem}
+.mut{color:var(--mut)}
+/* hero */
+.dt{text-align:center;font-size:1rem;line-height:1.6}.dt span{color:var(--gold)}
+.ring{position:relative;width:14.5rem;height:14.5rem;margin:.6rem auto .2rem}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:9}
+.ring .tr{stroke:rgba(214,178,94,.18)}.ring .pg{stroke:var(--gold);stroke-linecap:round}
+.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.rc .l{font-size:.85rem;color:var(--mut)}.rc .n{font-size:1.75rem;color:var(--gold);font-weight:700;line-height:1.3}
+.rc .c{font-size:2rem;font-weight:700;direction:ltr;line-height:1.2}.rc .t{font-size:.9rem;color:var(--mut)}
+.chips{display:flex;gap:.5rem;margin-top:.5rem}
+.chip{flex:1;text-align:center;background:rgba(255,255,255,.06);border-radius:.8rem;padding:.5rem .2rem;font-size:.85rem;line-height:1.4}
+.chip b{display:block;font-size:1rem;color:var(--gold)}
+/* prayers */
+.p{display:flex;align-items:center;justify-content:space-between;padding:.55rem .7rem;border-radius:.8rem;font-size:1.2rem}
+.p+.p{margin-top:.15rem}
 .p.on{background:var(--g);border:1px solid var(--gold)}
-.p.on span:first-child:before{content:"◄ ";color:var(--gold)}
-.tm{display:flex;align-items:baseline;gap:.7rem}
-.tm i{font-style:normal;font-weight:400;font-size:1.3rem;color:var(--mut)}
-.tm b{font-weight:700}
-.src{text-align:center;font-size:.95rem;color:var(--mut);opacity:.7;margin-top:.4rem}
-#hint{position:fixed;left:0;right:0;bottom:.4rem;text-align:center;font-size:1rem;color:var(--mut);opacity:.65}
+.p .nm small{font-size:.72rem;color:var(--mut);margin-inline-start:.4rem}
+.p .nm em{font-style:normal;font-size:.72rem;background:rgba(214,178,94,.2);color:var(--gold);border-radius:.5rem;padding:.05rem .4rem;margin-inline-start:.4rem;direction:ltr;display:inline-block}
+.rt{display:flex;align-items:center;gap:.7rem}
+.tm{display:flex;align-items:baseline;gap:.45rem;direction:ltr;font-weight:700}
+.tm i{font-style:normal;font-weight:400;font-size:.8rem;color:var(--mut)}
+.bl{background:none;border:0;font-size:1.15rem;width:2rem;opacity:.9}
+.bl.off{opacity:.35;filter:grayscale(1)}
+.vs{font-size:1.05rem;line-height:1.9;text-align:center;color:var(--gold)}
+.fx{font-size:.98rem;line-height:1.8;text-align:center}
+.btn{background:rgba(214,178,94,.16);border:1px solid rgba(214,178,94,.5);color:var(--gold);border-radius:.8rem;padding:.55rem 1rem;font-size:.95rem}
+.btn:active{background:rgba(214,178,94,.35)}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.6rem}
+/* weather */
+.wt{text-align:center}.wt .ic{font-size:3.6rem;line-height:1.1}.wt .t{font-size:3.8rem;font-weight:700;direction:ltr;line-height:1.1}.wt .d{font-size:1.3rem}
+.wt .m{color:var(--mut);font-size:.95rem;line-height:1.8;margin-top:.3rem}
+.fr{display:flex;align-items:center;justify-content:space-between;padding:.5rem .3rem;font-size:1.05rem}
+.fr+.fr{border-top:1px solid rgba(214,178,94,.18)}
+.fr u{text-decoration:none;font-size:1.5rem}.fr .hl{direction:ltr;display:flex;gap:.6rem}.fr s{text-decoration:none;color:var(--mut)}.fr .rn{font-size:.8rem;color:var(--mut);width:3rem;text-align:center}
+/* tools */
+.cp{position:relative;width:15rem;height:15rem;margin:.4rem auto}
+.cp svg{width:100%;height:100%}
+#dial,#ndl{transform-origin:100px 100px}
+.tsb{display:block;margin:.5rem auto;width:11rem;height:11rem;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle,#15664a,#0f4d36);font-size:3.4rem;font-weight:700;color:var(--w)}
+.tsb:active{transform:scale(.97);background:radial-gradient(circle,#1b7a58,#15664a)}
+.chp{border:1px solid rgba(214,178,94,.4);background:rgba(255,255,255,.05);border-radius:2rem;padding:.3rem .8rem;font-size:.85rem;color:var(--mut)}
+.chp.on{background:var(--gold);color:#04170f;font-weight:700}
+.ev{display:flex;justify-content:space-between;padding:.5rem 0;font-size:1rem}.ev+.ev{border-top:1px solid rgba(214,178,94,.18)}.ev b{color:var(--gold)}
+/* settings */
+.sr{display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;font-size:1.05rem}
+.sr+.sr{border-top:1px solid rgba(214,178,94,.18)}
+.sr small{display:block;color:var(--mut);font-size:.75rem}
+select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7rem;padding:.45rem .6rem;font-size:.95rem;max-width:12rem}
+.sw{position:relative;width:3rem;height:1.7rem;flex:none}.sw input{display:none}
+.sw i{position:absolute;inset:0;background:rgba(255,255,255,.18);border-radius:2rem;transition:background .2s}
+.sw i:after{content:"";position:absolute;top:.2rem;right:.2rem;width:1.3rem;height:1.3rem;border-radius:50%;background:#fff;transition:transform .2s}
+.sw input:checked+i{background:var(--g);box-shadow:0 0 0 1px var(--gold)}
+.sw input:checked+i:after{transform:translateX(-1.3rem);background:var(--gold)}
+.sp{display:flex;align-items:center;gap:.5rem;direction:ltr}
+.sp button{width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--gold);background:rgba(214,178,94,.14);color:var(--gold);font-size:1.4rem;line-height:1}
+.sp button:active{background:rgba(214,178,94,.4)}
+.sp span{min-width:4rem;display:flex;justify-content:center;align-items:baseline;gap:.3rem;font-weight:700;font-size:1.1rem}.sp span i{font-style:normal;font-weight:400;font-size:.8rem;color:var(--mut)}
+.sp span.z{color:var(--mut);font-weight:400}
+.seg{display:flex;border:1px solid rgba(214,178,94,.5);border-radius:.7rem;overflow:hidden}
+.seg button{background:none;border:0;padding:.4rem .8rem;font-size:.85rem;color:var(--mut)}
+.seg button.on{background:var(--gold);color:#04170f;font-weight:700}
+.note{font-size:.78rem;color:var(--mut);line-height:1.7;margin-top:.5rem}
+/* nav */
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;height:4.1rem;background:rgba(4,23,15,.97);border-top:1px solid rgba(214,178,94,.35)}
+nav button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05rem;font-size:.78rem}
+nav button b{font-size:1.45rem;font-weight:400;filter:grayscale(.7)}
+nav button.on{color:var(--gold)}nav button.on b{filter:none}
 </style>
 </head>
 <body>
-<div id="dim"></div>
-<header>
-<svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg>
-<span id="ad">🔔</span>
-<img id="eg" src="eagle.png" alt="">
-</header>
-<main>
-<section class="card c2">
-  <div class="tag" id="wtag"></div>
-  <div class="ic" id="wi"></div>
-  <div class="t" id="wt">--°</div>
-  <div class="d" id="wd"></div>
-  <div class="m" id="wm"></div>
-  <div id="fc"></div>
-  <div class="moon" id="moon"></div>
+<div id="app">
+
+<!-- الرئيسية -->
+<section class="tab on" id="t0">
+  <div class="top"><h1 id="cty">حمص عاصمة الثورة</h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell">🔔</span><svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg></div></div>
+  <div class="card bt">
+    <div class="dt" id="dates"></div>
+    <div class="ring"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="90"/><circle class="pg" id="pg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="565.5"/></svg>
+      <div class="rc"><div class="l" id="rl">الصلاة القادمة</div><div class="n" id="rn">--</div><div class="c" id="rcnt">--:--:--</div><div class="t" id="rt"></div></div></div>
+    <div class="chips"><div class="chip">الساعة<b id="clk">--</b></div><div class="chip">القبلة<b id="qbc">--°</b></div><div class="chip">القمر<b id="mn">--</b></div></div>
+  </div>
+  <div class="card bm"><div class="h"><span>مواقيت الصلاة</span><small>اضغط 🔔 لتفعيل التنبيه</small></div><div id="pl"></div></div>
+  <div class="card"><div class="h"><span>آية وذكر</span></div><div class="vs" id="vs"></div></div>
+  <div class="card" id="fxc"><div class="h"><span>من تاريخ حمص</span><small>اضغط للتالي</small></div><div class="fx" id="fx"></div></div>
 </section>
-<section class="card c1">
-  <div class="city">حمص عاصمة الثورة</div>
-  <div class="clock"><div class="ap"><i id="apm"></i><em id="sec"></em></div><b id="hm">--:--</b></div>
-  <div class="dates" id="dates"></div>
-  <div class="info" id="info"></div>
+
+<!-- الطقس -->
+<section class="tab" id="t1">
+  <div class="top"><h1 id="cty2">الطقس</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="card bp wt">
+    <div class="mut" id="wtag">جارٍ التحميل…</div><div class="ic" id="wi"></div><div class="t" id="wt"></div><div class="d" id="wd"></div><div class="m" id="wm"></div>
+    <div class="row"><button class="btn" id="wr">تحديث</button></div>
+  </div>
+  <div class="card"><div class="h"><span>الأيام القادمة</span></div><div id="fc" class="mut" style="text-align:center">يتطلب اتصالاً بالإنترنت</div></div>
+  <div class="card"><div class="h"><span>الشمس والقمر</span></div><div id="sun"></div></div>
 </section>
-<section class="card c3">
-  <div class="next"><b id="nn">--</b><div id="sb"><span>بعد </span><em id="nc">--</em></div></div>
-  <div id="pl"></div>
-  <div class="src">الأوقات محسوبة لمدينة حمص (الفجر 18° · العشاء 17°)</div>
+
+<!-- الأدوات -->
+<section class="tab" id="t2">
+  <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="card"><div class="h"><span>بوصلة القبلة</span><small id="qtx"></small></div>
+    <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" fill="rgba(255,255,255,.04)" stroke="#d6b25e" stroke-opacity=".5" stroke-width="2"/><g id="tk" stroke="#a9c2b4" stroke-width="2"></g>
+      <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">E</text><text x="100" y="187" fill="#a9c2b4" font-size="13" text-anchor="middle">S</text><text x="22" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">W</text></g>
+      <g id="ndl"><line x1="100" y1="100" x2="100" y2="40" stroke="#d6b25e" stroke-width="4" stroke-linecap="round"/><polygon points="100,28 92,46 108,46" fill="#d6b25e"/><text x="100" y="22" font-size="20" text-anchor="middle">🕋</text></g><circle cx="100" cy="100" r="6" fill="#d6b25e"/></svg></div>
+    <div class="note" style="text-align:center" id="qn">ضع الجوال أفقياً وبعيداً عن المعادن لدقة أفضل</div></div>
+  <div class="card"><div class="h"><span>المسبحة</span><small id="tcy"></small></div>
+    <div class="row" id="tkr" style="margin:0 0 .4rem"></div>
+    <button class="tsb" id="tb">0</button>
+    <div class="row"><button class="btn" id="tt">الهدف: 33</button><button class="btn" id="tz">تصفير</button></div></div>
+  <div class="card"><div class="h"><span>المناسبات القادمة</span><small>تقريبي</small></div><div id="evs"></div></div>
 </section>
-</main>
-<div id="hint">OK: إطفاء الشاشة &nbsp;·&nbsp; ▲: تشغيل/إيقاف تكبير الأذان &nbsp;·&nbsp; ▼: تجربة الصوت</div>
+
+<!-- الإعدادات -->
+<section class="tab" id="t3">
+  <div class="top"><h1>الإعدادات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="card"><div class="h"><span>تعديل الدقائق</span><button class="btn" id="rs" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button></div>
+    <div id="adj"></div>
+    <div class="note">اضغط على + أو − لزيادة أو نقصان الدقائق (يمكنك إبقاء الضغط للتكرار). التعديل يؤثر على العرض والعدّ التنازلي وتنبيه الأذان.</div></div>
+  <div class="card"><div class="h"><span>التنبيهات</span></div>
+    <div class="sr"><span>تنبيه عند دخول الصلاة<small>إشعار + صوت عند كل صلاة مفعّلة</small></span><label class="sw"><input type="checkbox" id="en"><i></i></label></div>
+    <div class="sr"><span>صوت «الله أكبر»<small>يُشغَّل مرتين عند التنبيه</small></span><label class="sw"><input type="checkbox" id="snd"><i></i></label></div>
+    <div class="row"><button class="btn" id="ts">تجربة الصوت</button><button class="btn" id="nt">تفعيل الإشعارات</button></div></div>
+  <div class="card"><div class="h"><span>الموقع وطريقة الحساب</span></div>
+    <div class="sr"><span>المدينة</span><select id="city"></select></div>
+    <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
+    <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
+    <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت حمص · النسخة 1.0</div>
+</section>
+
+</div>
+<nav>
+  <button class="on" data-t="0"><b>🕌</b>الرئيسية</button>
+  <button data-t="1"><b>⛅</b>الطقس</button>
+  <button data-t="2"><b>🧭</b>الأدوات</button>
+  <button data-t="3"><b>⚙️</b>الإعدادات</button>
+</nav>
+
 <script>
 (function(){
-var LAT=34.7324,LNG=36.7137,TZ=3,R=Math.PI/180;
-var $=function(i){return document.getElementById(i)};
+var TZ=3,R=Math.PI/180,$=function(i){return document.getElementById(i)};
+var CITIES=[["حمص",34.7324,36.7137],["دمشق",33.5138,36.2765],["حلب",36.2021,37.1343],["اللاذقية",35.5317,35.7898],["حماة",35.1318,36.7578],["طرطوس",34.889,35.8866],["إدلب",35.9306,36.6339],["دير الزور",35.3359,40.1408],["الرقة",35.9528,39.0079],["درعا",32.6189,36.1021],["السويداء",32.709,36.5663],["القامشلي",37.0522,41.2314]];
+var METHODS=[["رابطة العالم الإسلامي",18,17,0],["الهيئة المصرية",19.5,17.5,0],["جامعة كراتشي",18,18,0],["أم القرى",18.5,0,90]];
 var MON=["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"];
 var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
 var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
-var CLI=[[12,3],[14,4],[18,7],[24,11],[29,15],[33,19],[35,21],[36,22],[33,19],[28,14],[20,9],[14,5]];
-var FACTS=["💡 حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","💡 تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","💡 ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","💡 هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماما, ادعوا لي بالتوفيق.","💡 كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","💡 قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","💡 جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","💡 كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","💡 محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","💡 تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","💡 بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","💡 «فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","💡 تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","💡 قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","💡 التوقيت في سوريا ثابت على GMT+3 طوال العام"];
-var VERSES=["📖 «أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","📖 «إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","📖 «وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","📖 «فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","📖 «وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","📖 «إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","📖 «وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","📖 «تبسّمك في وجه أخيك صدقة» — حديث شريف","📖 «الكلمة الطيبة صدقة» — متفق عليه","📖 سبحان الله وبحمده، سبحان الله العظيم","📖 لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","📖 اللهم صلِّ وسلِّم على نبينا محمد"];
+var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","«تبسّمك في وجه أخيك صدقة» — حديث شريف","«الكلمة الطيبة صدقة» — متفق عليه","سبحان الله وبحمده، سبحان الله العظيم","لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","اللهم صلِّ وسلِّم على نبينا محمد"];
+var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة البعث، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية"];
+var EV={"1-1":"رأس السنة الهجرية","1-10":"يوم عاشوراء","3-12":"المولد النبوي","7-27":"الإسراء والمعراج","9-1":"أول شهر رمضان","10-1":"عيد الفطر","12-9":"يوم عرفة","12-10":"عيد الأضحى"};
+var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
+/* ---------- الإعدادات ---------- */
+var cfg;
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,lat:34.7324,lng:36.7137,cn:"حمص"}}
+function loadCfg(){var o={};try{var s=window.App?App.get():localStorage.getItem("cfg");if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
+var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
+ clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{if(window.App)App.save(s);else localStorage.setItem("cfg",s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
+function ls(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){}return null}
+cfg=loadCfg();
+/* ---------- الحساب ---------- */
 function pt(y,m,d){
- var D=Date.UTC(y,m,d,12)/864e5+2440587.5-2451545;
+ var la=cfg.lat,ln=cfg.lng,D=Date.UTC(y,m,d,12)/864e5+2440587.5-2451545;
  var g=(357.529+.98560028*D)%360*R,q=((280.459+.98564736*D)%360+360)%360;
  var L=(q+1.915*Math.sin(g)+.02*Math.sin(2*g))*R,e=(23.439-4e-7*D)*R;
  var dec=Math.asin(Math.sin(e)*Math.sin(L));
  var ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))/R/15;ra=(ra+24)%24;
  var eq=q/15-ra;eq=((eq+12)%24+24)%24-12;
- var noon=12+TZ-LNG/15-eq+.017;
- function h(a){return Math.acos((Math.sin(a*R)-Math.sin(LAT*R)*Math.sin(dec))/(Math.cos(LAT*R)*Math.cos(dec)))/R/15}
- var asr=Math.atan(1/(1+Math.tan(Math.abs(LAT*R-dec))))/R;
- return [noon-h(-18),noon-h(-.833),noon,noon+h(asr),noon+h(-.833),noon+h(-17)];
+ var noon=12+TZ-ln/15-eq+.017;
+ function h(a){return Math.acos((Math.sin(a*R)-Math.sin(la*R)*Math.sin(dec))/(Math.cos(la*R)*Math.cos(dec)))/R/15}
+ var asr=Math.atan(1/(cfg.asr+Math.tan(Math.abs(la*R-dec))))/R,mg=noon+h(-.833);
+ return [noon-h(-cfg.fa),noon-h(-.833),noon,noon+h(asr),mg,cfg.im>0?mg+cfg.im/60:noon+h(-cfg.ia)];
 }
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
+function PT(y,m,d){return pt(y,m,d).map(function(v,i){return v+cfg.adj[i]/60})}
 function z(n){return n<10?"0"+n:n}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+z(M)+"</b>"}
+function f2(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60;return(H%12||12)+":"+z(M)+(H>=12?" م":" ص")}
 var HF;try{HF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"})}catch(e){}
 function hj(d){if(!HF)return null;var o={};try{HF.formatToParts(d).forEach(function(p){o[p.type]=+p.value})}catch(e){return null}return o.month?o:null}
-function ramadan(n){var h=hj(n);if(!h)return"";if(h.month===9)return"🌙 اليوم "+h.day+" من شهر رمضان المبارك";
- for(var k=1;k<=400;k++){var t=hj(new Date(n.getTime()+k*864e5));if(t&&t.month===9&&t.day===1)return"🌙 متبقٍ نحو "+k+" يوماً على شهر رمضان (تقريباً)"}return""}
-function moon(){var jd=Date.now()/864e5+2440587.5,ph=((jd-2451550.1)/29.530588853)%1;if(ph<0)ph+=1;
- var i=Math.floor(ph*8+.5)%8;return["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"][i]+" "+["محاق","هلال متزايد","تربيع أول","أحدب متزايد","بدر","أحدب متناقص","تربيع أخير","هلال متناقص"][i]+" · "+Math.round((1-Math.cos(2*Math.PI*ph))/2*100)+"%"}
-var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
-var qb=Math.round((Math.atan2(Math.sin(dl)*Math.cos(k1),Math.cos(p1)*Math.sin(k1)-Math.sin(p1)*Math.cos(k1)*Math.cos(dl))/R+360)%360);
-var key="",lastT="",all=FACTS.concat(VERSES),isRam=false,fri=false,dimV="";
+function moon(){var jd=Date.now()/864e5+2440587.5,ph=((jd-2451550.1)/29.530588853)%1;if(ph<0)ph+=1;var i=Math.floor(ph*8+.5)%8;
+ return{e:["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"][i],n:["محاق","هلال متزايد","تربيع أول","أحدب متزايد","بدر","أحدب متناقص","تربيع أخير","هلال متناقص"][i],p:Math.round((1-Math.cos(2*Math.PI*ph))/2*100)}}
+function qibla(){var k1=21.4225*R,k2=39.8262*R,p1=cfg.lat*R,dl=k2-cfg.lng*R;return Math.round((Math.atan2(Math.sin(dl)*Math.cos(k1),Math.cos(p1)*Math.sin(k1)-Math.sin(p1)*Math.cos(k1)*Math.cos(dl))/R+360)%360)}
+var isRam=false,fri=false,day0=-1,lastKey="",qb=0;
 function nm(i,full){var s=(i===2&&fri)?"الجمعة":NAMES[i];if(full&&isRam){if(i===0)s+=" · الإمساك";if(i===4)s+=" · الإفطار"}return s}
-function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
-window.addEventListener("online",net);window.addEventListener("offline",net);net();
-window.setAdhan=function(o){$("ad").textContent=o?"🔔":"🔕"};
-setTimeout(function(){$("hint").style.display="none"},40000);
-function daily(n,T){
+/* ---------- الرئيسية ---------- */
+function daily(n){
  var h=hj(n),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate();
- isRam=!!(h&&h.month===9);fri=n.getUTCDay()===5;
+ isRam=!!(h&&h.month===9);fri=n.getUTCDay()===5;qb=qibla();
  $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(h?"<br>"+h.day+" "+HM[h.month-1]+" "+h.year+" هـ":"");
- var dayLen=T[4]-T[1],dh=Math.floor(dayLen),dm=Math.round((dayLen-dh)*60),dyn=[];
- if(fri)dyn.push("🕌 جمعة مباركة، لا تنسَ قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ");
- var r=ramadan(n);if(r)dyn.push(r);
- dyn.push("🧭 اتجاه القبلة من حمص: "+qb+"° من الشمال");
- dyn.push("☀️ طول النهار اليوم: "+dh+" ساعة و"+dm+" دقيقة");
- var a=[FACTS,VERSES,dyn],o=[];for(var i=0;i<16;i++)a.forEach(function(x){if(x[i])o.push(x[i])});all=o;
- $("moon").textContent=moon();
- if(!window.wLive){var c=CLI[M];$("wt").textContent=Math.round((c[0]+c[1])/2)+"°";$("wd").textContent="متوسط شهر "+MON[M];$("wm").textContent="العظمى "+c[0]+"° · الصغرى "+c[1]+"°";$("wi").textContent=c[0]>27?"☀️":c[0]>17?"⛅":"☁️";$("wtag").textContent="معدلات مناخية"}
+ var mo=moon();$("mn").textContent=mo.e+" "+mo.p+"%";$("qbc").textContent=qb+"°";
+ var doy=Math.floor((Date.UTC(Y,M,Dd)-Date.UTC(Y,0,0))/864e5);$("vs").textContent=VERSES[doy%VERSES.length]+(fri?"\n\n🕌 جمعة مباركة، لا تنسَ سورة الكهف والصلاة على النبي ﷺ":"");$("vs").style.whiteSpace="pre-line";
+ fxi=doy%FACTS.length;$("fx").textContent=FACTS[fxi];
+ $("qtx").textContent=qb+"° من الشمال";
+ events(n);sunmoon(n);draw();
 }
+var fxi=0;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
+function renderList(T,ni){
+ var s="";for(var i=0;i<6;i++){var a=cfg.adj[i],sm=(isRam&&i===0)?"الإمساك":(isRam&&i===4)?"الإفطار":"";
+  s+='<div class="p'+(i===ni?' on':'')+'"><span class="nm">'+nm(i)+(sm?'<small>'+sm+'</small>':'')+(a?'<em>'+(a>0?"+":"")+a+'د</em>':'')+'</span><span class="rt"><span class="tm">'+f(T[i])+'</span>'+
+  (i===1?'<span style="width:2rem"></span>':'<button class="bl'+(cfg.on[i]?'':' off')+'" data-bell="'+i+'">🔔</button>')+'</span></div>'}
+ $("pl").innerHTML=s}
 function tick(){
  var n=new Date(Date.now()+TZ*36e5),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate(),H=n.getUTCHours(),Mi=n.getUTCMinutes(),S=n.getUTCSeconds();
- $("hm").textContent=((H%12)||12)+":"+z(Mi);$("sec").textContent=z(S);$("apm").textContent=H>=12?"م":"ص";
- var nh=H+Mi/60+S/3600,T=pt(Y,M,Dd),ni=-1,i;
+ $("clk").textContent=((H%12)||12)+":"+z(Mi)+" "+(H>=12?"م":"ص");
+ var dk=Y+"-"+M+"-"+Dd+"-"+cfg.city;if(dk!==tick.d){tick.d=dk;daily(n);lastKey=""}
+ var nh=H+Mi/60+S/3600,T=PT(Y,M,Dd),ni=-1,i;
  for(i=0;i<6;i++){if(T[i]>nh){ni=i;break}}
- var tt;if(ni<0){ni=0;tt=pt(Y,M,Dd+1)[0]+24}else tt=T[ni];
- var dk=Y+"-"+M+"-"+Dd;if(dk!==tick.d){tick.d=dk;daily(n,T);key=""}
+ var tt,pv;if(ni<0){ni=0;tt=PT(Y,M,Dd+1)[0]+24;pv=T[5]}else{tt=T[ni];pv=ni>0?T[ni-1]:PT(Y,M,Dd-1)[5]-24}
  var lp=-1;for(i=5;i>=0;i--){if(i!==1&&T[i]<=nh){lp=i;break}}
  var since=lp>=0?Math.round((nh-T[lp])*60):999;
- if(since<10){$("nn").textContent="حان الآن موعد "+nm(lp);$("sb").style.display="none"}
- else{var rem=Math.max(0,Math.round((tt-nh)*3600)),rh=Math.floor(rem/3600),rm=Math.floor(rem%3600/60),rs=rem%60;
-  $("nn").textContent=nm(ni,1);$("sb").style.display="";$("nc").textContent=z(rh)+":"+z(rm)+":"+z(rs)}
- var kk=ni;
- if(kk!==key){key=kk;var s="";for(i=0;i<6;i++){var lb=nm(i),sm="";if(isRam&&i===0)sm="الإمساك";if(isRam&&i===4)sm="الإفطار";
-  s+='<div class="p'+(i===ni?' on':'')+'"><span>'+lb+(sm?'<small>'+sm+'</small>':'')+'</span><span class="tm" dir="ltr">'+f(T[i])+'</span></div>'}$("pl").innerHTML=s}
- var dv=((nh>=23||nh<T[0])&&since>=10)?".55":"0";if(dv!==dimV){dimV=dv;$("dim").style.opacity=dv}
- var fi=Math.floor(Date.now()/12000)%all.length,tx=all[fi];
- if(tx!==lastT){lastT=tx;var e=$("info");e.textContent=tx;e.className="info"+(tx.indexOf("📖")===0?" v":"")}
+ if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
+ else{var rem=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الصلاة القادمة";$("rn").textContent=nm(ni,1);
+  $("rcnt").textContent=z(Math.floor(rem/3600))+":"+z(Math.floor(rem%3600/60))+":"+z(rem%60);$("rt").textContent="عند "+f2(tt)}
+ var fr=Math.min(1,Math.max(0,(nh-pv)/(tt-pv)));$("pg").setAttribute("stroke-dashoffset",(565.5*(1-fr)).toFixed(1));
+ var key=ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+dk;
+ if(key!==lastKey){lastKey=key;renderList(T,ni);renderAdj(T)}
 }
+/* ---------- الطقس ---------- */
 function wc(c){if(c===0)return["صافٍ","☀️"];if(c<3)return["غائم جزئياً","⛅"];if(c===3)return["غائم","☁️"];if(c<50)return["ضباب","🌫️"];if(c<68)return["مطر","🌧️"];if(c<78)return["ثلوج","❄️"];if(c<83)return["زخات مطر","🌦️"];return["عاصفة رعدية","⛈️"]}
 function weather(){
- try{fetch("https://api.open-meteo.com/v1/forecast?latitude=34.73&longitude=36.71&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=5&timezone=Asia%2FDamascus")
- .then(function(r){return r.json()}).then(function(j){var c=j.current,d=j.daily,w=wc(c.weather_code);window.wLive=1;
-  $("wt").textContent=Math.round(c.temperature_2m)+"°";$("wd").textContent=w[0];$("wi").textContent=w[1];$("wtag").textContent="الآن في حمص";
-  var rn=d.precipitation_probability_max&&d.precipitation_probability_max[0]!=null?"<br>احتمال المطر اليوم "+d.precipitation_probability_max[0]+"%":"";
-  $("wm").innerHTML="العظمى "+Math.round(d.temperature_2m_max[0])+"° · الصغرى "+Math.round(d.temperature_2m_min[0])+"°<br>رطوبة "+c.relative_humidity_2m+"% · رياح "+Math.round(c.wind_speed_10m)+" كم/س"+rn;
-  var s="";for(var i=1;i<d.time.length&&i<5;i++){var g=wc(d.weather_code[i]),dn=DAY[new Date(d.time[i]+"T12:00:00Z").getUTCDay()];
-   s+='<div class="fc"><span>'+dn+'</span><u>'+g[1]+'</u><b>'+Math.round(d.temperature_2m_max[i])+'°</b><s>'+Math.round(d.temperature_2m_min[i])+'°</s></div>'}
-  $("fc").innerHTML=s;$("fc").style.display="flex"}).catch(function(){})}catch(e){}
+ $("cty2").textContent="طقس "+cfg.cn;$("wtag").textContent="جارٍ التحميل…";
+ try{fetch("https://api.open-meteo.com/v1/forecast?latitude="+cfg.lat+"&longitude="+cfg.lng+"&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=6&timezone=Asia%2FDamascus")
+ .then(function(r){return r.json()}).then(function(j){var c=j.current,d=j.daily,w=wc(c.weather_code);
+  $("wtag").textContent="الآن في "+cfg.cn;$("wi").textContent=w[1];$("wt").textContent=Math.round(c.temperature_2m)+"°";$("wd").textContent=w[0];
+  $("wm").innerHTML="الشعور "+Math.round(c.apparent_temperature)+"° · رطوبة "+c.relative_humidity_2m+"%<br>رياح "+Math.round(c.wind_speed_10m)+" كم/س · العظمى "+Math.round(d.temperature_2m_max[0])+"° · الصغرى "+Math.round(d.temperature_2m_min[0])+"°";
+  var s="";for(var i=1;i<d.time.length;i++){var g=wc(d.weather_code[i]),dn=i===1?"غداً":DAY[new Date(d.time[i]+"T12:00:00Z").getUTCDay()],pr=d.precipitation_probability_max[i];
+   s+='<div class="fr"><span style="width:4.5rem">'+dn+'</span><u>'+g[1]+'</u><span class="rn">'+(pr!=null?"💧"+pr+"%":"")+'</span><span class="hl"><b>'+Math.round(d.temperature_2m_max[i])+'°</b><s>'+Math.round(d.temperature_2m_min[i])+'°</s></span></div>'}
+  $("fc").className="";$("fc").style.textAlign="";$("fc").innerHTML=s}).catch(function(){$("wtag").textContent="تعذر التحميل — تحقق من الإنترنت"})}catch(e){}
 }
-tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
+function sunmoon(n){var T=pt(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),ln=T[4]-T[1],h=Math.floor(ln),m=Math.round((ln-h)*60),mo=moon();
+ $("sun").innerHTML='<div class="ev"><span>🌅 الشروق</span><b>'+f2(T[1]+cfg.adj[1]/60)+'</b></div><div class="ev"><span>🌇 الغروب</span><b>'+f2(T[4]+cfg.adj[4]/60)+'</b></div><div class="ev"><span>☀️ طول النهار</span><b>'+h+" س "+m+' د</b></div><div class="ev"><span>'+mo.e+' القمر</span><b>'+mo.n+" · "+mo.p+'%</b></div>'}
+/* ---------- المناسبات ---------- */
+function events(n){var out={},c=0;for(var k=0;k<=400&&c<8;k++){var h=hj(new Date(n.getTime()+k*864e5));if(!h)break;var key=h.month+"-"+h.day;if(EV[key]&&!out[key]){out[key]=k;c++}}
+ var a=Object.keys(out).map(function(x){return[EV[x],out[x]]}).sort(function(x,y){return x[1]-y[1]}).slice(0,4);
+ $("evs").innerHTML=a.map(function(x){return'<div class="ev"><span>'+x[0]+'</span><b>'+(x[1]===0?"اليوم":x[1]===1?"غداً":"بعد "+x[1]+" يوماً")+'</b></div>'}).join("")||'<div class="mut">—</div>'}
+/* ---------- البوصلة ---------- */
+(function(){var s="";for(var i=0;i<72;i++){var a=i*5*R,l=i%6===0?10:5,x1=100+Math.sin(a)*(94-l),y1=100-Math.cos(a)*(94-l),x2=100+Math.sin(a)*94,y2=100-Math.cos(a)*94;s+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'"/>'}$("tk").innerHTML=s})();
+var hd=null,raf=0;
+function draw(){raf=0;var h=hd||0;$("dial").style.transform="rotate("+(-h)+"deg)";$("ndl").style.transform="rotate("+(qb-h)+"deg)"}
+function ori(e){var h=null;if(e.webkitCompassHeading!=null)h=e.webkitCompassHeading;else if(e.alpha!=null)h=(360-e.alpha)%360;if(h==null)return;hd=h;$("qn").textContent="السهم يشير إلى القبلة: "+qb+"° — حرّك الجوال أفقياً حتى يتجه السهم للأعلى";if(!raf)raf=requestAnimationFrame(draw)}
+window.addEventListener("deviceorientationabsolute",ori,true);
+/* ---------- المسبحة ---------- */
+var ts=ls("tsb")||{n:0,t:33,k:0,c:0};
+function vib(ms){try{if(window.App)App.vib(ms);else if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
+function drawTs(){$("tb").textContent=ts.n;$("tt").textContent="الهدف: "+(ts.t||"∞");$("tcy").textContent=ts.c?"دورات: "+ts.c:"";
+ $("tkr").innerHTML=DK.map(function(x,i){return'<button class="chp'+(i===ts.k?' on':'')+'" data-k="'+i+'">'+x+'</button>'}).join("")}
+$("tb").onclick=function(){ts.n++;if(ts.t&&ts.n>=ts.t){ts.n=0;ts.c++;vib(120)}else vib(12);ls("tsb",ts);drawTs()};
+$("tt").onclick=function(){var o=[33,99,100,0];ts.t=o[(o.indexOf(ts.t)+1)%o.length];ls("tsb",ts);drawTs()};
+$("tz").onclick=function(){ts.n=0;ts.c=0;ls("tsb",ts);drawTs()};
+$("tkr").onclick=function(e){var b=e.target.closest("[data-k]");if(b){ts.k=+b.dataset.k;ls("tsb",ts);drawTs()}};
+drawTs();
+/* ---------- الإعدادات ---------- */
+var adjBuilt=false;
+function renderAdj(T){
+ if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><i>د</i></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
+ for(var j=0;j<6;j++){var a=cfg.adj[j];$("an"+j).textContent=nm(j);$("at"+j).textContent=f2(T[j]);var v=$("av"+j);v.firstChild.textContent=(a>0?"+":"")+a;v.className=a?"":"z"}}
+function step(i,d){cfg.adj[i]=Math.max(-60,Math.min(60,cfg.adj[i]+d));saveCfg();lastKey="";tick()}
+var hold;
+document.addEventListener("pointerdown",function(e){var b=e.target.closest("[data-adj]");if(!b)return;var a=b.dataset.adj.split(","),i=+a[0],d=+a[1];step(i,d);hold=setTimeout(function(){hold=setInterval(function(){step(i,d)},110)},420)});
+function stop(){clearTimeout(hold);clearInterval(hold)}
+["pointerup","pointercancel","pointerleave","contextmenu"].forEach(function(v){document.addEventListener(v,stop)});
+document.addEventListener("click",function(e){var b=e.target.closest("[data-bell]");if(!b)return;var i=+b.dataset.bell;cfg.on[i]=cfg.on[i]?0:1;saveCfg();lastKey="";tick()});
+$("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
+$("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
+$("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
+function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;
+ [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
+ $("cty").textContent=cfg.city===0?"حمص عاصمة الثورة":cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
+$("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
+$("mt").onchange=function(){cfg.mt=+this.value;saveCfg();syncSet();lastKey="";tick()};
+$("en").onchange=function(){cfg.en=this.checked?1:0;saveCfg();syncSet()};
+$("snd").onchange=function(){cfg.snd=this.checked?1:0;saveCfg()};
+$("asr").onclick=function(e){var b=e.target.closest("button");if(b){cfg.asr=+b.dataset.v;saveCfg();syncSet();lastKey="";tick()}};
+$("ts").onclick=function(){try{window.App&&App.test()}catch(e){}};
+$("nt").onclick=function(){try{window.App&&App.askNotif()}catch(e){}};
+$("wr").onclick=weather;
+/* ---------- التنقل ---------- */
+function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
+var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
+window.goBack=function(){if(cur!==0){show(0);return true}return false};
+function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
+window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
+saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
 })();
 </script>
 </body>
