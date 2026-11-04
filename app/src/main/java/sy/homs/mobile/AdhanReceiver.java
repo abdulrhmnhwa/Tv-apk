@@ -17,9 +17,11 @@ public class AdhanReceiver extends BroadcastReceiver {
     public void onReceive(final Context c, Intent i) {
         if (Scheduler.ACT.equals(i.getAction())) {
             JSONObject o = Prefs.obj(c);
-            if (o.optInt("en", 1) == 1) {
-                int k = Math.max(0, Math.min(5, i.getIntExtra("i", 0)));
-                notifyNow(c, k, o.optString("cn", "حمص"));
+            int k = Math.max(0, Math.min(5, i.getIntExtra("i", 0)));
+            int kind = i.getIntExtra("k", 0);
+            String city = o.optString("cn", "حمص"), name = Scheduler.NAMES[k];
+            if (kind == 0 && o.optInt("en", 1) == 1) {
+                notifyNow(c, 100 + k, "adhan", "حان الآن موعد " + name, city);
                 if (o.optInt("snd", 1) == 1) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -28,30 +30,34 @@ public class AdhanReceiver extends BroadcastReceiver {
                     final PendingResult pr = goAsync();
                     Takbeer.play(c.getApplicationContext(), pr::finish);
                 }
+            } else if (kind == 1) {
+                notifyNow(c, 200 + k, "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
+            } else if (kind == 2) {
+                notifyNow(c, 300 + k, "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
             }
         }
+        WidgetProvider.refresh(c);
         Scheduler.schedule(c);
     }
 
-    private void notifyNow(Context c, int k, String city) {
+    private void notifyNow(Context c, int id, String channel, String title, String text) {
         try {
             NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification.Builder b;
             if (Build.VERSION.SDK_INT >= 26) {
-                NotificationChannel ch = new NotificationChannel("adhan", "مواقيت الصلاة", NotificationManager.IMPORTANCE_HIGH);
-                ch.setSound(null, null);
-                nm.createNotificationChannel(ch);
-                b = new Notification.Builder(c, "adhan");
+                NotificationChannel a = new NotificationChannel("adhan", "تنبيه الأذان", NotificationManager.IMPORTANCE_HIGH);
+                a.setSound(null, null);
+                nm.createNotificationChannel(a);
+                nm.createNotificationChannel(new NotificationChannel("remind", "التذكيرات", NotificationManager.IMPORTANCE_HIGH));
+                b = new Notification.Builder(c, channel);
             } else {
                 b = new Notification.Builder(c);
+                if (channel.equals("remind")) b.setDefaults(Notification.DEFAULT_SOUND);
             }
             PendingIntent pi = PendingIntent.getActivity(c, 2, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
-            b.setSmallIcon(R.drawable.ic_stat)
-                    .setContentTitle("حان الآن موعد " + Scheduler.NAMES[k])
-                    .setContentText(city)
-                    .setContentIntent(pi)
-                    .setAutoCancel(true);
-            nm.notify(100 + k, b.build());
+            b.setSmallIcon(R.drawable.ic_stat).setContentTitle(title).setContentText(text)
+                    .setContentIntent(pi).setAutoCancel(true);
+            nm.notify(id, b.build());
         } catch (Exception ignored) {}
     }
 }

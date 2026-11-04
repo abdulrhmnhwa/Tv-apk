@@ -15,8 +15,10 @@ public class Scheduler {
     public static final String ACT = "sy.homs.mobile.ADHAN";
     static final double R = Math.PI / 180;
     static final int TZ = 3;
+    static final int PRE = 15; // دقائق التذكير قبل الأذان
     public static final String[] NAMES = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
-    static int idx = 0;
+    static final int[] IQ_DEF = {15, 0, 15, 15, 5, 15};
+    static int evIdx = 0, evKind = 0; // kind: 0 أذان، 1 تذكير قبل الأذان، 2 تذكير الإقامة
 
     static double h(double a, double dec, double lat) {
         return Math.acos((Math.sin(a * R) - Math.sin(lat * R) * Math.sin(dec)) / (Math.cos(lat * R) * Math.cos(dec))) / R / 15;
@@ -46,36 +48,64 @@ public class Scheduler {
         return new double[]{noon - h(-fa, dec, lat), noon - h(-.833, dec, lat), noon, noon + h(asr, dec, lat), mg, is};
     }
 
+    /** أوقات اليوم بالميلي ثانية (UTC) بعد تطبيق تعديل الدقائق */
+    static long[] dayMs(JSONObject o, int y, int m, int d) {
+        double[] t = times(o, y, m, d);
+        JSONArray adj = o.optJSONArray("adj");
+        Calendar mid = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        mid.clear();
+        mid.set(y, m, d, 0, 0, 0);
+        long base = mid.getTimeInMillis() - TZ * 3600000L;
+        long[] r = new long[6];
+        for (int i = 0; i < 6; i++)
+            r[i] = base + (long) ((t[i] * 60 + (adj != null ? adj.optDouble(i, 0) : 0)) * 60000);
+        return r;
+    }
+
+    static int iq(JSONObject o, int i) {
+        JSONArray a = o.optJSONArray("iq");
+        return a != null ? a.optInt(i, IQ_DEF[i]) : IQ_DEF[i];
+    }
+
+    static String fmt(long ms) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        c.setTimeInMillis(ms + TZ * 3600000L);
+        int H = c.get(Calendar.HOUR_OF_DAY), M = c.get(Calendar.MINUTE);
+        return (H % 12 == 0 ? 12 : H % 12) + ":" + (M < 10 ? "0" : "") + M + (H >= 12 ? " م" : " ص");
+    }
+
     static long next(Context c, long now) {
         JSONObject o = Prefs.obj(c);
-        JSONArray adj = o.optJSONArray("adj"), on = o.optJSONArray("on");
+        JSONArray on = o.optJSONArray("on");
+        boolean en = o.optInt("en", 1) == 1, pre = o.optInt("pre", 0) == 1, iqr = o.optInt("iqr", 0) == 1;
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTimeInMillis(now + TZ * 3600000L);
+        long best = Long.MAX_VALUE;
         for (int add = 0; add < 3; add++) {
             Calendar day = (Calendar) cal.clone();
             day.add(Calendar.DAY_OF_MONTH, add);
-            int y = day.get(Calendar.YEAR), m = day.get(Calendar.MONTH), d = day.get(Calendar.DAY_OF_MONTH);
-            double[] t = times(o, y, m, d);
-            Calendar mid = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            mid.clear();
-            mid.set(y, m, d, 0, 0, 0);
-            long base = mid.getTimeInMillis() - TZ * 3600000L;
+            long[] r = dayMs(o, day.get(Calendar.YEAR), day.get(Calendar.MONTH), day.get(Calendar.DAY_OF_MONTH));
             for (int i : new int[]{0, 2, 3, 4, 5}) {
                 if (on != null && on.optInt(i, 1) == 0) continue;
-                double a = adj != null ? adj.optDouble(i, 0) : 0;
-                long tr = base + (long) ((t[i] * 60 + a) * 60000);
-                if (tr > now + 20000) { idx = i; return tr; }
+                long[] cand = {
+                        pre ? r[i] - PRE * 60000L : -1,
+                        en ? r[i] : -1,
+                        iqr && iq(o, i) > 0 ? r[i] + iq(o, i) * 60000L : -1};
+                int[] kind = {1, 0, 2};
+                for (int k = 0; k < 3; k++) {
+                    if (cand[k] > now + 20000 && cand[k] < best) { best = cand[k]; evIdx = i; evKind = kind[k]; }
+                }
             }
         }
-        return -1;
+        return best == Long.MAX_VALUE ? -1 : best;
     }
 
     public static void schedule(Context c) {
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        long t = next(c, System.currentTimeMillis());
         Intent i = new Intent(c, AdhanReceiver.class).setAction(ACT);
-        JSONObject o = Prefs.obj(c);
-        long t = o.optInt("en", 1) == 0 ? -1 : next(c, System.currentTimeMillis());
-        i.putExtra("i", idx);
+        i.putExtra("i", evIdx);
+        i.putExtra("k", evKind);
         PendingIntent pi = PendingIntent.getBroadcast(c, 0, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
         if (t < 0) { am.cancel(pi); return; }
         try {

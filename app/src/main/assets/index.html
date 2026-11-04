@@ -145,16 +145,20 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
   <div class="card"><div class="h"><span>تعديل الدقائق</span><button class="btn" id="rs" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button></div>
     <div id="adj"></div>
     <div class="note">اضغط على + أو − لزيادة أو نقصان الدقائق (يمكنك إبقاء الضغط للتكرار). التعديل يؤثر على العرض والعدّ التنازلي وتنبيه الأذان.</div></div>
+  <div class="card"><div class="h"><span>مدة الإقامة بعد الأذان</span></div><div id="iqs"></div><div class="note">يبدأ عدّاد الإقامة تلقائياً عند دخول وقت كل صلاة. الافتراضي 15 دقيقة، والمغرب 5 دقائق.</div></div>
   <div class="card"><div class="h"><span>التنبيهات</span></div>
     <div class="sr"><span>تنبيه عند دخول الصلاة<small>إشعار + صوت عند كل صلاة مفعّلة</small></span><label class="sw"><input type="checkbox" id="en"><i></i></label></div>
     <div class="sr"><span>صوت «الله أكبر»<small>يُشغَّل مرتين عند التنبيه</small></span><label class="sw"><input type="checkbox" id="snd"><i></i></label></div>
+    <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة<small>إشعار فقط، بدون أذان</small></span><label class="sw"><input type="checkbox" id="pre"><i></i></label></div>
+    <div class="sr"><span>تذكير عند الإقامة<small>إشعار عند موعد إقامة الصلاة</small></span><label class="sw"><input type="checkbox" id="iqr"><i></i></label></div>
+    <div class="note">التنبيهات والتذكيرات تتبع تفعيل 🔔 لكل صلاة في القائمة الرئيسية.</div>
     <div class="row"><button class="btn" id="ts">تجربة الصوت</button><button class="btn" id="nt">تفعيل الإشعارات</button></div></div>
   <div class="card"><div class="h"><span>الموقع وطريقة الحساب</span></div>
     <div class="sr"><span>المدينة</span><select id="city"></select></div>
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت حمص · النسخة 1.0</div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت سوريا· النسخة 1.1<br>من تطوير المهندس عبدالرحمن حوا · التطبيق مجاني تماماً، ادعوا لي بالتوفيق 🤲</div>
 </section>
 
 </div>
@@ -175,12 +179,13 @@ var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","ا
 var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
 var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
 var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","«تبسّمك في وجه أخيك صدقة» — حديث شريف","«الكلمة الطيبة صدقة» — متفق عليه","سبحان الله وبحمده، سبحان الله العظيم","لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","اللهم صلِّ وسلِّم على نبينا محمد"];
-var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة البعث، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية"];
+var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲"];
 var EV={"1-1":"رأس السنة الهجرية","1-10":"يوم عاشوراء","3-12":"المولد النبوي","7-27":"الإسراء والمعراج","9-1":"أول شهر رمضان","10-1":"عيد الفطر","12-9":"يوم عرفة","12-10":"عيد الأضحى"};
+var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:"الرقة عروس الفرات",7:"دير الزور , دير العز والكرامة",6:"إدلب الخضراء",4:"حماة الأبيّة",1:"دمشق عاصمة الأمويين",2:"حلب الشهباء"};
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,lat:34.7324,lng:36.7137,cn:"حمص"}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,iqr:0,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
 function loadCfg(){var o={};try{var s=window.App?App.get():localStorage.getItem("cfg");if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{if(window.App)App.save(s);else localStorage.setItem("cfg",s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -236,12 +241,14 @@ function tick(){
  var tt,pv;if(ni<0){ni=0;tt=PT(Y,M,Dd+1)[0]+24;pv=T[5]}else{tt=T[ni];pv=ni>0?T[ni-1]:PT(Y,M,Dd-1)[5]-24}
  var lp=-1;for(i=5;i>=0;i--){if(i!==1&&T[i]<=nh){lp=i;break}}
  var since=lp>=0?Math.round((nh-T[lp])*60):999;
- if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
+ var iqm=lp>=0?(cfg.iq[lp]||0):0,inIq=lp>=0&&iqm>0&&nh<T[lp]+iqm/60;
+ if(inIq){tt=T[lp]+iqm/60;pv=T[lp];var rq=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الإقامة بعد";$("rn").textContent=nm(lp);$("rcnt").textContent=z(Math.floor(rq/60))+":"+z(rq%60);$("rt").textContent="الإقامة عند "+f2(tt)}
+ else if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
  else{var rem=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الصلاة القادمة";$("rn").textContent=nm(ni,1);
   $("rcnt").textContent=z(Math.floor(rem/3600))+":"+z(Math.floor(rem%3600/60))+":"+z(rem%60);$("rt").textContent="عند "+f2(tt)}
  var fr=Math.min(1,Math.max(0,(nh-pv)/(tt-pv)));$("pg").setAttribute("stroke-dashoffset",(565.5*(1-fr)).toFixed(1));
- var key=ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+dk;
- if(key!==lastKey){lastKey=key;renderList(T,ni);renderAdj(T)}
+ var key=ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+cfg.iq.join()+"|"+dk;
+ if(key!==lastKey){lastKey=key;renderList(T,ni);renderAdj(T);renderIq()}
 }
 /* ---------- الطقس ---------- */
 function wc(c){if(c===0)return["صافٍ","☀️"];if(c<3)return["غائم جزئياً","⛅"];if(c===3)return["غائم","☁️"];if(c<50)return["ضباب","🌫️"];if(c<68)return["مطر","🌧️"];if(c<78)return["ثلوج","❄️"];if(c<83)return["زخات مطر","🌦️"];return["عاصفة رعدية","⛈️"]}
@@ -272,7 +279,7 @@ var ts=ls("tsb")||{n:0,t:33,k:0,c:0};
 function vib(ms){try{if(window.App)App.vib(ms);else if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 function drawTs(){$("tb").textContent=ts.n;$("tt").textContent="الهدف: "+(ts.t||"∞");$("tcy").textContent=ts.c?"دورات: "+ts.c:"";
  $("tkr").innerHTML=DK.map(function(x,i){return'<button class="chp'+(i===ts.k?' on':'')+'" data-k="'+i+'">'+x+'</button>'}).join("")}
-$("tb").onclick=function(){ts.n++;if(ts.t&&ts.n>=ts.t){ts.n=0;ts.c++;vib(120)}else vib(12);ls("tsb",ts);drawTs()};
+$("tb").onclick=function(){ts.n++;if(ts.t&&ts.n>=ts.t){ts.n=0;ts.c++;vib(50)}ls("tsb",ts);drawTs()};
 $("tt").onclick=function(){var o=[33,99,100,0];ts.t=o[(o.indexOf(ts.t)+1)%o.length];ls("tsb",ts);drawTs()};
 $("tz").onclick=function(){ts.n=0;ts.c=0;ls("tsb",ts);drawTs()};
 $("tkr").onclick=function(e){var b=e.target.closest("[data-k]");if(b){ts.k=+b.dataset.k;ls("tsb",ts);drawTs()}};
@@ -282,22 +289,28 @@ var adjBuilt=false;
 function renderAdj(T){
  if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><i>د</i></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
  for(var j=0;j<6;j++){var a=cfg.adj[j];$("an"+j).textContent=nm(j);$("at"+j).textContent=f2(T[j]);var v=$("av"+j);v.firstChild.textContent=(a>0?"+":"")+a;v.className=a?"":"z"}}
+var IQP=[0,2,3,4,5],iqBuilt=false;
+function renderIq(){if(!iqBuilt){iqBuilt=true;var s="";IQP.forEach(function(i){s+='<div class="sr"><span>'+NAMES[i]+'</span><div class="sp"><button data-iq="'+i+',-1">−</button><span id="qv'+i+'"><b></b><i>د</i></span><button data-iq="'+i+',1">+</button></div></div>'});$("iqs").innerHTML=s}
+ IQP.forEach(function(i){var v=$("qv"+i),a=cfg.iq[i];v.firstChild.textContent=a>0?a:"بدون";v.lastChild.style.display=a>0?"":"none";v.className=a?"":"z"})}
+function stepIq(i,d){cfg.iq[i]=Math.max(0,Math.min(60,cfg.iq[i]+d));saveCfg();lastKey="";tick()}
 function step(i,d){cfg.adj[i]=Math.max(-60,Math.min(60,cfg.adj[i]+d));saveCfg();lastKey="";tick()}
 var hold;
-document.addEventListener("pointerdown",function(e){var b=e.target.closest("[data-adj]");if(!b)return;var a=b.dataset.adj.split(","),i=+a[0],d=+a[1];step(i,d);hold=setTimeout(function(){hold=setInterval(function(){step(i,d)},110)},420)});
+document.addEventListener("pointerdown",function(e){var b=e.target.closest("[data-adj],[data-iq]");if(!b)return;var q=b.dataset.iq!=null,a=(q?b.dataset.iq:b.dataset.adj).split(","),i=+a[0],d=+a[1],fn=q?stepIq:step;fn(i,d);hold=setTimeout(function(){hold=setInterval(function(){fn(i,d)},110)},420)});
 function stop(){clearTimeout(hold);clearInterval(hold)}
 ["pointerup","pointercancel","pointerleave","contextmenu"].forEach(function(v){document.addEventListener(v,stop)});
 document.addEventListener("click",function(e){var b=e.target.closest("[data-bell]");if(!b)return;var i=+b.dataset.bell;cfg.on[i]=cfg.on[i]?0:1;saveCfg();lastKey="";tick()});
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;
+function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("iqr").checked=!!cfg.iqr;
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
- $("cty").textContent=cfg.city===0?"حمص عاصمة الثورة":cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
+ $("cty").textContent=SLOG[cfg.city]||cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
 $("mt").onchange=function(){cfg.mt=+this.value;saveCfg();syncSet();lastKey="";tick()};
 $("en").onchange=function(){cfg.en=this.checked?1:0;saveCfg();syncSet()};
 $("snd").onchange=function(){cfg.snd=this.checked?1:0;saveCfg()};
+$("pre").onchange=function(){cfg.pre=this.checked?1:0;saveCfg()};
+$("iqr").onchange=function(){cfg.iqr=this.checked?1:0;saveCfg()};
 $("asr").onclick=function(e){var b=e.target.closest("button");if(b){cfg.asr=+b.dataset.v;saveCfg();syncSet();lastKey="";tick()}};
 $("ts").onclick=function(){try{window.App&&App.test()}catch(e){}};
 $("nt").onclick=function(){try{window.App&&App.askNotif()}catch(e){}};

@@ -18,7 +18,7 @@ public class MainActivity extends Activity {
 
     class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
-        @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); }
+        @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
         @JavascriptInterface public void vib(int ms) {
             Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
@@ -68,7 +68,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); Scheduler.schedule(this); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); }
     @Override protected void onPause() { w.onPause(); super.onPause(); }
     @Override protected void onDestroy() { w.destroy(); super.onDestroy(); }
 }
