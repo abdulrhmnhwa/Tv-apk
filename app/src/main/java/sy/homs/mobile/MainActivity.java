@@ -2,10 +2,16 @@ package sy.homs.mobile;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
+import android.os.VibratorManager;
+import android.view.HapticFeedbackConstants;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
@@ -16,14 +22,12 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
     private WebView w;
 
-    class Bridge {
+    public class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
         @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
-        @JavascriptInterface public void vib(int ms) {
-            Vibrator v = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-            if (v != null) v.vibrate(Math.max(5, Math.min(300, ms)));
-        }
+        @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
+        @JavascriptInterface public void vibTest() { runOnUiThread(() -> buzz(true)); }
         @JavascriptInterface public void askNotif() { runOnUiThread(() -> requestNotif(true)); }
     }
 
@@ -50,6 +54,51 @@ public class MainActivity extends Activity {
         Scheduler.schedule(this);
         requestNotif(false);
         w.loadUrl("file:///android_asset/index.html");
+    }
+
+    /** رجّة خفيفة مزدوجة مع عدة محاولات احتياطية، وفي وضع التجربة تظهر حالة الجهاز */
+    @SuppressWarnings("deprecation")
+    private void buzz(boolean diag) {
+        Vibrator v = null;
+        try {
+            if (Build.VERSION.SDK_INT >= 31) {
+                VibratorManager vm = (VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                if (vm != null) v = vm.getDefaultVibrator();
+            }
+            if (v == null) v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        } catch (Throwable ignored) {}
+        boolean has = v != null && v.hasVibrator(), ok = false;
+        long[] pat = {0, 70, 90, 70};
+        if (has) {
+            try {
+                AudioAttributes aa = new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+                if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createWaveform(pat, -1), aa);
+                else v.vibrate(pat, -1, aa);
+                ok = true;
+            } catch (Throwable ignored) {}
+            if (!ok) {
+                try {
+                    if (Build.VERSION.SDK_INT >= 26) v.vibrate(VibrationEffect.createWaveform(pat, -1));
+                    else v.vibrate(pat, -1);
+                    ok = true;
+                } catch (Throwable ignored) {}
+            }
+        }
+        if (!ok) {
+            try { w.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING); }
+            catch (Throwable ignored) {}
+        }
+        if (diag) {
+            String mode = "عادي";
+            try {
+                int rm = ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).getRingerMode();
+                mode = rm == AudioManager.RINGER_MODE_SILENT ? "صامت" : rm == AudioManager.RINGER_MODE_VIBRATE ? "اهتزاز" : "عادي";
+            } catch (Throwable ignored) {}
+            Toast.makeText(this, "الاهتزاز: " + (has ? (ok ? "تم الإرسال للمحرك" : "فشل الإرسال") : "غير مدعوم")
+                    + " · وضع الصوت: " + mode, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void requestNotif(boolean say) {

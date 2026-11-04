@@ -23,6 +23,7 @@ public class WidgetProvider extends AppWidgetProvider {
     static final int[] IDX = {0, 2, 3, 4, 5};
     static final int[] NID = {R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4};
     static final int[] TID = {R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4};
+    static final int[] CID = {R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4};
 
     @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { refresh(c); }
     @Override public void onEnabled(Context c) { refresh(c); }
@@ -53,18 +54,21 @@ public class WidgetProvider extends AppWidgetProvider {
             String label, name;
             long target;
             int hi;
+            boolean iqamaMode = false;
+            int nIdx = -1;
             if (lastI >= 0 && iq > 0 && now < lastT + iq * 60000L) {
-                label = "الإقامة بعد"; name = Scheduler.NAMES[lastI]; target = lastT + iq * 60000L; hi = lastI;
+                iqamaMode = true; label = "المتبقي للإقامة"; name = Scheduler.NAMES[lastI]; target = lastT + iq * 60000L; hi = lastI;
             } else {
                 long nt = Long.MAX_VALUE;
                 int ni = 0;
                 for (long[] r : days) for (int i = 0; i < 6; i++) if (r[i] > now && r[i] < nt) { nt = r[i]; ni = i; }
-                label = "الصلاة القادمة"; name = Scheduler.NAMES[ni]; target = nt; hi = ni == 1 ? 2 : ni;
+                nIdx = ni; label = ni == 1 ? "المتبقي للشروق" : "المتبقي للأذان"; name = Scheduler.NAMES[ni]; target = nt; hi = ni == 1 ? 2 : ni;
             }
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
             rv.setTextViewText(R.id.wcity, o.optString("cn", "حمص"));
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
+            rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
             if (Build.VERSION.SDK_INT >= 24) {
                 rv.setChronometer(R.id.wcd, SystemClock.elapsedRealtime() + (target - now), null, true);
                 rv.setChronometerCountDown(R.id.wcd, true);
@@ -81,6 +85,7 @@ public class WidgetProvider extends AppWidgetProvider {
                 rv.setTextViewText(TID[j], Scheduler.fmt(days[1][i]));
                 rv.setTextColor(NID[j], i == hi ? GOLD : MUTED);
                 rv.setTextColor(TID[j], i == hi ? GOLD : WHITE);
+                rv.setInt(CID[j], "setBackgroundResource", i == hi ? R.drawable.chip_on : 0);
             }
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             wm.updateAppWidget(ids, rv);
