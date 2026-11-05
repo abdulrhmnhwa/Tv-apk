@@ -89,6 +89,13 @@ select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7r
 .seg button{background:none;border:0;padding:.4rem .8rem;font-size:.85rem;color:var(--mut)}
 .seg button.on{background:var(--gold);color:#04170f;font-weight:700}
 .note{font-size:.78rem;color:var(--mut);line-height:1.7;margin-top:.5rem}
+.lnk{color:var(--gold);text-decoration:underline;padding:.3rem .5rem;font-weight:700;font-size:.9rem}
+#spm{position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:1rem}
+#spm.on{display:flex}
+.spc{position:relative;background:linear-gradient(160deg,#0f4d36,#04170f);border:1px solid var(--gold);border-radius:1.2rem;padding:1.2rem 1rem 1rem;max-width:23rem;width:100%;text-align:center;max-height:94vh;overflow:auto}
+.spc img{width:100%;border-radius:.9rem;display:block;margin:.5rem auto .8rem}
+.spc p{font-size:1.1rem;line-height:1.9;color:var(--w)}
+.spx{position:absolute;top:.3rem;left:.5rem;background:none;border:0;color:var(--mut);font-size:1.8rem;line-height:1;padding:.3rem .6rem}
 /* nav */
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;height:4.1rem;background:rgba(4,23,15,.97);border-top:1px solid rgba(214,178,94,.35)}
 nav button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05rem;font-size:.78rem}
@@ -158,10 +165,11 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🌹🤲</div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.4<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🌹🤲 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
+<div id="spm"><div class="spc"><button class="spx" id="spx">×</button><img src="support.jpg" alt="QR"><p>إذا أعجبك التطبيق يمكنك دعمي لأستمر 🌹 .. وشكراً لك من القلب ♥️</p></div></div>
 <nav>
   <button class="on" data-t="0"><b>🕌</b>الرئيسية</button>
   <button data-t="1"><b>⛅</b>الطقس</button>
@@ -320,7 +328,10 @@ $("wr").onclick=weather;
 /* ---------- التنقل ---------- */
 function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
-window.goBack=function(){if(cur!==0){show(0);return true}return false};
+window.goBack=function(){if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+$("sup").onclick=function(){$("spm").className="on"};
+$("spx").onclick=function(){$("spm").className=""};
+$("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
 saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
