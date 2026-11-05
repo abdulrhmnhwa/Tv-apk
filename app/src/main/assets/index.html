@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>مواقيت حمص</title>
+<title>مواقيت الصلاة سوريا</title>
 <style>
 :root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -44,7 +44,7 @@ button,select{font:inherit;color:inherit}
 .p+.p{margin-top:.15rem}
 .p.on{background:var(--g);border:1px solid var(--gold)}
 .p .nm small{font-size:.72rem;color:var(--mut);margin-inline-start:.4rem}
-.p .nm em{font-style:normal;font-size:.72rem;background:rgba(214,178,94,.2);color:var(--gold);border-radius:.5rem;padding:.05rem .4rem;margin-inline-start:.4rem;direction:ltr;display:inline-block}
+.p .nm em b{font-weight:700}.p .nm em{font-style:normal;font-weight:400;font-size:.72rem;background:rgba(214,178,94,.2);color:var(--gold);border-radius:.5rem;padding:.05rem .4rem;margin-inline-start:.4rem;direction:ltr;display:inline-block}
 .rt{display:flex;align-items:center;gap:.7rem}
 .tm{display:flex;align-items:baseline;gap:.45rem;direction:ltr;font-weight:700}
 .tm i{font-style:normal;font-weight:400;font-size:.8rem;color:var(--mut)}
@@ -83,7 +83,7 @@ select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7r
 .sp{display:flex;align-items:center;gap:.5rem;direction:ltr}
 .sp button{width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--gold);background:rgba(214,178,94,.14);color:var(--gold);font-size:1.4rem;line-height:1}
 .sp button:active{background:rgba(214,178,94,.4)}
-.sp span{min-width:4rem;display:flex;justify-content:center;align-items:baseline;gap:.3rem;font-weight:700;font-size:1.1rem}.sp span i{font-style:normal;font-weight:400;font-size:.8rem;color:var(--mut)}
+.sp span{min-width:4rem;display:flex;justify-content:center;align-items:baseline;gap:.3rem;font-weight:700;font-size:1.1rem}.sp span i{font-style:normal;font-weight:700;font-size:.9rem;color:var(--mut)}
 .sp span.z{color:var(--mut);font-weight:400}
 .seg{display:flex;border:1px solid rgba(214,178,94,.5);border-radius:.7rem;overflow:hidden}
 .seg button{background:none;border:0;padding:.4rem .8rem;font-size:.85rem;color:var(--mut)}
@@ -158,7 +158,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت حمص · النسخة 1.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹</div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🌹🤲</div>
 </section>
 
 </div>
@@ -178,51 +178,10 @@ var MON=["كانون الثاني","شباط","آذار","نيسان","أيار"
 var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
 var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
 var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
-var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28",
-"«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6",
-"«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3",
-"«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152",
-"«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114",
-"«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153",
-"«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156",
-"«تبسّمك في وجه أخيك صدقة» — حديث شريف",
-"«الكلمة الطيبة صدقة» — متفق عليه",
-"سبحان الله وبحمده، سبحان الله العظيم",
-"لا حول ولا قوة إلا بالله، كنز من كنوز الجنة",
-"اللهم صلِّ وسلِّم على نبينا محمد",
-"«وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ» — الحديد 4",
-"«وَإِذَا سَأَلَكَ عِبَادِي عَنِّي فَإِنِّي قَرِيبٌ» — البقرة 186",
-"«إِنَّ رَحْمَتَ اللَّهِ قَرِيبٌ مِّنَ الْمُحْسِنِينَ» — الأعراف 56",
-"«وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا» — الطلاق 2",
-"«وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَى» — الضحى 5",
-"«مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَى» — الضحى 3",
-"«لا تَحْزَنْ إِنَّ اللَّهَ مَعَنَا» — التوبة 40",
-"«وَقُل لِّعِبَادِي يَقُولُوا الَّتِي هِيَ أَحْسَنُ» — الإسراء 53",
-"«إِنَّ رَبِّي لَطِيفٌ لِّمَا يَشَاءُ» — يوسف 100",
-"«وَأُفَوِّضُ أَمْرِي إِلَى اللَّهِ ۚ إِنَّ اللَّهَ بَصِيرٌ بِالْعِبَادِ» — غافر 44",
-"«وَاللَّهُ يَعْلَمُ وَأَنتُمْ لا تَعْلَمُونَ» — البقرة 216",
-"«قُلِ اللَّهُ يُنَجِّيكُم مِّنْهَا وَمِن كُلِّ كَرْبٍ» — الأنعام 64",
-"«وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا» — الطور 48",
-"«فَسَيَكْفِيكَهُمُ اللَّهُ ۚ وَهُوَ السَّمِيعُ الْعَلِيمُ» — البقرة 137",
-"«إِنَّ اللَّهَ يَرْزُقُ مَن يَشَاءُ بِغَيْرِ حِسَابٍ» — آل عمران 37",
-"«وَمَا كَانَ رَبُّكَ نَسِيًّا» — مريم 64",
-"«إِنَّ رَبِّي قَرِيبٌ مُّجِيبٌ» — هود 61",
-"«فَبَشِّرْ عِبَادِ» — الزمر 17",
-"«وَهُوَ الْغَفُورُ الْوَدُودُ» — البروج 14",
-"«سَيَجْعَلُ اللَّهُ بَعْدَ عُسْرٍ يُسْرًا» — الطلاق 7",
-"«خيرُكم من تعلَّمَ القرآنَ وعلَّمَهُ» — صحيح البخاري",
-"«اتَّقِ اللَّهَ حَيْثُمَا كُنْتَ، وَأَتْبِعِ السَّيِّئَةَ الْحَسَنَةَ تَمْحُهَا، وَخَالِقِ النَّاسَ بِخُلُقٍ حَسَنٍ» — صحيح الترمذي",
-"«احْفَظِ اللَّهَ يَحْفَظْكَ» — صحيح الترمذي",
-"«الدُّعَاءُ هُوَ الْعِبَادَةُ» — صحيح الترمذي",
-"«المُؤْمِنُ المِرْآةُ لِلْمُؤْمِنِ» — صحيح الأدب المفرد",
-"«مَنْ صَلَّى عَلَيَّ صَلَاةً صَلَّى اللَّهُ عَلَيْهِ بِهَا عَشْرًا» — صحيح مسلم",
-"«يَسِّرُوا وَلا تُعَسِّرُوا، وَبَشِّرُوا وَلا تُنَفِّرُوا» — صحيح البخاري",
-"«مَنْ لا يَرْحَمِ النَّاسَ لا يَرْحَمْهُ اللَّهُ» — صحيح مسلم",
-"«لا يَرْحَمُ اللَّهُ مَنْ لا يَرْحَمُ النَّاسَ» — صحيح البخاري",
-"«الطُّهُورُ شَطْرُ الإِيمَانِ» — صحيح مسلم"];
+var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","«تبسّمك في وجه أخيك صدقة» — حديث شريف","«الكلمة الطيبة صدقة» — متفق عليه","سبحان الله وبحمده، سبحان الله العظيم","لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","اللهم صلِّ وسلِّم على نبينا محمد"];
 var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🌹🤲"];
 var EV={"1-1":"رأس السنة الهجرية","1-10":"يوم عاشوراء","3-12":"المولد النبوي","7-27":"الإسراء والمعراج","9-1":"أول شهر رمضان","10-1":"عيد الفطر","12-9":"يوم عرفة","12-10":"عيد الأضحى"};
-var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",6:"إدلب الخضراء",4:"حماة الأبيّة",2:"حلب الشهباء"};
+var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:"الرقة عروس الفرات",7:"دير الزور , دير العز والكرامة",6:"إدلب الخضراء",4:"حماة الأبيّة",1:"دمشق عاصمة الأمويين",2:"حلب الشهباء"};
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
@@ -262,15 +221,15 @@ function daily(n){
  isRam=!!(h&&h.month===9);fri=n.getUTCDay()===5;qb=qibla();
  $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(h?"<br>"+h.day+" "+HM[h.month-1]+" "+h.year+" هـ":"");
  var mo=moon();$("mn").textContent=mo.e+" "+mo.p+"%";$("qbc").textContent=qb+"°";
- var doy=Math.floor((Date.UTC(Y,M,Dd)-Date.UTC(Y,0,0))/864e5);$("vs").textContent=VERSES[doy%VERSES.length]+(fri?"\n\n🕌 جمعة مباركة، لا تنسَ سورة الكهف والصلاة على النبي ﷺ":"");$("vs").style.whiteSpace="pre-line";
+ var doy=Math.floor((Date.UTC(Y,M,Dd)-Date.UTC(Y,0,0))/864e5);$("vs").style.whiteSpace="pre-line";lastV=-1;
  fxi=doy%FACTS.length;$("fx").textContent=FACTS[fxi];
  $("qtx").textContent=qb+"° من الشمال";
  events(n);sunmoon(n);draw();
 }
-var fxi=0;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
+var fxi=0,lastV=-1;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
 function renderList(T,ni){
  var s="";for(var i=0;i<6;i++){var a=cfg.adj[i],sm=(isRam&&i===0)?"الإمساك":(isRam&&i===4)?"الإفطار":"";
-  s+='<div class="p'+(i===ni?' on':'')+'"><span class="nm">'+nm(i)+(sm?'<small>'+sm+'</small>':'')+(a?'<em>'+(a>0?"+":"")+a+'د</em>':'')+'</span><span class="rt"><span class="tm">'+f(T[i])+'</span>'+
+  s+='<div class="p'+(i===ni?' on':'')+'"><span class="nm">'+nm(i)+(sm?'<small>'+sm+'</small>':'')+(a?'<em>'+(a>0?"+":"")+a+'<b>د</b></em>':'')+'</span><span class="rt"><span class="tm">'+f(T[i])+'</span>'+
   (i===1?'<span style="width:2rem"></span>':'<button class="bl'+(cfg.on[i]?'':' off')+'" data-bell="'+i+'">🔔</button>')+'</span></div>'}
  $("pl").innerHTML=s}
 function tick(){
@@ -290,6 +249,7 @@ function tick(){
  var fr=Math.min(1,Math.max(0,(nh-pv)/(tt-pv)));$("pg").setAttribute("stroke-dashoffset",(565.5*(1-fr)).toFixed(1));
  var key=ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+cfg.iq.join()+"|"+dk;
  if(key!==lastKey){lastKey=key;renderList(T,ni);renderAdj(T);renderIq()}
+ var vi=Math.floor(Date.now()/12000)%VERSES.length;if(vi!==lastV){lastV=vi;$("vs").textContent=VERSES[vi]+(fri?"\n\n🕌 جمعة مباركة، لا تنسَ سورة الكهف والصلاة على النبي ﷺ":"")}
 }
 /* ---------- الطقس ---------- */
 function wc(c){if(c===0)return["صافٍ","☀️"];if(c<3)return["غائم جزئياً","⛅"];if(c===3)return["غائم","☁️"];if(c<50)return["ضباب","🌫️"];if(c<68)return["مطر","🌧️"];if(c<78)return["ثلوج","❄️"];if(c<83)return["زخات مطر","🌦️"];return["عاصفة رعدية","⛈️"]}

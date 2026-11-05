@@ -15,8 +15,8 @@
     </queries>
 
     <application
-        android:label="مواقيت حمص"
-        android:icon="@drawable/ic_launcher"
+        android:label="مواقيت الصلاة سوريا"
+        android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
         android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
@@ -41,7 +41,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".WidgetProvider" android:exported="true" android:label="مواقيت حمص">
+        <receiver android:name=".WidgetProvider" android:exported="true" android:label="مواقيت الصلاة سوريا">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
