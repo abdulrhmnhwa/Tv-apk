@@ -47,7 +47,7 @@ public class Scheduler {
         return Math.acos((Math.sin(a * R) - Math.sin(LAT * R) * Math.sin(dec)) / (Math.cos(LAT * R) * Math.cos(dec))) / R / 15;
     }
 
-    static long next(long now) {
+    static long next(long now, double[] adj) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         c.setTimeInMillis(now + TZ * 3600000L);
         for (int add = 0; add < 3; add++) {
@@ -60,7 +60,7 @@ public class Scheduler {
             mid.set(y, m, d, 0, 0, 0);
             long base = mid.getTimeInMillis() - TZ * 3600000L;
             for (int i : new int[]{0, 2, 3, 4, 5}) {
-                long tr = base + (long) (t[i] * 3600000);
+                long tr = base + (long) ((t[i] * 60 + adj[i]) * 60000);
                 if (tr > now + 20000) { idx = i; return tr; }
             }
         }
@@ -69,11 +69,16 @@ public class Scheduler {
 
     public static void schedule(Context c) {
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
+        long t = next(System.currentTimeMillis(), Prefs.adj(c));
         Intent i = new Intent(c, AdhanReceiver.class).setAction(ACT);
+        i.putExtra("t", t);
+        i.putExtra("i", idx);
         PendingIntent pi = PendingIntent.getBroadcast(c, 0, i, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        if (!Prefs.on(c)) { am.cancel(pi); return; }
-        long t = next(System.currentTimeMillis());
-        if (t < 0) return;
+        if (!Prefs.on(c) || t < 0) {
+            am.cancel(pi);
+            c.getSharedPreferences("p", 0).edit().putLong("next", 0).apply();
+            return;
+        }
         c.getSharedPreferences("p", 0).edit().putLong("next", t).putString("nn", NAMES[idx]).apply();
         try {
             PendingIntent show = PendingIntent.getActivity(c, 1, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);

@@ -3,28 +3,22 @@ package sy.homs.dash;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.PowerManager;
 
 public class AdhanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context c, Intent i) {
-        if (Scheduler.ACT.equals(i.getAction()) && Prefs.on(c)) {
-            c.getSharedPreferences("p", 0).edit().putLong("last", System.currentTimeMillis()).apply();
-            try {
-                PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
-                PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-                        | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE, "homs:adhan");
-                wl.acquire(30000);
-            } catch (Exception ignored) {}
-            if (MainActivity.cur != null) {
-                MainActivity.wakeNow();
-            } else {
-                try {
-                    c.startActivity(new Intent(c, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                } catch (Exception ignored) {}
+        String a = i.getAction();
+        if (Intent.ACTION_BOOT_COMPLETED.equals(a) || Intent.ACTION_MY_PACKAGE_REPLACED.equals(a)
+                || "android.intent.action.QUICKBOOT_POWERON".equals(a)) {
+            KeepAliveService.start(c);
+        }
+        if (Scheduler.ACT.equals(a) && Prefs.on(c)) {
+            long t = i.getLongExtra("t", 0);
+            if (Fire.claim(c, t)) {
+                final PendingResult pr = goAsync();
+                Fire.go(c.getApplicationContext(), pr::finish);
             }
-            final PendingResult pr = goAsync();
-            Takbeer.play(c.getApplicationContext(), pr::finish);
+            KeepAliveService.start(c);
         }
         Scheduler.schedule(c);
     }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -17,6 +18,14 @@ public class MainActivity extends Activity {
     private WebView w;
     private View black;
     private boolean sleeping;
+    private volatile boolean settingsOpen;
+
+    public class Bridge {
+        @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
+        @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); }
+        @JavascriptInterface public void setSettings(boolean o) { settingsOpen = o; }
+        @JavascriptInterface public void setAdhan(boolean o) { Prefs.set(MainActivity.this, o); Scheduler.schedule(MainActivity.this); runOnUiThread(() -> push()); }
+    }
 
     @Override
     protected void onCreate(Bundle b) {
@@ -36,6 +45,7 @@ public class MainActivity extends Activity {
         s.setAllowFileAccess(true);
         s.setAllowUniversalAccessFromFileURLs(true);
         s.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        w.addJavascriptInterface(new Bridge(), "App");
         w.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView v, String u) { push(); }
         });
@@ -51,6 +61,7 @@ public class MainActivity extends Activity {
 
         cur = this;
         Scheduler.schedule(this);
+        KeepAliveService.start(this);
         w.loadUrl("file:///android_asset/index.html");
     }
 
@@ -94,10 +105,25 @@ public class MainActivity extends Activity {
             if (e.getAction() == KeyEvent.ACTION_DOWN) wake();
             return true;
         }
+        int kc = e.getKeyCode();
+        if (settingsOpen) {
+            String k = kc == KeyEvent.KEYCODE_DPAD_UP ? "up" : kc == KeyEvent.KEYCODE_DPAD_DOWN ? "down"
+                    : kc == KeyEvent.KEYCODE_DPAD_LEFT ? "left" : kc == KeyEvent.KEYCODE_DPAD_RIGHT ? "right"
+                    : (kc == KeyEvent.KEYCODE_DPAD_CENTER || kc == KeyEvent.KEYCODE_ENTER) ? "ok"
+                    : kc == KeyEvent.KEYCODE_BACK ? "back" : null;
+            if (k != null) {
+                if (e.getAction() == KeyEvent.ACTION_DOWN) w.evaluateJavascript("window.rk&&window.rk('" + k + "')", null);
+                return true;
+            }
+            return super.dispatchKeyEvent(e);
+        }
         if (e.getAction() == KeyEvent.ACTION_DOWN && e.getRepeatCount() == 0) {
-            switch (e.getKeyCode()) {
+            switch (kc) {
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                 case KeyEvent.KEYCODE_ENTER:
+                    w.evaluateJavascript("window.openSettings&&window.openSettings()", null);
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_LEFT:
                     sleep();
                     return true;
                 case KeyEvent.KEYCODE_DPAD_UP:
@@ -113,6 +139,10 @@ public class MainActivity extends Activity {
         }
         return super.dispatchKeyEvent(e);
     }
+
+    /** زر الرجوع لا يغلق التطبيق، بل يتركه يعمل بالخلفية */
+    @Override
+    public void onBackPressed() { moveTaskToBack(true); }
 
     @Override
     protected void onNewIntent(android.content.Intent i) {

@@ -2,14 +2,14 @@ plugins {
     id 'com.android.application'
 }
 android {
-    namespace 'sy.homs.mobile'
+    namespace 'sy.homs.dash'
     compileSdk 34
     defaultConfig {
-        applicationId "sy.homs.mobile"
+        applicationId "sy.homs.dash"
         minSdk 21
         targetSdk 34
-        versionCode 8
-        versionName "1.4"
+        versionCode 14
+        versionName "3.2"
     }
     buildTypes {
         release { minifyEnabled false }
