@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حمص عاصمة الثورة</title>
+<style>
+:root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:min(1.1vw,1.95vh);height:100%}
+body{height:100%;overflow:hidden;display:flex;flex-direction:column;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:radial-gradient(rgba(214,178,94,.09) 1px,transparent 1px) 0 0/2vw 2vw,linear-gradient(160deg,#0b3b2b,#04170f)}
+#dim{position:fixed;top:0;left:0;right:0;bottom:0;background:#000;opacity:0;pointer-events:none;z-index:9}
+header{position:relative;height:3.2rem;flex:none}
+#nw{position:absolute;left:1.8rem;top:.8rem;width:1.8rem;height:1.8rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+#nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
+#ad{position:absolute;left:4.4rem;top:.7rem;font-size:1.6rem;line-height:1.9rem}
+#eg{position:absolute;left:50%;top:.3rem;height:2.7rem;width:auto;transform:translateX(-50%);opacity:.6}
+main{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:1.3rem;padding:.2rem 1.8rem 1.8rem}
+.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border:1px solid rgba(214,178,94,.42);border-radius:1.3rem;padding:1.3rem 1.5rem;display:flex;flex-direction:column;min-height:0}
+.card::before{content:"";position:absolute;top:0;bottom:0;left:0;right:0;background:center/auto 100% no-repeat;pointer-events:none}
+.card>*{position:relative}
+.c2{order:1}.c1{order:2}.c3{order:3}
+.c1::before{background-image:url(tower.webp);background-position:center bottom;opacity:.13}
+.c2::before{background-image:url(map.webp);opacity:.11}
+.c3::before{background-image:url(mosque.webp);background-size:contain;opacity:.13}
+.c1{justify-content:space-between}
+.city{text-align:center;font-size:2.3rem;color:var(--gold);font-weight:700}
+.clock{display:flex;justify-content:center;align-items:center;gap:1rem;direction:ltr}
+.ap{display:flex;flex-direction:column;align-items:center;line-height:1.15}
+.ap i{font-style:normal;font-weight:700;font-size:2.4rem;color:var(--gold)}
+.ap em{font-style:normal;font-size:1.9rem;color:var(--mut)}
+#hm{font-size:8.4rem;line-height:1;font-weight:700}
+.dates{text-align:center;font-size:1.8rem;line-height:1.65}.dates span{color:var(--gold)}
+.info{text-align:center;font-size:1.5rem;line-height:1.55;min-height:6.2rem;display:flex;align-items:center;justify-content:center;padding:.7rem 1rem;border-top:1px solid rgba(214,178,94,.3);color:var(--w);opacity:.9}
+.info.v{color:var(--gold);font-size:1.65rem}
+.c2{align-items:center;justify-content:space-around;text-align:center}
+.c2 .tag{font-size:1.2rem;color:var(--gold)}
+.c2 .ic{font-size:5rem;line-height:1.1}
+.c2 .t{font-size:6.8rem;font-weight:700;line-height:1;direction:ltr}
+.c2 .d{font-size:2.2rem}
+.c2 .m{font-size:1.35rem;color:var(--mut);line-height:1.7}
+#fc{display:none;width:100%;justify-content:space-between;border-top:1px solid rgba(214,178,94,.3);padding-top:.8rem}
+.fc{display:flex;flex-direction:column;align-items:center;gap:.1rem;font-size:1.2rem;flex:1}
+.fc u{text-decoration:none;font-size:2rem;line-height:1.3}
+.fc b{font-size:1.4rem}.fc s{text-decoration:none;color:var(--mut);font-size:1.2rem}
+.moon{font-size:1.3rem;color:var(--mut)}
+.next{text-align:center;padding-bottom:.8rem;border-bottom:1px solid rgba(214,178,94,.35);margin-bottom:.5rem;min-height:5.6rem}
+.next b{display:block;font-size:2.5rem;color:var(--gold)}
+.next span{font-size:1.3rem;color:var(--mut)}.next em{font-style:normal;font-size:2.4rem;direction:ltr;display:inline-block}
+#pl{flex:1;display:flex;flex-direction:column;justify-content:space-around;min-height:0}
+.p{display:flex;justify-content:space-between;align-items:center;font-size:2.3rem;padding:.25rem 1rem;border-radius:.7rem}
+.p small{font-size:1.1rem;color:var(--mut);margin-inline-start:.6rem}
+.p.on{background:var(--g);border:1px solid var(--gold)}
+.p.on span:first-child:before{content:"◄ ";color:var(--gold)}
+.tm{display:flex;align-items:baseline;gap:.7rem}
+.tm i{font-style:normal;font-weight:400;font-size:1.3rem;color:var(--mut)}
+.tm b{font-weight:700}
+.src{text-align:center;font-size:.95rem;color:var(--mut);opacity:.7;margin-top:.4rem}
+#hint{position:fixed;left:0;right:0;bottom:.4rem;text-align:center;font-size:1rem;color:var(--mut);opacity:.65}
+.p small b{font-weight:700}
+#set{position:fixed;top:0;left:0;right:0;bottom:0;z-index:20;background:rgba(2,12,8,.93);display:none;align-items:center;justify-content:center}
+#set.on{display:flex}
+.sc{width:60rem;max-width:94vw;background:linear-gradient(160deg,#0f4d36,#04170f);border:1px solid var(--gold);border-radius:1.4rem;padding:1.4rem 2rem}
+.sc h2{color:var(--gold);font-size:2.3rem;text-align:center;margin-bottom:.8rem}
+.sx{display:flex;justify-content:space-between;align-items:center;font-size:1.9rem;padding:.3rem 1.2rem;border-radius:.8rem;border:2px solid transparent}
+.sx.f{border-color:var(--gold);background:rgba(214,178,94,.16)}
+.sx small{margin-inline-start:.8rem;font-size:1.2rem;color:var(--mut)}
+.sv{display:flex;align-items:center;gap:1.2rem;direction:ltr;font-size:2.1rem;font-weight:700}
+.sv i{font-style:normal;color:var(--gold);font-size:1.6rem}
+.sv span{min-width:7rem;text-align:center}
+.sv em{font-style:normal;font-size:1.3rem;font-weight:700;color:var(--mut);margin-inline-start:.4rem}
+.sh{text-align:center;color:var(--mut);font-size:1.15rem;margin-top:.8rem}
+.bd{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.sv b{direction:ltr;unicode-bidi:isolate;display:inline-block}
+</style>
+</head>
+<body>
+<div id="dim"></div>
+<header>
+<svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg>
+<span id="ad">🔔</span>
+<img id="eg" src="eagle.png" alt="">
+</header>
+<main>
+<section class="card c2">
+  <div class="tag" id="wtag"></div>
+  <div class="ic" id="wi"></div>
+  <div class="t" id="wt">--°</div>
+  <div class="d" id="wd"></div>
+  <div class="m" id="wm"></div>
+  <div id="fc"></div>
+  <div class="moon" id="moon"></div>
+</section>
+<section class="card c1">
+  <div class="city">حمص عاصمة الثورة</div>
+  <div class="clock"><div class="ap"><i id="apm"></i><em id="sec"></em></div><b id="hm">--:--</b></div>
+  <div class="dates" id="dates"></div>
+  <div class="info" id="info"></div>
+</section>
+<section class="card c3">
+  <div class="next"><b id="nn">--</b><div id="sb"><span>بعد </span><em id="nc">--</em></div></div>
+  <div id="pl"></div>
+  <div class="src">الأوقات محسوبة لمدينة حمص (الفجر 18° · العشاء 17°)</div>
+</section>
+</main>
+<div id="set"><div class="sc"><h2>تعديل دقائق الأذان</h2><div id="sl2"></div><div class="sh">▲▼ تنقّل &nbsp;·&nbsp; ◄ ► تعديل الدقائق &nbsp;·&nbsp; OK على «حفظ وإغلاق» &nbsp;·&nbsp; Back للإغلاق</div></div></div>
+<div id="hint">OK: تعديل دقائق الأذان &nbsp;·&nbsp; ◄: إطفاء الشاشة &nbsp;·&nbsp; ▲: تشغيل/إيقاف التكبير &nbsp;·&nbsp; ▼: تجربة الصوت</div>
+<script>
+(function(){
+var LAT=34.7324,LNG=36.7137,TZ=3,R=Math.PI/180;
+var $=function(i){return document.getElementById(i)};
+var MON=["كانون الثاني","شباط","آذار","نيسان","أيار","حزيران","تموز","آب","أيلول","تشرين الأول","تشرين الثاني","كانون الأول"];
+var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت"];
+var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
+var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
+var CLI=[[12,3],[14,4],[18,7],[24,11],[29,15],[33,19],[35,21],[36,22],[33,19],[28,14],[20,9],[14,5]];
+var FACTS=["💡 حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","💡 تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","💡 ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","💡 كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","💡 قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","💡 جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","💡 كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","💡 محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","💡 تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","💡 بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","💡 «فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","💡 تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","💡 قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","💡 التوقيت في سوريا ثابت على GMT+3 طوال العام","💡 هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲"];
+var VERSES=["📖 «أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","📖 «إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","📖 «وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","📖 «فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","📖 «وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","📖 «إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","📖 «وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","📖 «تبسّمك في وجه أخيك صدقة» — حديث شريف","📖 «الكلمة الطيبة صدقة» — متفق عليه","📖 سبحان الله وبحمده، سبحان الله العظيم","📖 لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","📖 اللهم صلِّ وسلِّم على نبينا محمد"];
+function pt(y,m,d){
+ var D=Date.UTC(y,m,d,12)/864e5+2440587.5-2451545;
+ var g=(357.529+.98560028*D)%360*R,q=((280.459+.98564736*D)%360+360)%360;
+ var L=(q+1.915*Math.sin(g)+.02*Math.sin(2*g))*R,e=(23.439-4e-7*D)*R;
+ var dec=Math.asin(Math.sin(e)*Math.sin(L));
+ var ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))/R/15;ra=(ra+24)%24;
+ var eq=q/15-ra;eq=((eq+12)%24+24)%24-12;
+ var noon=12+TZ-LNG/15-eq+.017;
+ function h(a){return Math.acos((Math.sin(a*R)-Math.sin(LAT*R)*Math.sin(dec))/(Math.cos(LAT*R)*Math.cos(dec)))/R/15}
+ var asr=Math.atan(1/(1+Math.tan(Math.abs(LAT*R-dec))))/R;
+ return [noon-h(-18),noon-h(-.833),noon,noon+h(asr),noon+h(-.833),noon+h(-17)];
+}
+function PT(y,m,d){return pt(y,m,d).map(function(v,i){return v+adj[i]/60})}
+function f2(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60;return(H%12||12)+":"+z(M)+(H>=12?" م":" ص")}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+(M<10?"0":"")+M+"</b>"}
+function z(n){return n<10?"0"+n:n}
+var HF;try{HF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"})}catch(e){}
+function hj(d){if(!HF)return null;var o={};try{HF.formatToParts(d).forEach(function(p){o[p.type]=+p.value})}catch(e){return null}return o.month?o:null}
+function ramadan(n){var h=hj(n);if(!h)return"";if(h.month===9)return"🌙 اليوم "+h.day+" من شهر رمضان المبارك";
+ for(var k=1;k<=400;k++){var t=hj(new Date(n.getTime()+k*864e5));if(t&&t.month===9&&t.day===1)return"🌙 متبقٍ نحو "+k+" يوماً على شهر رمضان (تقريباً)"}return""}
+function moon(){var jd=Date.now()/864e5+2440587.5,ph=((jd-2451550.1)/29.530588853)%1;if(ph<0)ph+=1;
+ var i=Math.floor(ph*8+.5)%8;return["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"][i]+" "+["محاق","هلال متزايد","تربيع أول","أحدب متزايد","بدر","أحدب متناقص","تربيع أخير","هلال متناقص"][i]+" · "+Math.round((1-Math.cos(2*Math.PI*ph))/2*100)+"%"}
+var k1=21.4225*R,k2=39.8262*R,p1=LAT*R,dl=k2-LNG*R;
+var qb=Math.round((Math.atan2(Math.sin(dl)*Math.cos(k1),Math.cos(p1)*Math.sin(k1)-Math.sin(p1)*Math.cos(k1)*Math.cos(dl))/R+360)%360);
+var adj=[0,0,0,0,0,0],adhanOn=true;
+try{var c0=JSON.parse(window.App?App.get():(localStorage.getItem("cfg")||"{}"));if(c0.adj&&c0.adj.length===6)adj=c0.adj}catch(e){}
+var key="",lastT="",all=FACTS.concat(VERSES),isRam=false,fri=false,dimV="";
+function nm(i,full){var s=(i===2&&fri)?"الجمعة":NAMES[i];if(full&&isRam){if(i===0)s+=" · الإمساك";if(i===4)s+=" · الإفطار"}return s}
+function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
+window.addEventListener("online",net);window.addEventListener("offline",net);net();
+window.setAdhan=function(o){adhanOn=!!o;$("ad").textContent=o?"🔔":"🔕"};
+setTimeout(function(){$("hint").style.display="none"},40000);
+function daily(n,T){
+ var h=hj(n),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate();
+ isRam=!!(h&&h.month===9);fri=n.getUTCDay()===5;
+ $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(h?"<br>"+h.day+" "+HM[h.month-1]+" "+h.year+" هـ":"");
+ var dayLen=T[4]-T[1],dh=Math.floor(dayLen),dm=Math.round((dayLen-dh)*60),dyn=[];
+ if(fri)dyn.push("🕌 جمعة مباركة، لا تنسَ قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ");
+ var r=ramadan(n);if(r)dyn.push(r);
+ dyn.push("🧭 اتجاه القبلة من حمص: "+qb+"° من الشمال");
+ dyn.push("☀️ طول النهار اليوم: "+dh+" ساعة و"+dm+" دقيقة");
+ var a=[FACTS,VERSES,dyn],o=[];for(var i=0;i<16;i++)a.forEach(function(x){if(x[i])o.push(x[i])});all=o;
+ $("moon").textContent=moon();
+ if(!window.wLive){var c=CLI[M];$("wt").textContent=Math.round((c[0]+c[1])/2)+"°";$("wd").textContent="متوسط شهر "+MON[M];$("wm").textContent="العظمى "+c[0]+"° · الصغرى "+c[1]+"°";$("wi").textContent=c[0]>27?"☀️":c[0]>17?"⛅":"☁️";$("wtag").textContent="معدلات مناخية"}
+}
+function tick(){
+ var n=new Date(Date.now()+TZ*36e5),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate(),H=n.getUTCHours(),Mi=n.getUTCMinutes(),S=n.getUTCSeconds();
+ $("hm").textContent=((H%12)||12)+":"+z(Mi);$("sec").textContent=z(S);$("apm").textContent=H>=12?"م":"ص";
+ var nh=H+Mi/60+S/3600,T=PT(Y,M,Dd),ni=-1,i;
+ for(i=0;i<6;i++){if(T[i]>nh){ni=i;break}}
+ var tt;if(ni<0){ni=0;tt=PT(Y,M,Dd+1)[0]+24}else tt=T[ni];
+ var dk=Y+"-"+M+"-"+Dd;if(dk!==tick.d){tick.d=dk;daily(n,T);key=""}
+ var lp=-1;for(i=5;i>=0;i--){if(i!==1&&T[i]<=nh){lp=i;break}}
+ var since=lp>=0?Math.round((nh-T[lp])*60):999;
+ if(since<10){$("nn").textContent="حان الآن موعد "+nm(lp);$("sb").style.display="none"}
+ else{var rem=Math.max(0,Math.round((tt-nh)*3600)),rh=Math.floor(rem/3600),rm=Math.floor(rem%3600/60),rs=rem%60;
+  $("nn").textContent=nm(ni,1);$("sb").style.display="";$("nc").textContent=z(rh)+":"+z(rm)+":"+z(rs)}
+ var kk=ni+"|"+adj.join();
+ if(kk!==key){key=kk;var s="";for(i=0;i<6;i++){var lb=nm(i),sm="";if(isRam&&i===0)sm="الإمساك";if(isRam&&i===4)sm="الإفطار";
+  s+='<div class="p'+(i===ni?' on':'')+'"><span>'+lb+(sm?'<small>'+sm+'</small>':'')+(adj[i]?'<small class="bd">'+(adj[i]>0?"+":"")+adj[i]+'<b>د</b></small>':'')+'</span><span class="tm" dir="ltr">'+f(T[i])+'</span></div>'}$("pl").innerHTML=s}
+ var dv=((nh>=23||nh<T[0])&&since>=10)?".55":"0";if(dv!==dimV){dimV=dv;$("dim").style.opacity=dv}
+ var fi=Math.floor(Date.now()/12000)%all.length,tx=all[fi];
+ if(tx!==lastT){lastT=tx;var e=$("info");e.textContent=tx;e.className="info"+(tx.indexOf("📖")===0?" v":"")}
+}
+function wc(c){if(c===0)return["صافٍ","☀️"];if(c<3)return["غائم جزئياً","⛅"];if(c===3)return["غائم","☁️"];if(c<50)return["ضباب","🌫️"];if(c<68)return["مطر","🌧️"];if(c<78)return["ثلوج","❄️"];if(c<83)return["زخات مطر","🌦️"];return["عاصفة رعدية","⛈️"]}
+function weather(){
+ try{fetch("https://api.open-meteo.com/v1/forecast?latitude=34.73&longitude=36.71&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=5&timezone=Asia%2FDamascus")
+ .then(function(r){return r.json()}).then(function(j){var c=j.current,d=j.daily,w=wc(c.weather_code);window.wLive=1;
+  $("wt").textContent=Math.round(c.temperature_2m)+"°";$("wd").textContent=w[0];$("wi").textContent=w[1];$("wtag").textContent="الآن في حمص";
+  var rn=d.precipitation_probability_max&&d.precipitation_probability_max[0]!=null?"<br>احتمال المطر اليوم "+d.precipitation_probability_max[0]+"%":"";
+  $("wm").innerHTML="العظمى "+Math.round(d.temperature_2m_max[0])+"° · الصغرى "+Math.round(d.temperature_2m_min[0])+"°<br>رطوبة "+c.relative_humidity_2m+"% · رياح "+Math.round(c.wind_speed_10m)+" كم/س"+rn;
+  var s="";for(var i=1;i<d.time.length&&i<5;i++){var g=wc(d.weather_code[i]),dn=DAY[new Date(d.time[i]+"T12:00:00Z").getUTCDay()];
+   s+='<div class="fc"><span>'+dn+'</span><u>'+g[1]+'</u><b>'+Math.round(d.temperature_2m_max[i])+'°</b><s>'+Math.round(d.temperature_2m_min[i])+'°</s></div>'}
+  $("fc").innerHTML=s;$("fc").style.display="flex"}).catch(function(){})}catch(e){}
+}
+var sOpen=false,sIdx=0,svT;
+function saveAdj(){clearTimeout(svT);svT=setTimeout(function(){var j=JSON.stringify({adj:adj});try{if(window.App)App.save(j);else localStorage.setItem("cfg",j)}catch(e){}},300)}
+function sRender(){var n=new Date(Date.now()+TZ*36e5),T=PT(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),h="",i;
+ for(i=0;i<6;i++)h+='<div class="sx'+(sIdx===i?' f':'')+'"><span>'+NAMES[i]+'<small>'+f2(T[i])+'</small></span><div class="sv"><i>◄</i><span><b>'+(adj[i]>0?"+":"")+adj[i]+'</b><em>د</em></span><i>►</i></div></div>';
+ h+='<div class="sx'+(sIdx===6?' f':'')+'"><span>تكبير الأذان</span><div class="sv"><i>◄</i><span style="font-size:1.7rem">'+(adhanOn?"مفعّل":"متوقف")+'</span><i>►</i></div></div>';
+ h+='<div class="sx'+(sIdx===7?' f':'')+'"><span>إعادة ضبط الدقائق</span><div class="sv"><span style="font-size:1.5rem">OK</span></div></div>';
+ h+='<div class="sx'+(sIdx===8?' f':'')+'"><span>حفظ وإغلاق</span><div class="sv"><span style="font-size:1.5rem">OK</span></div></div>';
+ $("sl2").innerHTML=h}
+function sClose(){sOpen=false;try{if(window.App)App.setSettings(false)}catch(e){}$("set").className="";saveAdj();key=""}
+function togAd(){adhanOn=!adhanOn;try{if(window.App)App.setAdhan(adhanOn)}catch(e){}$("ad").textContent=adhanOn?"🔔":"🔕"}
+window.openSettings=function(){sOpen=true;sIdx=0;try{if(window.App)App.setSettings(true)}catch(e){}$("set").className="on";sRender()};
+window.rk=function(k){if(!sOpen)return;
+ if(k==="back"){sClose();return}
+ if(k==="up")sIdx=(sIdx+8)%9;else if(k==="down")sIdx=(sIdx+1)%9;
+ else if(k==="left"||k==="right"){var d=k==="right"?1:-1;if(sIdx<6){adj[sIdx]=Math.max(-60,Math.min(60,adj[sIdx]+d));saveAdj()}else if(sIdx===6)togAd()}
+ else if(k==="ok"){if(sIdx===6)togAd();else if(sIdx===7){adj=[0,0,0,0,0,0];saveAdj()}else if(sIdx===8){sClose();return}}
+ sRender()};
+if(!window.App)document.addEventListener("keydown",function(e){var m={ArrowUp:"up",ArrowDown:"down",ArrowLeft:"left",ArrowRight:"right",Enter:"ok",Escape:"back"}[e.key];if(!m)return;if(!sOpen&&m==="ok")window.openSettings();else window.rk(m)});
+tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
+})();
+</script>
+</body>
+</html>
