@@ -37,6 +37,7 @@ public class AdhanReceiver extends BroadcastReceiver {
             }
         }
         WidgetProvider.refresh(c);
+        LockNotif.refresh(c);
         Scheduler.schedule(c);
     }
 
