@@ -169,7 +169,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -191,9 +191,9 @@ var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","ا
 var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
 var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
 var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","«تبسّمك في وجه أخيك صدقة» — حديث شريف","«الكلمة الطيبة صدقة» — متفق عليه","سبحان الله وبحمده، سبحان الله العظيم","لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","اللهم صلِّ وسلِّم على نبينا محمد"];
-var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹"];
+var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲"];
 var EV={"1-1":"رأس السنة الهجرية","1-10":"يوم عاشوراء","3-12":"المولد النبوي","7-27":"الإسراء والمعراج","9-1":"أول شهر رمضان","10-1":"عيد الفطر","12-9":"يوم عرفة","12-10":"عيد الأضحى"};
-var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:"الرقة عروس الفرات",7:"دير الزور , دير العز والكرامة",6:"إدلب الخضراء",4:"حماة الأبيّة",1:"دمشق عاصمة الأمويين",2:"حلب الشهباء"};
+var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",6:"إدلب الخضراء",4:"حماة الأبيّة",2:"حلب الشهباء"};
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
@@ -218,7 +218,7 @@ function pt(y,m,d){
 }
 function PT(y,m,d){return pt(y,m,d).map(function(v,i){return v+cfg.adj[i]/60})}
 function z(n){return n<10?"0"+n:n}
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+z(M)+"</b>"}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+z(M)+"</b>"}
 function f2(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60;return(H%12||12)+":"+z(M)+(H>=12?" م":" ص")}
 var HF;try{HF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"})}catch(e){}
 function hj(d){if(!HF)return null;var o={};try{HF.formatToParts(d).forEach(function(p){o[p.type]=+p.value})}catch(e){return null}return o.month?o:null}
@@ -304,10 +304,10 @@ drawTs();
 /* ---------- الإعدادات ---------- */
 var adjBuilt=false;
 function renderAdj(T){
- if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><b>د</b></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
+ if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><i>د</i></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
  for(var j=0;j<6;j++){var a=cfg.adj[j];$("an"+j).textContent=nm(j);$("at"+j).textContent=f2(T[j]);var v=$("av"+j);v.firstChild.textContent=(a>0?"+":"")+a;v.className=a?"":"z"}}
 var IQP=[0,2,3,4,5],iqBuilt=false;
-function renderIq(){if(!iqBuilt){iqBuilt=true;var s="";IQP.forEach(function(i){s+='<div class="sr"><span>'+NAMES[i]+'</span><div class="sp"><button data-iq="'+i+',-1">−</button><span id="qv'+i+'"><b></b><b>د</b></span><button data-iq="'+i+',1">+</button></div></div>'});$("iqs").innerHTML=s}
+function renderIq(){if(!iqBuilt){iqBuilt=true;var s="";IQP.forEach(function(i){s+='<div class="sr"><span>'+NAMES[i]+'</span><div class="sp"><button data-iq="'+i+',-1">−</button><span id="qv'+i+'"><b></b><i>د</i></span><button data-iq="'+i+',1">+</button></div></div>'});$("iqs").innerHTML=s}
  IQP.forEach(function(i){var v=$("qv"+i),a=cfg.iq[i];v.firstChild.textContent=a>0?a:"بدون";v.lastChild.style.display=a>0?"":"none";v.className=a?"":"z"})}
 function stepIq(i,d){cfg.iq[i]=Math.max(0,Math.min(60,cfg.iq[i]+d));saveCfg();lastKey="";tick()}
 function step(i,d){cfg.adj[i]=Math.max(-60,Math.min(60,cfg.adj[i]+d));saveCfg();lastKey="";tick()}

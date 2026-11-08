@@ -56,7 +56,7 @@ public class AdhanReceiver extends BroadcastReceiver {
                 if (channel.equals("remind")) b.setDefaults(Notification.DEFAULT_SOUND);
             }
             PendingIntent pi = PendingIntent.getActivity(c, 2, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
-            b.setSmallIcon(R.drawable.ic_stat).setContentTitle(title).setContentText(text)
+            b.setSmallIcon(R.drawable.ic_stat_mosque).setContentTitle(title).setContentText(text)
                     .setContentIntent(pi).setAutoCancel(true);
             nm.notify(id, b.build());
         } catch (Exception ignored) {}

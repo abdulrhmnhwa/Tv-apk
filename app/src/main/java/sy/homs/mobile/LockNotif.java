@@ -69,7 +69,7 @@ public class LockNotif {
                 b.setPriority(Notification.PRIORITY_LOW);
             }
             PendingIntent pi = PendingIntent.getActivity(c, 4, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
-            b.setSmallIcon(R.drawable.ic_stat).setContentTitle(title).setContentText(text)
+            b.setSmallIcon(R.drawable.ic_stat_mosque).setContentTitle(title).setContentText(text)
                     .setOngoing(true).setOnlyAlertOnce(true).setContentIntent(pi)
                     .setVisibility(Notification.VISIBILITY_PUBLIC)
                     .setShowWhen(true).setWhen(target).setUsesChronometer(true);
