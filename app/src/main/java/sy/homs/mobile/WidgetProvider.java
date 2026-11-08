@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -28,8 +29,24 @@ public class WidgetProvider extends AppWidgetProvider {
     @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { refresh(c); }
     @Override public void onEnabled(Context c) { refresh(c); }
     @Override
-    public void onReceive(Context c, Intent i) {
-        if (ACT.equals(i.getAction())) refresh(c); else super.onReceive(c, i);
+    public void onReceive(final Context c, Intent i) {
+        String a = i.getAction();
+        if (ACT.equals(a) || AppWidgetManager.ACTION_APPWIDGET_UPDATE.equals(a)) {
+            refresh(c);
+            final PendingResult pr = goAsync();
+            new Thread(() -> {
+                try { if (Weather.stale(c)) Weather.fetch(c); } catch (Throwable ignored) {}
+                refresh(c);
+                pr.finish();
+            }).start();
+        } else super.onReceive(c, i);
+    }
+
+    static boolean wide(AppWidgetManager wm, int id) {
+        try {
+            Bundle b = wm.getAppWidgetOptions(id);
+            return b != null && b.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) >= 300;
+        } catch (Throwable e) { return false; }
     }
 
     public static void refresh(Context c) {
@@ -65,7 +82,8 @@ public class WidgetProvider extends AppWidgetProvider {
                 nIdx = ni; label = ni == 1 ? "المتبقي للشروق" : "المتبقي للأذان"; name = Scheduler.NAMES[ni]; target = nt; hi = ni == 1 ? 2 : ni;
             }
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
-            rv.setTextViewText(R.id.wcity, o.optString("cn", "حمص"));
+            String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, ids[0]));
+            rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
@@ -95,6 +113,7 @@ public class WidgetProvider extends AppWidgetProvider {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, target + 1000, p); }
             catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, target + 1000, p); }
+            Weather.ensure(c);
         } catch (Exception ignored) {}
     }
 }

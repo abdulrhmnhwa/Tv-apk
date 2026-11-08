@@ -28,6 +28,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
         @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
         @JavascriptInterface public void vibTest() { runOnUiThread(() -> buzz(true)); }
+        @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void askNotif() { runOnUiThread(() -> requestNotif(true)); }
     }
 

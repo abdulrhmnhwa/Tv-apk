@@ -31,7 +31,16 @@ public class AdhanReceiver extends BroadcastReceiver {
                     Takbeer.play(c.getApplicationContext(), pr::finish);
                 }
             } else if (kind == 1) {
-                notifyNow(c, 200 + k, "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
+                boolean snd = o.optInt("pres", 1) == 1 && Takbeer.has(c, "pre_adhan.mp3");
+                notifyNow(c, 200 + k, snd ? "adhan" : "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
+                if (snd) {
+                    try {
+                        PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
+                        pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "homs:pre").acquire(40000);
+                    } catch (Exception ignored) {}
+                    final PendingResult pr = goAsync();
+                    Takbeer.playFile(c.getApplicationContext(), "pre_adhan.mp3", pr::finish);
+                }
             } else if (kind == 2) {
                 notifyNow(c, 300 + k, "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
             }

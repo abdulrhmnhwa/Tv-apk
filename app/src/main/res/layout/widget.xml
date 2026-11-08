@@ -30,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#A9C2B4"
                 android:textSize="13sp"
+                android:ellipsize="end"
                 android:singleLine="true" />
             <TextView
                 android:id="@+id/wnext"

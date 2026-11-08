@@ -97,6 +97,32 @@ select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7r
 .spc img{width:100%;border-radius:.9rem;display:block;margin:.5rem auto .8rem}
 .spc p{font-size:1.1rem;line-height:1.9;color:var(--w)}
 .spx{position:absolute;top:.3rem;left:.5rem;background:none;border:0;color:var(--mut);font-size:1.8rem;line-height:1;padding:.3rem .6rem}
+/* adhkar */
+.adr{display:flex;gap:.6rem}
+.adb{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.85rem .3rem;border-radius:1rem;border:1px solid rgba(214,178,94,.5);background:linear-gradient(160deg,rgba(214,178,94,.2),rgba(214,178,94,.06));color:var(--gold);font-size:1.05rem;font-weight:700}
+.adb b{font-size:1.9rem;font-weight:400;line-height:1.2}
+.adb small{font-size:.72rem;color:var(--mut);font-weight:400}
+.adb:active{background:rgba(214,178,94,.38)}
+#adk{position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed}
+#adk.on{display:block}
+.ahd{position:sticky;top:0;z-index:3;background:rgba(4,23,15,.97);border-bottom:1px solid rgba(214,178,94,.35)}
+.ahr{display:flex;align-items:center;justify-content:space-between;height:3.2rem;max-width:34rem;margin:0 auto;padding:0 .85rem}
+.ahr h1{font-size:1.15rem;color:var(--gold);font-weight:700}
+.ahr .ctl{display:flex;align-items:center;gap:.5rem}
+.ahr .ax{background:none;border:0;color:var(--mut);font-size:1.8rem;line-height:1;padding:.1rem .4rem}
+.apb{height:3px;background:rgba(214,178,94,.18)}.apb i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s}
+#adi{padding:0 .85rem 2rem;max-width:34rem;margin:0 auto}
+.atm{font-size:.85rem;color:var(--mut);line-height:1.8;text-align:center}
+.ad .h{margin-bottom:.5rem}
+.at{font-size:1.2rem;line-height:2.15;text-align:center;white-space:pre-line}
+.at.q{color:var(--gold)}
+.af{font-size:.82rem;color:var(--mut);line-height:1.8;text-align:center;margin-top:.7rem}
+.as{font-size:.74rem;color:rgba(169,194,180,.75);text-align:center;margin-top:.2rem;line-height:1.6}
+.ac{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.9rem auto 0;min-width:11rem;padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--gold);background:rgba(214,178,94,.16);color:var(--gold);font-size:.9rem}
+.ac b{font-size:1.4rem;line-height:1}
+.ac:active{background:rgba(214,178,94,.4)}
+.ad.done{opacity:.6}
+.ad.done .ac{background:var(--g);color:var(--w);font-weight:700}
 /* nav */
 nav{position:fixed;bottom:0;left:0;right:0;display:flex;height:4.1rem;background:rgba(4,23,15,.97);border-top:1px solid rgba(214,178,94,.35)}
 nav button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05rem;font-size:.78rem}
@@ -136,6 +162,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الأدوات -->
 <section class="tab" id="t2">
   <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="card bm"><div class="h"><span>الأذكار</span><small>من حصن المسلم</small></div>
+    <div class="adr"><button class="adb" data-m="m"><b>☀️</b>أذكار الصباح<small>بعد الفجر حتى الشروق</small></button><button class="adb" data-m="e"><b>🌙</b>أذكار المساء<small>بعد العصر حتى الغروب</small></button></div></div>
   <div class="card"><div class="h"><span>بوصلة القبلة</span><small id="qtx"></small></div>
     <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" fill="rgba(255,255,255,.04)" stroke="#d6b25e" stroke-opacity=".5" stroke-width="2"/><g id="tk" stroke="#a9c2b4" stroke-width="2"></g>
       <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">E</text><text x="100" y="187" fill="#a9c2b4" font-size="13" text-anchor="middle">S</text><text x="22" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">W</text></g>
@@ -158,7 +186,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
   <div class="card"><div class="h"><span>التنبيهات</span></div>
     <div class="sr"><span>تنبيه عند دخول الصلاة<small>إشعار + صوت عند كل صلاة مفعّلة</small></span><label class="sw"><input type="checkbox" id="en"><i></i></label></div>
     <div class="sr"><span>صوت «الله أكبر»<small>يُشغَّل مرتين عند التنبيه</small></span><label class="sw"><input type="checkbox" id="snd"><i></i></label></div>
-    <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة<small>إشعار فقط، بدون أذان</small></span><label class="sw"><input type="checkbox" id="pre"><i></i></label></div>
+    <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة<small>إشعار فقط</small></span><label class="sw"><input type="checkbox" id="pre"><i></i></label></div>
+    <div class="sr"><span>صوت التذكير</span><label class="sw"><input type="checkbox" id="pres"><i></i></label></div>
     <div class="sr"><span>تذكير عند الإقامة<small>إشعار عند موعد إقامة الصلاة</small></span><label class="sw"><input type="checkbox" id="iqr"><i></i></label></div>
     <div class="sr"><span>إشعار شاشة القفل<small>شريط بعدّاد الصلاة القادمة، يظهر على شاشة القفل وفي الإشعارات</small></span><label class="sw"><input type="checkbox" id="ln"><i></i></label></div>
     <div class="note">لإظهاره على شاشة القفل: إعدادات الجوال ← الإشعارات ← شاشة القفل ← إظهار كل المحتوى.</div>
@@ -169,11 +198,12 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.7<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
 <div id="spm"><div class="spc"><button class="spx" id="spx">×</button><img src="support.jpg" alt="QR"><p>إذا أعجبك التطبيق يمكنك دعمي لأستمر 🌹 .. وشكراً لك من القلب ♥️</p></div></div>
+<div id="adk"><div class="ahd"><div class="ahr"><h1 id="adt"></h1><div class="ctl"><span class="mut" id="adp" style="font-size:.85rem"></span><button class="btn" id="adr" style="padding:.2rem .7rem;font-size:.8rem">إعادة</button><button class="ax" id="adx">×</button></div></div><div class="apb"><i id="apg"></i></div></div><div id="adi"></div></div>
 <nav>
   <button class="on" data-t="0"><b>🕌</b>الرئيسية</button>
   <button data-t="1"><b>⛅</b>الطقس</button>
@@ -181,6 +211,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
   <button data-t="3"><b>⚙️</b>الإعدادات</button>
 </nav>
 
+<script src="adhkar.js"></script>
 <script>
 (function(){
 var TZ=3,R=Math.PI/180,$=function(i){return document.getElementById(i)};
@@ -191,13 +222,13 @@ var DAY=["الأحد","الاثنين","الثلاثاء","الأربعاء","ا
 var HM=["محرم","صفر","ربيع الأول","ربيع الآخر","جمادى الأولى","جمادى الآخرة","رجب","شعبان","رمضان","شوال","ذو القعدة","ذو الحجة"];
 var NAMES=["الفجر","الشروق","الظهر","العصر","المغرب","العشاء"];
 var VERSES=["«أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ» — الرعد 28","«إِنَّ مَعَ الْعُسْرِ يُسْرًا» — الشرح 6","«وَمَن يَتَوَكَّلْ عَلَى اللَّهِ فَهُوَ حَسْبُهُ» — الطلاق 3","«فَاذْكُرُونِي أَذْكُرْكُمْ» — البقرة 152","«وَقُل رَّبِّ زِدْنِي عِلْمًا» — طه 114","«إِنَّ اللَّهَ مَعَ الصَّابِرِينَ» — البقرة 153","«وَرَحْمَتِي وَسِعَتْ كُلَّ شَيْءٍ» — الأعراف 156","«تبسّمك في وجه أخيك صدقة» — حديث شريف","«الكلمة الطيبة صدقة» — متفق عليه","سبحان الله وبحمده، سبحان الله العظيم","لا حول ولا قوة إلا بالله، كنز من كنوز الجنة","اللهم صلِّ وسلِّم على نبينا محمد"];
-var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲"];
+var FACTS=["حمص ثالث أكبر المدن السورية، وتقع على نهر العاصي","تقع حمص وسط سوريا على بُعد نحو 160 كم شمال دمشق","ترتفع حمص نحو 500 م عن سطح البحر، ومناخها متوسطي معتدل","كان اسمها القديم «إميسا»، وكانت مدينة مهمة في العصر الروماني","قلعة الحصن قرب حمص مدرجة على قائمة اليونسكو للتراث العالمي منذ 2006","جامع خالد بن الوليد من أشهر معالم حمص وأبرز مساجدها","كنيسة أم الزنار في حمص القديمة من أقدم كنائس سوريا","محافظة حمص أكبر محافظات سوريا مساحةً، وتضم مدينة تدمر الأثرية","تضم حمص جامعة حمص، إحدى الجامعات الحكومية السورية","بحيرة قطينة (بحيرة حمص) تقع جنوب غرب المدينة","«فتحة حمص» ممر طبيعي بين الجبال يسمح بوصول رياح البحر والأمطار للداخل","تُلقّب حمص بـ«أم الحجارة السوداء» نسبةً إلى حجارتها البازلتية","قريبة من وادي النصارى الذي يضم قلعة الحصن وقرى تاريخية","هذا التطبيق من تطوير المهندس عبدالرحمن حوا وهو مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹"];
 var EV={"1-1":"رأس السنة الهجرية","1-10":"يوم عاشوراء","3-12":"المولد النبوي","7-27":"الإسراء والمعراج","9-1":"أول شهر رمضان","10-1":"عيد الفطر","12-9":"يوم عرفة","12-10":"عيد الأضحى"};
-var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",6:"إدلب الخضراء",4:"حماة الأبيّة",2:"حلب الشهباء"};
+var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:"الرقة عروس الفرات",7:"دير الزور , دير العز والكرامة",6:"إدلب الخضراء",4:"حماة الأبيّة",1:"دمشق عاصمة الأمويين",2:"حلب الشهباء"};
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,iqr:0,ln:1,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -218,7 +249,7 @@ function pt(y,m,d){
 }
 function PT(y,m,d){return pt(y,m,d).map(function(v,i){return v+cfg.adj[i]/60})}
 function z(n){return n<10?"0"+n:n}
-function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<i>"+p+"</i><b>"+H+":"+z(M)+"</b>"}
+function f(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60,p=H>=12?"م":"ص";H=H%12||12;return "<b>"+p+"</b><b>"+H+":"+z(M)+"</b>"}
 function f2(x){x=((x%24)+24)%24;var m=Math.round(x*60),H=Math.floor(m/60)%24,M=m%60;return(H%12||12)+":"+z(M)+(H>=12?" م":" ص")}
 var HF;try{HF=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric",timeZone:"UTC"})}catch(e){}
 function hj(d){if(!HF)return null;var o={};try{HF.formatToParts(d).forEach(function(p){o[p.type]=+p.value})}catch(e){return null}return o.month?o:null}
@@ -256,7 +287,7 @@ function tick(){
  var iqm=lp>=0?(cfg.iq[lp]||0):0,inIq=lp>=0&&iqm>0&&nh<T[lp]+iqm/60;
  var sr=T[1],mkE=sr+MK/60,dhE=T[2]-DH/60,dm=inIq?0:(nh>=sr&&nh<mkE)?1:(nh>=mkE&&nh<dhE)?2:0;
  if(inIq){tt=T[lp]+iqm/60;pv=T[lp];var rq=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الإقامة بعد";$("rn").textContent=nm(lp);$("rcnt").textContent=z(Math.floor(rq/60))+":"+z(rq%60);$("rt").textContent="الإقامة عند "+f2(tt)}
- else if(dm){var de=dm===1?mkE:dhE;pv=dm===1?sr:mkE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===1?"الوقت المكروه":"وقت صلاة الضحى";$("rn").textContent=dm===1?"وقت الكراهة":"صلاة الضحى";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent="ينتهي عند "+f2(de)}
+ else if(dm){var de=dm===1?mkE:dhE;pv=dm===1?sr:mkE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===1?"من أوقات النهي":"وقت صلاة الضحى";$("rn").textContent=dm===1?"وقت الكراهة":"صلاة الضحى";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent="ينتهي عند "+f2(de)}
  else if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
  else{var rem=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الصلاة القادمة";$("rn").textContent=nm(ni,1);
   $("rcnt").textContent=z(Math.floor(rem/3600))+":"+z(Math.floor(rem%3600/60))+":"+z(rem%60);$("rt").textContent="عند "+f2(tt)}
@@ -272,7 +303,7 @@ function weather(){
  $("cty2").textContent="طقس "+cfg.cn;$("wtag").textContent="جارٍ التحميل…";
  try{fetch("https://api.open-meteo.com/v1/forecast?latitude="+cfg.lat+"&longitude="+cfg.lng+"&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_days=6&timezone=Asia%2FDamascus")
  .then(function(r){return r.json()}).then(function(j){var c=j.current,d=j.daily,w=wc(c.weather_code);
-  $("wtag").textContent="الآن في "+cfg.cn;$("wi").textContent=w[1];$("wt").textContent=Math.round(c.temperature_2m)+"°";$("wd").textContent=w[0];
+  $("wtag").textContent="الآن في "+cfg.cn;try{if(window.App&&App.wx)App.wx(Math.round(c.temperature_2m),c.weather_code)}catch(e){}$("wi").textContent=w[1];$("wt").textContent=Math.round(c.temperature_2m)+"°";$("wd").textContent=w[0];
   $("wm").innerHTML="الشعور "+Math.round(c.apparent_temperature)+"° · رطوبة "+c.relative_humidity_2m+"%<br>رياح "+Math.round(c.wind_speed_10m)+" كم/س · العظمى "+Math.round(d.temperature_2m_max[0])+"° · الصغرى "+Math.round(d.temperature_2m_min[0])+"°";
   var s="";for(var i=1;i<d.time.length;i++){var g=wc(d.weather_code[i]),dn=i===1?"غداً":DAY[new Date(d.time[i]+"T12:00:00Z").getUTCDay()],pr=d.precipitation_probability_max[i];
    s+='<div class="fr"><span style="width:4.5rem">'+dn+'</span><u>'+g[1]+'</u><span class="rn">'+(pr!=null?"💧"+pr+"%":"")+'</span><span class="hl"><b>'+Math.round(d.temperature_2m_max[i])+'°</b><s>'+Math.round(d.temperature_2m_min[i])+'°</s></span></div>'}
@@ -304,10 +335,10 @@ drawTs();
 /* ---------- الإعدادات ---------- */
 var adjBuilt=false;
 function renderAdj(T){
- if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><i>د</i></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
+ if(!adjBuilt){adjBuilt=true;var s="";for(var i=0;i<6;i++)s+='<div class="sr"><span><b id="an'+i+'" style="font-weight:400"></b><small id="at'+i+'"></small></span><div class="sp"><button data-adj="'+i+',-1">−</button><span id="av'+i+'"><b></b><b>د</b></span><button data-adj="'+i+',1">+</button></div></div>';$("adj").innerHTML=s}
  for(var j=0;j<6;j++){var a=cfg.adj[j];$("an"+j).textContent=nm(j);$("at"+j).textContent=f2(T[j]);var v=$("av"+j);v.firstChild.textContent=(a>0?"+":"")+a;v.className=a?"":"z"}}
 var IQP=[0,2,3,4,5],iqBuilt=false;
-function renderIq(){if(!iqBuilt){iqBuilt=true;var s="";IQP.forEach(function(i){s+='<div class="sr"><span>'+NAMES[i]+'</span><div class="sp"><button data-iq="'+i+',-1">−</button><span id="qv'+i+'"><b></b><i>د</i></span><button data-iq="'+i+',1">+</button></div></div>'});$("iqs").innerHTML=s}
+function renderIq(){if(!iqBuilt){iqBuilt=true;var s="";IQP.forEach(function(i){s+='<div class="sr"><span>'+NAMES[i]+'</span><div class="sp"><button data-iq="'+i+',-1">−</button><span id="qv'+i+'"><b></b><b>د</b></span><button data-iq="'+i+',1">+</button></div></div>'});$("iqs").innerHTML=s}
  IQP.forEach(function(i){var v=$("qv"+i),a=cfg.iq[i];v.firstChild.textContent=a>0?a:"بدون";v.lastChild.style.display=a>0?"":"none";v.className=a?"":"z"})}
 function stepIq(i,d){cfg.iq[i]=Math.max(0,Math.min(60,cfg.iq[i]+d));saveCfg();lastKey="";tick()}
 function step(i,d){cfg.adj[i]=Math.max(-60,Math.min(60,cfg.adj[i]+d));saveCfg();lastKey="";tick()}
@@ -319,7 +350,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-bell
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("iqr").checked=!!cfg.iqr;$("ln").checked=!!cfg.ln;
+function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("ln").checked=!!cfg.ln;
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
  $("cty").textContent=SLOG[cfg.city]||cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
@@ -327,6 +358,7 @@ $("mt").onchange=function(){cfg.mt=+this.value;saveCfg();syncSet();lastKey="";ti
 $("en").onchange=function(){cfg.en=this.checked?1:0;saveCfg();syncSet()};
 $("snd").onchange=function(){cfg.snd=this.checked?1:0;saveCfg()};
 $("pre").onchange=function(){cfg.pre=this.checked?1:0;saveCfg()};
+$("pres").onchange=function(){cfg.pres=this.checked?1:0;saveCfg()};
 $("iqr").onchange=function(){cfg.iqr=this.checked?1:0;saveCfg()};
 $("ln").onchange=function(){cfg.ln=this.checked?1:0;saveCfg(true)};
 $("asr").onclick=function(e){var b=e.target.closest("button");if(b){cfg.asr=+b.dataset.v;saveCfg();syncSet();lastKey="";tick()}};
@@ -336,7 +368,25 @@ $("wr").onclick=weather;
 /* ---------- التنقل ---------- */
 function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
-window.goBack=function(){if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+window.goBack=function(){if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+/* ---------- الأذكار ---------- */
+var AD=window.ADHKAR||[],adm="m",adL=[],adO={d:"",m:{},e:{}};
+AD.forEach(function(x,i){x.i=i});
+function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t||!o.m||!o.e)o={d:t,m:{},e:{}};adO=o}
+function adLeft(x){var v=adO[adm][x.i];return v===undefined?x.n:v}
+function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
+function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
+function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
+ return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
+function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
+function adDraw(){$("adt").textContent=adm==="m"?"أذكار الصباح":"أذكار المساء";
+ $("adi").innerHTML='<div class="card"><div class="atm">'+(adm==="m"?"وقتها من بعد صلاة الفجر حتى طلوع الشمس":"وقتها من بعد صلاة العصر حتى غروب الشمس")+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
+function adOpen(m){adm=m;adLoad();adL=AD.filter(function(x){return!x.w||x.w===m});adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
+document.querySelector(".adr").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
+$("adx").onclick=function(){$("adk").className=""};
+$("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
+$("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=AD[+b.dataset.i],l=adLeft(x);if(l<=0)return;l--;adO[adm][x.i]=l;ls("adk",adO);
+ var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
 $("sup").onclick=function(){$("spm").className="on"};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};

@@ -12,6 +12,30 @@ import android.speech.tts.UtteranceProgressListener;
 import java.util.Locale;
 
 public class Takbeer {
+    public static boolean has(Context c, String name) {
+        try { c.getAssets().openFd(name).close(); return true; } catch (Exception e) { return false; }
+    }
+
+    /** يشغّل ملفاً صوتياً من assets (بتصنيف المنبّه). إن فشل ينتهي بصمت. */
+    public static void playFile(final Context c, String name, final Runnable done) {
+        final Handler h = new Handler(Looper.getMainLooper());
+        final boolean[] fin = {false};
+        final Runnable end = () -> { if (!fin[0]) { fin[0] = true; done.run(); } };
+        h.postDelayed(end, 20000);
+        try {
+            AssetFileDescriptor afd = c.getAssets().openFd(name);
+            final MediaPlayer mp = new MediaPlayer();
+            mp.setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+            mp.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+            afd.close();
+            mp.setOnCompletionListener(m -> { m.release(); end.run(); });
+            mp.setOnErrorListener((m, w, e) -> { m.release(); end.run(); return true; });
+            mp.prepare();
+            mp.start();
+        } catch (Exception e) { end.run(); }
+    }
+
     /** يشغّل assets/takbeer.mp3 إن وُجد، وإلا ينطق «الله أكبر» مرتين بمحرك النطق */
     public static void play(final Context c, final Runnable done) {
         final Handler h = new Handler(Looper.getMainLooper());
