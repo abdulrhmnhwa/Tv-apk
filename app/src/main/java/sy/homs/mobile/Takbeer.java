@@ -11,8 +11,10 @@ import android.media.MediaPlayer;
 import android.media.VolumeProvider;
 import android.media.session.MediaSession;
 import android.media.session.PlaybackState;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -42,6 +44,32 @@ public class Takbeer {
         final long t0 = SystemClock.elapsedRealtime();
         BroadcastReceiver rcv;
         MediaSession ms;
+        final Handler hd = new Handler(Looper.getMainLooper());
+        int[] base = null;
+        boolean scr = true;
+        final Runnable poll = new Runnable() {
+            @Override public void run() {
+                if (current != stop) return; // انتهى التشغيل
+                try {
+                    int[] v = vols();
+                    boolean s = interactive();
+                    if (SystemClock.elapsedRealtime() - t0 < 1500) { base = v; scr = s; } // فترة سماح لأول لحظات التشغيل
+                    else if (s != scr || !java.util.Arrays.equals(v, base)) { stop.run(); return; }
+                } catch (Throwable ignored) {}
+                hd.postDelayed(this, 120);
+            }
+        };
+
+        int[] vols() {
+            AudioManager am = (AudioManager) app.getSystemService(Context.AUDIO_SERVICE);
+            return new int[]{am.getStreamVolume(AudioManager.STREAM_ALARM), am.getStreamVolume(AudioManager.STREAM_MUSIC),
+                    am.getStreamVolume(AudioManager.STREAM_RING), am.getStreamVolume(AudioManager.STREAM_NOTIFICATION)};
+        }
+
+        boolean interactive() {
+            PowerManager pm = (PowerManager) app.getSystemService(Context.POWER_SERVICE);
+            return pm.isInteractive();
+        }
 
         Guard(Context app, Runnable stop) { this.app = app; this.stop = stop; }
 
@@ -57,13 +85,20 @@ public class Takbeer {
                             && i.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1) == AudioManager.STREAM_ALARM) stop.run();
                 }
             };
+            // كل تسجيل بمعزل عن الآخر: فشل أحدهما (مثلاً في أندرويد 14) لا يلغي الثاني
             try {
                 IntentFilter f = new IntentFilter();
                 f.addAction(Intent.ACTION_SCREEN_OFF);
                 f.addAction(Intent.ACTION_SCREEN_ON);
-                f.addAction("android.media.VOLUME_CHANGED_ACTION");
                 app.registerReceiver(rcv, f);
-            } catch (Throwable e) { rcv = null; }
+            } catch (Throwable ignored) {}
+            try {
+                IntentFilter f = new IntentFilter("android.media.VOLUME_CHANGED_ACTION");
+                if (Build.VERSION.SDK_INT >= 33) app.registerReceiver(rcv, f, Context.RECEIVER_EXPORTED);
+                else app.registerReceiver(rcv, f);
+            } catch (Throwable ignored) {}
+            // طبقة مراقبة مباشرة لا تعتمد على البثّ: تقارن حالة الشاشة ومستويات الصوت كل 120 مللي ثانية
+            hd.postDelayed(poll, 120);
             try {
                 ms = new MediaSession(app, "adhan_guard");
                 ms.setPlaybackState(new PlaybackState.Builder().setState(PlaybackState.STATE_PLAYING, 0, 1f).build());
@@ -76,6 +111,7 @@ public class Takbeer {
 
         void disarm() {
             if (current == stop) current = null;
+            hd.removeCallbacks(poll);
             try { if (rcv != null) app.unregisterReceiver(rcv); } catch (Throwable ignored) {}
             rcv = null;
             try { if (ms != null) { ms.setActive(false); ms.release(); } } catch (Throwable ignored) {}
