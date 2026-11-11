@@ -141,6 +141,17 @@ public class MainActivity extends Activity {
         }
     }
 
+    /** إن كان الأذان يُشغَّل والتطبيق مفتوح: زر رفع/خفض الصوت يوقفه فوراً */
+    @Override
+    public boolean onKeyDown(int keyCode, android.view.KeyEvent e) {
+        if ((keyCode == android.view.KeyEvent.KEYCODE_VOLUME_UP || keyCode == android.view.KeyEvent.KEYCODE_VOLUME_DOWN)
+                && Takbeer.isPlaying()) {
+            Takbeer.stopAll();
+            return true;
+        }
+        return super.onKeyDown(keyCode, e);
+    }
+
     @Override
     public void onBackPressed() {
         w.evaluateJavascript("window.goBack?window.goBack():false", v -> {
