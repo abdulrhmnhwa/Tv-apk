@@ -43,6 +43,12 @@ public class AdhanReceiver extends BroadcastReceiver {
                 }
             } else if (kind == 2) {
                 notifyNow(c, 300 + k, "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
+            } else if (kind == 3) {
+                notifyNow(c, 403, "remind", "☀️ حان وقت أذكار الصباح", "ابدأ يومك بذكر الله · اضغط لفتح الأذكار", "m");
+            } else if (kind == 4) {
+                notifyNow(c, 404, "remind", "🌙 حان وقت أذكار المساء", "حصّن نفسك بأذكار المساء · اضغط لفتح الأذكار", "e");
+            } else if (kind == 5) {
+                notifyNow(c, 405, "remind", "🌤️ حان وقت صلاة الضحى", "ركعتان فأكثر تجزئ عن صدقة كل مفصل في الجسم · " + city, "");
             }
         }
         WidgetProvider.refresh(c);
@@ -51,6 +57,11 @@ public class AdhanReceiver extends BroadcastReceiver {
     }
 
     private void notifyNow(Context c, int id, String channel, String title, String text) {
+        notifyNow(c, id, channel, title, text, null);
+    }
+
+    /** open: مفتاح قسم الأذكار الذي يُفتح عند الضغط على الإشعار ("" = فتح التطبيق فقط، null = كالمعتاد) */
+    private void notifyNow(Context c, int id, String channel, String title, String text, String open) {
         try {
             NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
             Notification.Builder b;
@@ -64,7 +75,9 @@ public class AdhanReceiver extends BroadcastReceiver {
                 b = new Notification.Builder(c);
                 if (channel.equals("remind")) b.setDefaults(Notification.DEFAULT_SOUND);
             }
-            PendingIntent pi = PendingIntent.getActivity(c, 2, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+            Intent oi = new Intent(c, MainActivity.class);
+            if (open != null && !open.isEmpty()) oi.putExtra("open", open);
+            PendingIntent pi = PendingIntent.getActivity(c, open == null ? 2 : id, oi, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
             b.setSmallIcon(R.drawable.ic_stat_mosque).setContentTitle(title).setContentText(text)
                     .setContentIntent(pi).setAutoCancel(true);
             nm.notify(id, b.build());

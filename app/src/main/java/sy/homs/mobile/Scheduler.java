@@ -96,6 +96,13 @@ public class Scheduler {
                     if (cand[k] > now + 20000 && cand[k] < best) { best = cand[k]; evIdx = i; evKind = kind[k]; }
                 }
             }
+            // تذكيرات الأذكار والضحى: 3 = أذكار الصباح، 4 = أذكار المساء، 5 = صلاة الضحى
+            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r)};
+            int[] ek = {3, 4, 5};
+            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1};
+            for (int k = 0; k < 3; k++) {
+                if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = 0; evKind = ek[k]; }
+            }
         }
         return best == Long.MAX_VALUE ? -1 : best;
     }

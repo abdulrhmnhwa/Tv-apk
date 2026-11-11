@@ -103,6 +103,9 @@ select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7r
 .adb b{font-size:1.9rem;font-weight:400;line-height:1.2}
 .adb small{font-size:.72rem;color:var(--mut);font-weight:400}
 .adb:active{background:rgba(214,178,94,.38)}
+.adg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.adg .adb{padding:.7rem .3rem;font-size:.98rem;line-height:1.4;text-align:center}
+.adg .adb b{font-size:1.6rem}
 #adk{position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed}
 #adk.on{display:block}
 .ahd{position:sticky;top:0;z-index:3;background:rgba(4,23,15,.97);border-bottom:1px solid rgba(214,178,94,.35)}
@@ -159,11 +162,17 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
   <div class="card"><div class="h"><span>الشمس والقمر</span></div><div id="sun"></div></div>
 </section>
 
+<!-- الأذكار -->
+<section class="tab" id="tadk">
+  <div class="top"><h1>الأذكار</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="card bm"><div class="h"><span>الصباح والمساء</span><small>من حصن المسلم</small></div>
+    <div class="adr"><button class="adb" data-m="m"><b>☀️</b>أذكار الصباح<small>بعد الفجر حتى الشروق</small></button><button class="adb" data-m="e"><b>🌙</b>أذكار المساء<small>بعد العصر حتى الغروب</small></button></div></div>
+  <div class="card"><div class="h"><span>أذكار وأدعية يومية</span><small>من حصن المسلم</small></div><div class="adg" id="adg"></div></div>
+</section>
+
 <!-- الأدوات -->
 <section class="tab" id="t2">
   <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
-  <div class="card bm"><div class="h"><span>الأذكار</span><small>من حصن المسلم</small></div>
-    <div class="adr"><button class="adb" data-m="m"><b>☀️</b>أذكار الصباح<small>بعد الفجر حتى الشروق</small></button><button class="adb" data-m="e"><b>🌙</b>أذكار المساء<small>بعد العصر حتى الغروب</small></button></div></div>
   <div class="card"><div class="h"><span>بوصلة القبلة</span><small id="qtx"></small></div>
     <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" fill="rgba(255,255,255,.04)" stroke="#d6b25e" stroke-opacity=".5" stroke-width="2"/><g id="tk" stroke="#a9c2b4" stroke-width="2"></g>
       <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">E</text><text x="100" y="187" fill="#a9c2b4" font-size="13" text-anchor="middle">S</text><text x="22" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">W</text></g>
@@ -189,6 +198,9 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة<small>إشعار فقط</small></span><label class="sw"><input type="checkbox" id="pre"><i></i></label></div>
     <div class="sr"><span>صوت التذكير</span><label class="sw"><input type="checkbox" id="pres"><i></i></label></div>
     <div class="sr"><span>تذكير عند الإقامة<small>إشعار عند موعد إقامة الصلاة</small></span><label class="sw"><input type="checkbox" id="iqr"><i></i></label></div>
+    <div class="sr"><span>تذكير أذكار الصباح<small>إشعار بعد الفجر بنصف ساعة</small></span><label class="sw"><input type="checkbox" id="rm"><i></i></label></div>
+    <div class="sr"><span>تذكير صلاة الضحى<small>إشعار عند دخول وقت الضحى</small></span><label class="sw"><input type="checkbox" id="rd"><i></i></label></div>
+    <div class="sr"><span>تذكير أذكار المساء<small>إشعار بعد العصر بعشرين دقيقة</small></span><label class="sw"><input type="checkbox" id="re"><i></i></label></div>
     <div class="sr"><span>إشعار شاشة القفل<small>شريط بعدّاد الصلاة القادمة، يظهر على شاشة القفل وفي الإشعارات</small></span><label class="sw"><input type="checkbox" id="ln"><i></i></label></div>
     <div class="note">لإظهاره على شاشة القفل: إعدادات الجوال ← الإشعارات ← شاشة القفل ← إظهار كل المحتوى.</div>
     <div class="note">التنبيهات والتذكيرات تتبع تفعيل 🔔 لكل صلاة في القائمة الرئيسية.</div>
@@ -198,7 +210,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.7<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.8<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -207,11 +219,13 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <nav>
   <button class="on" data-t="0"><b>🕌</b>الرئيسية</button>
   <button data-t="1"><b>⛅</b>الطقس</button>
-  <button data-t="2"><b>🧭</b>الأدوات</button>
-  <button data-t="3"><b>⚙️</b>الإعدادات</button>
+  <button data-t="2"><b>📖</b>الأذكار</button>
+  <button data-t="3"><b>🧭</b>الأدوات</button>
+  <button data-t="4"><b>⚙️</b>الإعدادات</button>
 </nav>
 
 <script src="adhkar.js"></script>
+<script src="adhkar_more.js"></script>
 <script>
 (function(){
 var TZ=3,R=Math.PI/180,$=function(i){return document.getElementById(i)};
@@ -228,7 +242,7 @@ var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,rm:1,re:1,rd:1,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -350,7 +364,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-bell
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("ln").checked=!!cfg.ln;
+function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
  $("cty").textContent=SLOG[cfg.city]||cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
@@ -360,6 +374,9 @@ $("snd").onchange=function(){cfg.snd=this.checked?1:0;saveCfg()};
 $("pre").onchange=function(){cfg.pre=this.checked?1:0;saveCfg()};
 $("pres").onchange=function(){cfg.pres=this.checked?1:0;saveCfg()};
 $("iqr").onchange=function(){cfg.iqr=this.checked?1:0;saveCfg()};
+$("rm").onchange=function(){cfg.rm=this.checked?1:0;saveCfg()};
+$("rd").onchange=function(){cfg.rd=this.checked?1:0;saveCfg()};
+$("re").onchange=function(){cfg.re=this.checked?1:0;saveCfg()};
 $("ln").onchange=function(){cfg.ln=this.checked?1:0;saveCfg(true)};
 $("asr").onclick=function(e){var b=e.target.closest("button");if(b){cfg.asr=+b.dataset.v;saveCfg();syncSet();lastKey="";tick()}};
 $("ts").onclick=function(){try{window.App&&App.test()}catch(e){}};
@@ -370,23 +387,29 @@ function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i)
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
 window.goBack=function(){if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
-var AD=window.ADHKAR||[],adm="m",adL=[],adO={d:"",m:{},e:{}};
+var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
-function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t||!o.m||!o.e)o={d:t,m:{},e:{}};adO=o}
-function adLeft(x){var v=adO[adm][x.i];return v===undefined?x.n:v}
+CATS.forEach(function(c){c.items.forEach(function(x,i){x.i=i})});
+$("adg").innerHTML=CATS.map(function(c){return'<button class="adb" data-m="'+c.k+'"><b>'+c.ic+'</b>'+c.t+'<small>'+c.d+'</small></button>'}).join("");
+function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};adO=o}
+function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
 function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
  return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
 function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
-function adDraw(){$("adt").textContent=adm==="m"?"أذكار الصباح":"أذكار المساء";
- $("adi").innerHTML='<div class="card"><div class="atm">'+(adm==="m"?"وقتها من بعد صلاة الفجر حتى طلوع الشمس":"وقتها من بعد صلاة العصر حتى غروب الشمس")+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
-function adOpen(m){adm=m;adLoad();adL=AD.filter(function(x){return!x.w||x.w===m});adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
-document.querySelector(".adr").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
+function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"وقتها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"وقتها من بعد صلاة العصر حتى غروب الشمس"};
+ for(var i=0;i<CATS.length;i++)if(CATS[i].k===adm)return{t:CATS[i].t,d:CATS[i].d};return{t:"",d:""}}
+function adDraw(){var q=adInfo();$("adt").textContent=q.t;
+ $("adi").innerHTML='<div class="card"><div class="atm">'+q.d+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
+function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
+$("tadk").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
 $("adx").onclick=function(){$("adk").className=""};
 $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
-$("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=AD[+b.dataset.i],l=adLeft(x);if(l<=0)return;l--;adO[adm][x.i]=l;ls("adk",adO);
+$("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;ls("adk",adO);
  var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
+/* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
+window.openAdhkar=function(k){show(2);$("adk").className="";if(k&&k!=="tab")adOpen(k)};
 $("sup").onclick=function(){$("spm").className="on"};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};

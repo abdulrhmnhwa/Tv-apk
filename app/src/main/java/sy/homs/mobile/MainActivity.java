@@ -3,6 +3,7 @@ package sy.homs.mobile;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
@@ -21,6 +22,25 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
     private WebView w;
+    private boolean loaded = false;
+    private String pendingOpen = null;
+
+    /** يفتح قسم الأذكار المطلوب (من الودجت أو من الإشعار) بعد جاهزية الصفحة */
+    private void handleOpen(Intent it) {
+        if (it == null) return;
+        String k = it.getStringExtra("open");
+        it.removeExtra("open");
+        if (k == null || !k.matches("[a-z]{1,12}")) return;
+        if (loaded) w.evaluateJavascript("window.openAdhkar&&window.openAdhkar('" + k + "')", null);
+        else pendingOpen = k;
+    }
+
+    @Override
+    protected void onNewIntent(Intent it) {
+        super.onNewIntent(it);
+        setIntent(it);
+        handleOpen(it);
+    }
 
     public class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
@@ -48,12 +68,22 @@ public class MainActivity extends Activity {
         s.setAllowUniversalAccessFromFileURLs(true);
         s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setSupportZoom(false);
-        w.setWebViewClient(new WebViewClient());
+        w.setWebViewClient(new WebViewClient() {
+            @Override public void onPageFinished(WebView v, String url) {
+                loaded = true;
+                if (pendingOpen != null) {
+                    String k = pendingOpen;
+                    pendingOpen = null;
+                    v.evaluateJavascript("window.openAdhkar&&window.openAdhkar('" + k + "')", null);
+                }
+            }
+        });
         w.addJavascriptInterface(new Bridge(), "App");
         setContentView(w);
 
         Scheduler.schedule(this);
         requestNotif(false);
+        handleOpen(getIntent());
         w.loadUrl("file:///android_asset/index.html");
     }
 

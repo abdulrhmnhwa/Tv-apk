@@ -75,6 +75,15 @@ public class Weather {
         return emoji + " " + p.getInt("t", 0) + "°" + (desc ? " " + w[0] : "");
     }
 
+    /** {رمز الطقس، الحرارة} إن كانت البيانات حديثة، وإلا null */
+    static int[] cur(Context c) {
+        SharedPreferences p = sp(c);
+        long at = p.getLong("at", 0);
+        if (at == 0 || System.currentTimeMillis() - at > 4 * 3600000L) return null;
+        if (!Prefs.obj(c).optString("cn", "حمص").equals(p.getString("cn", ""))) return null;
+        return new int[]{p.getInt("code", 0), p.getInt("t", 0)};
+    }
+
     static boolean isNight(Context c) {
         try {
             JSONObject o = Prefs.obj(c);

@@ -105,14 +105,28 @@ public class WidgetProvider extends AppWidgetProvider {
                 rv.setTextColor(TID[j], i == hi ? GOLD : WHITE);
                 rv.setInt(CID[j], "setBackgroundResource", i == hi ? R.drawable.chip_on : 0);
             }
+            // شريط الذكر الذكي: بحسب الوقت واليوم والطقس
+            int[] iqs = new int[6];
+            for (int i = 0; i < 6; i++) iqs[i] = Scheduler.iq(o, i);
+            int[] wx = Weather.cur(c);
+            String[] tip = WidgetTip.pick(now, days[1], iqs, cal.get(Calendar.DAY_OF_WEEK),
+                    wx == null ? -1 : wx[0], wx == null ? 20 : wx[1]);
+            rv.setTextViewText(R.id.wtl, tip[0]);
+            rv.setTextViewText(R.id.wtx, tip[1]);
+            Intent ti = new Intent(c, MainActivity.class);
+            if (!tip[2].isEmpty()) ti.putExtra("open", tip[2]);
+            rv.setOnClickPendingIntent(R.id.wtip, PendingIntent.getActivity(c, 11, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             wm.updateAppWidget(ids, rv);
 
             AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
             PendingIntent p = PendingIntent.getBroadcast(c, 7, new Intent(c, WidgetProvider.class).setAction(ACT),
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-            try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, target + 1000, p); }
-            catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, target + 1000, p); }
+            // أقرب تحديث لازم: الصلاة القادمة، أو تغيّر نافذة الأذكار، أو تدوير الذكر (كل نصف ساعة)
+            long slot = (now / 1800000L + 1) * 1800000L;
+            long at = Math.min(target, Math.min(slot, WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs))) + 1000;
+            try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
+            catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
             Weather.ensure(c);
         } catch (Exception ignored) {}
     }
