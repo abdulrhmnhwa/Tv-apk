@@ -6,12 +6,12 @@
 <title>مواقيت الصلاة سوريا</title>
 <style>
 
-@font-face{font-family:"ReadexPro";font-style:normal;font-weight:600;font-display:block;src:url("fonts/ReadexPro-Regular.woff2") format("woff2"),url("fonts/ReadexPro-Regular.ttf") format("truetype")}
-@font-face{font-family:"ReadexPro";font-style:normal;font-weight:900;font-display:block;src:url("fonts/ReadexPro-Bold.woff2") format("woff2"),url("fonts/ReadexPro-Bold.ttf") format("truetype")}
+@font-face{font-family:"NotoSansArabic";font-style:normal;font-weight:600;font-display:block;src:url("fonts/NotoSansArabic-Regular.woff2") format("woff2"),url("fonts/NotoSansArabic-Regular.ttf") format("truetype")}
+@font-face{font-family:"NotoSansArabic";font-style:normal;font-weight:900;font-display:block;src:url("fonts/NotoSansArabic-Bold.woff2") format("woff2"),url("fonts/NotoSansArabic-Bold.ttf") format("truetype")}
 :root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:clamp(14px,4.1vw,18px)}
-body{min-height:100vh;color:var(--w);font-family:"ReadexPro","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
+body{min-height:100vh;color:var(--w);font-family:"NotoSansArabic","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
 button,select{font:inherit;color:inherit}
 #app{padding:0 .85rem 5.8rem;max-width:34rem;margin:0 auto}
 .tab{display:none}.tab.on{display:block}
@@ -169,7 +169,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <section class="tab" id="tadk">
   <div class="top"><h1>الأذكار</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
   <div class="card bm"><div class="h"><span>الصباح والمساء</span><small>من حصن المسلم</small></div>
-    <div class="adr"><button class="adb" data-m="m"><b>☀️</b>أذكار الصباح<small>بعد الفجر حتى الشروق</small></button><button class="adb" data-m="e"><b>🌙</b>أذكار المساء<small>بعد العصر حتى الغروب</small></button></div></div>
+    <div class="adr"><button class="adb" data-m="m"><b>☀️</b>أذكار الصباح<small>بعد الفجر حتى الشروق<h5>(يمتد حتى الزوال)</h5></small></button><button class="adb" data-m="e"><b>🌙</b>أذكار المساء<small>بعد العصر حتى الغروب <h5>(يمتد حتى منتصف الليل)</h5></small></button></div></div>
   <div class="card"><div class="h"><span>أذكار وأدعية يومية</span><small>من حصن المسلم</small></div><div class="adg" id="adg"></div></div>
 </section>
 
@@ -401,7 +401,7 @@ function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓
 function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
  return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
 function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
-function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"وقتها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"وقتها من بعد صلاة العصر حتى غروب الشمس"};
+function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"أفضل وقت لها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"أفضل وقت لها من بعد صلاة العصر حتى غروب الشمس"};
  for(var i=0;i<CATS.length;i++)if(CATS[i].k===adm)return{t:CATS[i].t,d:CATS[i].d};return{t:"",d:""}}
 function adDraw(){var q=adInfo();$("adt").textContent=q.t;
  $("adi").innerHTML='<div class="card"><div class="atm">'+q.d+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
