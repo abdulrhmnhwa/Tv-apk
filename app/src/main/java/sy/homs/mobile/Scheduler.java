@@ -97,10 +97,14 @@ public class Scheduler {
                 }
             }
             // تذكيرات الأذكار والضحى: 3 = أذكار الصباح، 4 = أذكار المساء، 5 = صلاة الضحى
-            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r)};
-            int[] ek = {3, 4, 5};
-            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1};
-            for (int k = 0; k < 3; k++) {
+            // 6 = الثلث الأخير من الليل (من مغرب أمس إلى فجر اليوم)
+            Calendar pd = (Calendar) day.clone();
+            pd.add(Calendar.DAY_OF_MONTH, -1);
+            long[] pr = dayMs(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH));
+            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.lastThird(pr[4], r[0])};
+            int[] ek = {3, 4, 5, 6};
+            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1};
+            for (int k = 0; k < 4; k++) {
                 if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = 0; evKind = ek[k]; }
             }
         }

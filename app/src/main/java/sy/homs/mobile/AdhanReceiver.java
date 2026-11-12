@@ -7,6 +7,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
+import android.net.Uri;
 import android.os.Build;
 import android.os.PowerManager;
 
@@ -49,11 +51,34 @@ public class AdhanReceiver extends BroadcastReceiver {
                 notifyNow(c, 404, "remind", "🌙 حان وقت أذكار المساء", "حصّن نفسك بأذكار المساء · اضغط لفتح الأذكار", "e");
             } else if (kind == 5) {
                 notifyNow(c, 405, "remind", "🌤️ حان وقت صلاة الضحى", "ركعتان فأكثر تجزئ عن صدقة كل مفصل في الجسم · " + city, "");
+            } else if (kind == 6) {
+                notifyNow(c, 406, "remind", "🌌 الثلث الأخير من الليل", "وقت الدعاء والاستغفار والقيام · اضغط لفتح الأذكار", "tab");
             }
         }
         WidgetProvider.refresh(c);
         LockNotif.refresh(c);
         Scheduler.schedule(c);
+    }
+
+    /** قناة التذكيرات بحسب النغمة المختارة (صوت القناة لا يتغيّر بعد إنشائها، فلكل نغمة قناة) */
+    private static String toneChannel(NotificationManager nm, String tone) {
+        if (tone.isEmpty()) return "remind";
+        String id = "remind_t" + Integer.toHexString(tone.hashCode());
+        try {
+            for (NotificationChannel ch : nm.getNotificationChannels()) {
+                String n = ch.getId();
+                if (n.startsWith("remind_t") && !n.equals(id)) nm.deleteNotificationChannel(n);
+            }
+            if (nm.getNotificationChannel(id) == null) {
+                NotificationChannel ch = new NotificationChannel(id, "التذكيرات (نغمة مخصصة)", NotificationManager.IMPORTANCE_HIGH);
+                if (tone.equals("silent")) ch.setSound(null, null);
+                else ch.setSound(Uri.parse(tone), new AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build());
+                nm.createNotificationChannel(ch);
+            }
+            return id;
+        } catch (Exception e) { return "remind"; }
     }
 
     private void notifyNow(Context c, int id, String channel, String title, String text) {
@@ -64,16 +89,21 @@ public class AdhanReceiver extends BroadcastReceiver {
     private void notifyNow(Context c, int id, String channel, String title, String text, String open) {
         try {
             NotificationManager nm = (NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE);
+            String tone = Prefs.obj(c).optString("tone", "");
             Notification.Builder b;
             if (Build.VERSION.SDK_INT >= 26) {
                 NotificationChannel a = new NotificationChannel("adhan", "تنبيه الأذان", NotificationManager.IMPORTANCE_HIGH);
                 a.setSound(null, null);
                 nm.createNotificationChannel(a);
                 nm.createNotificationChannel(new NotificationChannel("remind", "التذكيرات", NotificationManager.IMPORTANCE_HIGH));
+                if (channel.equals("remind")) channel = toneChannel(nm, tone);
                 b = new Notification.Builder(c, channel);
             } else {
                 b = new Notification.Builder(c);
-                if (channel.equals("remind")) b.setDefaults(Notification.DEFAULT_SOUND);
+                if (channel.equals("remind")) {
+                    if (tone.isEmpty()) b.setDefaults(Notification.DEFAULT_SOUND);
+                    else if (!tone.equals("silent")) b.setSound(Uri.parse(tone));
+                }
             }
             Intent oi = new Intent(c, MainActivity.class);
             if (open != null && !open.isEmpty()) oi.putExtra("open", open);

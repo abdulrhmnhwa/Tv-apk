@@ -128,4 +128,7 @@ public class WidgetTip {
     static long dhuhaAt(long[] r) { return dhStart(r); }
     /** وقت تذكير أذكار المساء: بعد العصر بعشرين دقيقة، وقبل المغرب بعشر دقائق على الأقل */
     static long eveningAt(long[] r) { return Math.min(r[3] + 20 * MIN, r[4] - 10 * MIN); }
+
+    /** بداية الثلث الأخير من الليل: الليل من المغرب إلى الفجر التالي */
+    static long lastThird(long maghrib, long nextFajr) { return nextFajr - (nextFajr - maghrib) / 3; }
 }

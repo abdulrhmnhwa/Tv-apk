@@ -7,6 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.VibrationEffect;
@@ -19,6 +22,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+
+import org.json.JSONObject;
 
 public class MainActivity extends Activity {
     private WebView w;
@@ -66,6 +71,8 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
         @JavascriptInterface public void vibTest() { runOnUiThread(() -> buzz(true)); }
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
+        @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
+        @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
         @JavascriptInterface public void askNotif() { runOnUiThread(() -> requestNotif(true)); }
     }
 
@@ -145,6 +152,53 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "الاهتزاز: " + (has ? (ok ? "تم الإرسال للمحرك" : "فشل الإرسال") : "غير مدعوم")
                     + " · وضع الصوت: " + mode, Toast.LENGTH_LONG).show();
         }
+    }
+
+    private static final int REQ_TONE = 77;
+    private Ringtone testing;
+
+    private void pickToneUi(String cur) {
+        try {
+            Intent it = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION | RingtoneManager.TYPE_ALARM);
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "نغمة التنبيه");
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION));
+            Uri existing = cur == null || cur.isEmpty() ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    : cur.equals("silent") ? null : Uri.parse(cur);
+            it.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, existing);
+            startActivityForResult(it, REQ_TONE);
+        } catch (Exception e) {
+            Toast.makeText(this, "تعذّر فتح قائمة النغمات", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void testToneUi(String u) {
+        try {
+            if (testing != null) testing.stop();
+            Uri uri = u == null || u.isEmpty() ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : u.equals("silent") ? null : Uri.parse(u);
+            if (uri == null) return;
+            testing = RingtoneManager.getRingtone(this, uri);
+            if (testing != null) testing.play();
+        } catch (Exception ignored) {}
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    protected void onActivityResult(int rc, int res, Intent d) {
+        super.onActivityResult(rc, res, d);
+        if (rc != REQ_TONE || res != RESULT_OK || d == null) return;
+        Uri u = d.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+        String val, name;
+        if (u == null) { val = "silent"; name = "صامت"; }
+        else if (u.equals(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))) { val = ""; name = "الافتراضية"; }
+        else {
+            val = u.toString();
+            name = "نغمة مخصصة";
+            try { Ringtone r = RingtoneManager.getRingtone(this, u); if (r != null) name = r.getTitle(this); } catch (Exception ignored) {}
+        }
+        w.evaluateJavascript("window.toneSet&&window.toneSet(" + JSONObject.quote(val) + "," + JSONObject.quote(name) + ")", null);
     }
 
     private void requestNotif(boolean say) {

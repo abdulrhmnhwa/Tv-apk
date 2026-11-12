@@ -105,6 +105,7 @@ select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius
 .sp button{width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--gold);background:rgba(var(--gr),.14);color:var(--gold);font-size:1.4rem;line-height:1}
 .sp button:active{background:rgba(var(--gr),.4)}
 .sp span{min-width:4rem;display:flex;justify-content:center;align-items:baseline;gap:.3rem;font-weight:700;font-size:1.1rem}.sp span i{font-style:normal;font-weight:700;font-size:.9rem;color:var(--mut)}
+.tbtns{display:flex;gap:.4rem}.tbtns button{padding:.45rem .8rem;border-radius:.7rem;border:1px solid var(--gold);background:rgba(var(--gr),.14);color:var(--gold);font-size:.85rem;font-family:inherit}.tbtns button:active{background:rgba(var(--gr),.4)}
 .sp span.z{color:var(--mut);font-weight:400}
 .seg{display:flex;border:1px solid rgba(var(--gr),.5);border-radius:.7rem;overflow:hidden}
 .seg button{background:none;border:0;padding:.4rem .8rem;font-size:.85rem;color:var(--mut)}
@@ -228,6 +229,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>تذكير أذكار الصباح<small>إشعار بعد الفجر بنصف ساعة</small></span><label class="sw"><input type="checkbox" id="rm"><i></i></label></div>
     <div class="sr"><span>تذكير صلاة الضحى<small>إشعار عند دخول وقت الضحى</small></span><label class="sw"><input type="checkbox" id="rd"><i></i></label></div>
     <div class="sr"><span>تذكير أذكار المساء<small>إشعار بعد العصر بعشرين دقيقة</small></span><label class="sw"><input type="checkbox" id="re"><i></i></label></div>
+    <div class="sr"><span>تنبيه الثلث الأخير من الليل<small>إشعار عند بداية الثلث الأخير (وقت القيام والدعاء) — مُعطّل افتراضياً</small></span><label class="sw"><input type="checkbox" id="rln"><i></i></label></div>
+    <div class="sr" style="flex-wrap:wrap"><span>نغمة التنبيه<small id="tnm">الافتراضية</small></span><div class="tbtns"><button id="tpk">اختيار</button><button id="tts">تجربة</button><button id="tdf">الافتراضية</button></div></div>
     <div class="sr"><span>إشعار شاشة القفل<small>شريط بعدّاد الصلاة القادمة، يظهر على شاشة القفل وفي الإشعارات</small></span><label class="sw"><input type="checkbox" id="ln"><i></i></label></div>
     <div class="note">لإظهاره على شاشة القفل: إعدادات الجوال ← الإشعارات ← شاشة القفل ← إظهار كل المحتوى.</div>
     <div class="note">التنبيهات والتذكيرات تتبع تفعيل 🔔 لكل صلاة في القائمة الرئيسية.</div>
@@ -237,7 +240,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.6<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.7<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -269,7 +272,7 @@ var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,rm:1,re:1,rd:1,wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,rm:1,re:1,rd:1,rl:0,tone:"",toneName:"",wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -391,7 +394,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-bell
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;
+function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rln").checked=!!cfg.rl;$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
  $("cty").textContent=SLOG[cfg.city]||cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
@@ -415,6 +418,11 @@ $("wfm").onclick=function(){wfsStep(-10)};
 $("wfp").onclick=function(){wfsStep(10)};
 wfsDraw();
 $("rm").onchange=function(){cfg.rm=this.checked?1:0;saveCfg()};
+$("rln").onchange=function(){cfg.rl=this.checked?1:0;saveCfg()};
+$("tpk").onclick=function(){if(window.App&&App.pickTone)App.pickTone(cfg.tone||"")};
+$("tts").onclick=function(){if(window.App&&App.testTone)App.testTone(cfg.tone||"")};
+$("tdf").onclick=function(){window.toneSet("","الافتراضية")};
+window.toneSet=function(u,n){cfg.tone=u||"";cfg.toneName=n||"";saveCfg();syncSet()};
 $("rd").onchange=function(){cfg.rd=this.checked?1:0;saveCfg()};
 $("re").onchange=function(){cfg.re=this.checked?1:0;saveCfg()};
 $("ln").onchange=function(){cfg.ln=this.checked?1:0;saveCfg(true)};
