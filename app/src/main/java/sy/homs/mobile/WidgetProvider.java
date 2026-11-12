@@ -49,6 +49,19 @@ public class WidgetProvider extends AppWidgetProvider {
         } catch (Throwable e) { return false; }
     }
 
+    /** أحجام الخطوط الأساسية (sp) كما في widget.xml؛ تُضرب بنسبة الإعداد (70–150%) */
+    private static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt, R.id.wtl, R.id.wtx,
+            R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4};
+    private static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22, 13, 13,
+            12, 12, 12, 12, 12, 13, 13, 13, 13, 13};
+
+    private static void applyFontScale(RemoteViews rv, int pct) {
+        if (pct == 100) return; // الأحجام الافتراضية من ملف التخطيط
+        float k = Math.max(70, Math.min(150, pct)) / 100f;
+        for (int i = 0; i < FS_IDS.length; i++)
+            rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
+    }
+
     public static void refresh(Context c) {
         try {
             AppWidgetManager wm = AppWidgetManager.getInstance(c);
@@ -117,6 +130,7 @@ public class WidgetProvider extends AppWidgetProvider {
             if (!tip[2].isEmpty()) ti.putExtra("open", tip[2]);
             rv.setOnClickPendingIntent(R.id.wtip, PendingIntent.getActivity(c, 11, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
+            applyFontScale(rv, o.optInt("wfs", 100));
             wm.updateAppWidget(ids, rv);
 
             AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);

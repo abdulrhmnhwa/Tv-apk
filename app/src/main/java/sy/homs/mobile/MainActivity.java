@@ -25,6 +25,22 @@ public class MainActivity extends Activity {
     private boolean loaded = false;
     private String pendingOpen = null;
 
+    /** ألوان شريط الحالة والتنقل وخلفية الصفحة بحسب المظهر (ليلي/نهاري) */
+    private void applyBars(boolean light) {
+        int c = light ? 0xFFF1FBF5 : 0xFF04170F;
+        getWindow().setStatusBarColor(c);
+        getWindow().setNavigationBarColor(c);
+        if (w != null) w.setBackgroundColor(c);
+        if (Build.VERSION.SDK_INT >= 23) {
+            android.view.View d = getWindow().getDecorView();
+            int f = d.getSystemUiVisibility();
+            f = light ? (f | android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) : (f & ~android.view.View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            if (Build.VERSION.SDK_INT >= 26)
+                f = light ? (f | android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR) : (f & ~android.view.View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR);
+            d.setSystemUiVisibility(f);
+        }
+    }
+
     /** يفتح قسم الأذكار المطلوب (من الودجت أو من الإشعار) بعد جاهزية الصفحة */
     private void handleOpen(Intent it) {
         if (it == null) return;
@@ -45,6 +61,7 @@ public class MainActivity extends Activity {
     public class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
         @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); LockNotif.refresh(MainActivity.this); }
+        @JavascriptInterface public void theme(boolean light) { runOnUiThread(() -> applyBars(light)); }
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
         @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
         @JavascriptInterface public void vibTest() { runOnUiThread(() -> buzz(true)); }
@@ -56,11 +73,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(0xFF04170F);
-        getWindow().setNavigationBarColor(0xFF04170F);
 
         w = new WebView(this);
-        w.setBackgroundColor(0xFF04170F);
+        applyBars("light".equals(Prefs.obj(this).optString("th", "dark")));
         WebSettings s = w.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);

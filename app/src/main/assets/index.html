@@ -4,14 +4,31 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>مواقيت الصلاة سوريا</title>
+<script>(function(){try{var s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}")s=localStorage.getItem("cfg");var o=s?JSON.parse(s):{},r=document.documentElement;if(o.th==="light")r.setAttribute("data-th","light");if(o.fs)r.style.setProperty("--fs",o.fs/100)}catch(e){}})()</script>
 <style>
 
 @font-face{font-family:"GoogleSans";font-style:normal;font-weight:100;font-display:block;src:url("fonts/GoogleSans-Regular.woff2") format("woff2"),url("fonts/GoogleSans-Regular.ttf") format("truetype")}
 @font-face{font-family:"GoogleSans";font-style:normal;font-weight:200;font-display:block;src:url("fonts/GoogleSans-Bold.woff2") format("woff2"),url("fonts/GoogleSans-Bold.ttf") format("truetype")}
-:root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
+:root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark;
+ --gr:214,178,94;--mr:169,194,180;--ov:255,255,255;--ong:#04170f;--warn:#ff9a8a;
+ --bg0:#04170f;--bgi:linear-gradient(170deg,#0b3b2b,#04170f 60%);
+ --cardbg:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));
+ --bar:rgba(4,23,15,.97);--selbg:#0b3b2b;--spcbg:linear-gradient(160deg,#0f4d36,#04170f);
+ --tsb:radial-gradient(circle,#15664a,#0f4d36);--tsba:radial-gradient(circle,#1b7a58,#15664a);--tsbc:#f4f1e8}
+/* الوضع النهاري: ألوان فاتحة وزاهية */
+:root[data-th="light"]{--gold:#a46a00;--w:#173a2c;--mut:#4c6b5c;--g:#c9efd9;color-scheme:light;
+ --gr:164,106,0;--mr:76,107,92;--ov:23,110,70;--ong:#fff;--warn:#c0392b;
+ --bg0:#f1fbf5;--bgi:linear-gradient(170deg,#d9f4e5,#fff7e0 70%);
+ --cardbg:linear-gradient(160deg,#ffffff,#f1fbf5);
+ --bar:rgba(255,255,255,.97);--selbg:#ffffff;--spcbg:linear-gradient(160deg,#ffffff,#e2f6ea);
+ --tsb:radial-gradient(circle,#34b583,#1f9468);--tsba:radial-gradient(circle,#3fc790,#34b583);--tsbc:#fff}
+:root[data-th="light"] .card{box-shadow:0 2px 10px rgba(23,90,60,.1)}
+:root[data-th="light"] .card::before{opacity:.08}
+:root[data-th="light"] .sw i:after{box-shadow:0 1px 3px rgba(0,0,0,.3)}
+:root[data-th="light"] .p.on{border-color:rgba(var(--gr),.7)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{font-size:clamp(14px,4.1vw,18px)}
-body{min-height:100vh;color:var(--w);font-family:"GoogleSans","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
+html{font-size:calc(clamp(14px,4.1vw,18px)*var(--fs,1))}
+body{min-height:100vh;color:var(--w);font-family:"GoogleSans","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:var(--bg0) var(--bgi) fixed;-webkit-user-select:none;user-select:none}
 button,select{font:inherit;color:inherit}
 #app{padding:0 .85rem 5.8rem;max-width:34rem;margin:0 auto}
 .tab{display:none}.tab.on{display:block}
@@ -21,7 +38,7 @@ button,select{font:inherit;color:inherit}
 #eg{position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65}
 #nw{width:1.35rem;height:1.35rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 #nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
-.card{position:relative;overflow:hidden;background:linear-gradient(160deg,rgba(255,255,255,.075),rgba(255,255,255,.03));border:1px solid rgba(214,178,94,.4);border-radius:1.1rem;padding:1rem;margin-top:.8rem}
+.card{position:relative;overflow:hidden;background:var(--cardbg);border:1px solid rgba(var(--gr),.4);border-radius:1.1rem;padding:1rem;margin-top:.8rem}
 .card::before{content:"";position:absolute;inset:0;background:center/auto 100% no-repeat;pointer-events:none;opacity:.12}
 .card>*{position:relative}
 .bt::before{background-image:url(tower.webp);background-position:right bottom}
@@ -35,20 +52,20 @@ button,select{font:inherit;color:inherit}
 .ring{position:relative;width:14.5rem;height:14.5rem;margin:.6rem auto .2rem}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:9}
-.ring .tr{stroke:rgba(214,178,94,.18)}.ring .pg{stroke:var(--gold);stroke-linecap:round}
+.ring .tr{stroke:rgba(var(--gr),.18)}.ring .pg{stroke:var(--gold);stroke-linecap:round}
 .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .rc .l{font-size:.85rem;color:var(--mut)}.rc .n{font-size:1.75rem;color:var(--gold);font-weight:700;line-height:1.3}
 .rc .c{font-size:2rem;font-weight:700;direction:ltr;line-height:1.2}.rc .t{font-size:.9rem;color:var(--mut)}
-.rnote{display:none;text-align:center;color:#ff9a8a;font-size:.95rem;margin:.1rem 0 .4rem;line-height:1.6}
+.rnote{display:none;text-align:center;color:var(--warn);font-size:.95rem;margin:.1rem 0 .4rem;line-height:1.6}
 .chips{display:flex;gap:.5rem;margin-top:.5rem}
-.chip{flex:1;text-align:center;background:rgba(255,255,255,.06);border-radius:.8rem;padding:.5rem .2rem;font-size:.85rem;line-height:1.4}
+.chip{flex:1;text-align:center;background:rgba(var(--ov),.06);border-radius:.8rem;padding:.5rem .2rem;font-size:.85rem;line-height:1.4}
 .chip b{display:block;font-size:1rem;color:var(--gold)}
 /* prayers */
 .p{display:flex;align-items:center;justify-content:space-between;padding:.55rem .7rem;border-radius:.8rem;font-size:1.2rem}
 .p+.p{margin-top:.15rem}
 .p.on{background:var(--g);border:1px solid var(--gold)}
 .p .nm small{font-size:.72rem;color:var(--mut);margin-inline-start:.4rem}
-.p .nm em b{font-weight:700}.p .nm em{font-style:normal;font-weight:400;font-size:.72rem;background:rgba(214,178,94,.2);color:var(--gold);border-radius:.5rem;padding:.05rem .4rem;margin-inline-start:.4rem;direction:ltr;display:inline-block}
+.p .nm em b{font-weight:700}.p .nm em{font-style:normal;font-weight:400;font-size:.72rem;background:rgba(var(--gr),.2);color:var(--gold);border-radius:.5rem;padding:.05rem .4rem;margin-inline-start:.4rem;direction:ltr;display:inline-block}
 .rt{display:flex;align-items:center;gap:.7rem}
 .tm{display:flex;align-items:baseline;gap:.45rem;direction:ltr;font-weight:700}
 .tm i{font-style:normal;font-weight:400;font-size:.8rem;color:var(--mut)}
@@ -56,81 +73,81 @@ button,select{font:inherit;color:inherit}
 .bl.off{opacity:.35;filter:grayscale(1)}
 .vs{font-size:1.05rem;line-height:1.9;text-align:center;color:var(--gold)}
 .fx{font-size:.98rem;line-height:1.8;text-align:center}
-.btn{background:rgba(214,178,94,.16);border:1px solid rgba(214,178,94,.5);color:var(--gold);border-radius:.8rem;padding:.55rem 1rem;font-size:.95rem}
-.btn:active{background:rgba(214,178,94,.35)}
+.btn{background:rgba(var(--gr),.16);border:1px solid rgba(var(--gr),.5);color:var(--gold);border-radius:.8rem;padding:.55rem 1rem;font-size:.95rem}
+.btn:active{background:rgba(var(--gr),.35)}
 .row{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;margin-top:.6rem}
 /* weather */
 .wt{text-align:center}.wt .ic{font-size:3.6rem;line-height:1.1}.wt .t{font-size:3.8rem;font-weight:700;direction:ltr;line-height:1.1}.wt .d{font-size:1.3rem}
 .wt .m{color:var(--mut);font-size:.95rem;line-height:1.8;margin-top:.3rem}
 .fr{display:flex;align-items:center;justify-content:space-between;padding:.5rem .3rem;font-size:1.05rem}
-.fr+.fr{border-top:1px solid rgba(214,178,94,.18)}
+.fr+.fr{border-top:1px solid rgba(var(--gr),.18)}
 .fr u{text-decoration:none;font-size:1.5rem}.fr .hl{direction:ltr;display:flex;gap:.6rem}.fr s{text-decoration:none;color:var(--mut)}.fr .rn{font-size:.8rem;color:var(--mut);width:3rem;text-align:center}
 /* tools */
 .cp{position:relative;width:15rem;height:15rem;margin:.4rem auto}
 .cp svg{width:100%;height:100%}
 #dial,#ndl{transform-origin:100px 100px}
-.tsb{display:block;margin:.5rem auto;width:11rem;height:11rem;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle,#15664a,#0f4d36);font-size:3.4rem;font-weight:700;color:var(--w)}
-.tsb:active{transform:scale(.97);background:radial-gradient(circle,#1b7a58,#15664a)}
-.chp{border:1px solid rgba(214,178,94,.4);background:rgba(255,255,255,.05);border-radius:2rem;padding:.3rem .8rem;font-size:.85rem;color:var(--mut)}
-.chp.on{background:var(--gold);color:#04170f;font-weight:700}
-.ev{display:flex;justify-content:space-between;padding:.5rem 0;font-size:1rem}.ev+.ev{border-top:1px solid rgba(214,178,94,.18)}.ev b{color:var(--gold)}
+.tsb{display:block;margin:.5rem auto;width:11rem;height:11rem;border-radius:50%;border:2px solid var(--gold);background:var(--tsb);font-size:3.4rem;font-weight:700;color:var(--tsbc)}
+.tsb:active{transform:scale(.97);background:var(--tsba)}
+.chp{border:1px solid rgba(var(--gr),.4);background:rgba(var(--ov),.05);border-radius:2rem;padding:.3rem .8rem;font-size:.85rem;color:var(--mut)}
+.chp.on{background:var(--gold);color:var(--ong);font-weight:700}
+.ev{display:flex;justify-content:space-between;padding:.5rem 0;font-size:1rem}.ev+.ev{border-top:1px solid rgba(var(--gr),.18)}.ev b{color:var(--gold)}
 /* settings */
 .sr{display:flex;align-items:center;justify-content:space-between;padding:.55rem 0;font-size:1.05rem}
-.sr+.sr{border-top:1px solid rgba(214,178,94,.18)}
+.sr+.sr{border-top:1px solid rgba(var(--gr),.18)}
 .sr small{display:block;color:var(--mut);font-size:.75rem}
-select{background:#0b3b2b;border:1px solid rgba(214,178,94,.5);border-radius:.7rem;padding:.45rem .6rem;font-size:.95rem;max-width:12rem}
+select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius:.7rem;padding:.45rem .6rem;font-size:.95rem;max-width:12rem}
 .sw{position:relative;width:3rem;height:1.7rem;flex:none}.sw input{display:none}
-.sw i{position:absolute;inset:0;background:rgba(255,255,255,.18);border-radius:2rem;transition:background .2s}
+.sw i{position:absolute;inset:0;background:rgba(var(--ov),.18);border-radius:2rem;transition:background .2s}
 .sw i:after{content:"";position:absolute;top:.2rem;right:.2rem;width:1.3rem;height:1.3rem;border-radius:50%;background:#fff;transition:transform .2s}
 .sw input:checked+i{background:var(--g);box-shadow:0 0 0 1px var(--gold)}
 .sw input:checked+i:after{transform:translateX(-1.3rem);background:var(--gold)}
 .sp{display:flex;align-items:center;gap:.5rem;direction:ltr}
-.sp button{width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--gold);background:rgba(214,178,94,.14);color:var(--gold);font-size:1.4rem;line-height:1}
-.sp button:active{background:rgba(214,178,94,.4)}
+.sp button{width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--gold);background:rgba(var(--gr),.14);color:var(--gold);font-size:1.4rem;line-height:1}
+.sp button:active{background:rgba(var(--gr),.4)}
 .sp span{min-width:4rem;display:flex;justify-content:center;align-items:baseline;gap:.3rem;font-weight:700;font-size:1.1rem}.sp span i{font-style:normal;font-weight:700;font-size:.9rem;color:var(--mut)}
 .sp span.z{color:var(--mut);font-weight:400}
-.seg{display:flex;border:1px solid rgba(214,178,94,.5);border-radius:.7rem;overflow:hidden}
+.seg{display:flex;border:1px solid rgba(var(--gr),.5);border-radius:.7rem;overflow:hidden}
 .seg button{background:none;border:0;padding:.4rem .8rem;font-size:.85rem;color:var(--mut)}
-.seg button.on{background:var(--gold);color:#04170f;font-weight:700}
+.seg button.on{background:var(--gold);color:var(--ong);font-weight:700}
 .note{font-size:.78rem;color:var(--mut);line-height:1.7;margin-top:.5rem}
 .lnk{color:var(--gold);text-decoration:underline;padding:.3rem .5rem;font-weight:700;font-size:.9rem}
 #spm{position:fixed;top:0;left:0;right:0;bottom:0;z-index:50;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:1rem}
 #spm.on{display:flex}
-.spc{position:relative;background:linear-gradient(160deg,#0f4d36,#04170f);border:1px solid var(--gold);border-radius:1.2rem;padding:1.2rem 1rem 1rem;max-width:23rem;width:100%;text-align:center;max-height:94vh;overflow:auto}
+.spc{position:relative;background:var(--spcbg);border:1px solid var(--gold);border-radius:1.2rem;padding:1.2rem 1rem 1rem;max-width:23rem;width:100%;text-align:center;max-height:94vh;overflow:auto}
 .spc img{width:100%;border-radius:.9rem;display:block;margin:.5rem auto .8rem}
 .spc p{font-size:1.1rem;line-height:1.9;color:var(--w)}
 .spx{position:absolute;top:.3rem;left:.5rem;background:none;border:0;color:var(--mut);font-size:1.8rem;line-height:1;padding:.3rem .6rem}
 /* adhkar */
 .adr{display:flex;gap:.6rem}
-.adb{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.85rem .3rem;border-radius:1rem;border:1px solid rgba(214,178,94,.5);background:linear-gradient(160deg,rgba(214,178,94,.2),rgba(214,178,94,.06));color:var(--gold);font-size:1.05rem;font-weight:700}
+.adb{flex:1;display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.85rem .3rem;border-radius:1rem;border:1px solid rgba(var(--gr),.5);background:linear-gradient(160deg,rgba(var(--gr),.2),rgba(var(--gr),.06));color:var(--gold);font-size:1.05rem;font-weight:700}
 .adb b{font-size:1.9rem;font-weight:400;line-height:1.2}
 .adb small{font-size:.72rem;color:var(--mut);font-weight:400}
-.adb:active{background:rgba(214,178,94,.38)}
+.adb:active{background:rgba(var(--gr),.38)}
 .adg{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .adg .adb{padding:.7rem .3rem;font-size:.98rem;line-height:1.4;text-align:center}
 .adg .adb b{font-size:1.6rem}
-#adk{position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed}
+#adk{position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg0) var(--bgi) fixed}
 #adk.on{display:block}
-.ahd{position:sticky;top:0;z-index:3;background:rgba(4,23,15,.97);border-bottom:1px solid rgba(214,178,94,.35)}
+.ahd{position:sticky;top:0;z-index:3;background:var(--bar);border-bottom:1px solid rgba(var(--gr),.35)}
 .ahr{display:flex;align-items:center;justify-content:space-between;height:3.2rem;max-width:34rem;margin:0 auto;padding:0 .85rem}
 .ahr h1{font-size:1.15rem;color:var(--gold);font-weight:700}
 .ahr .ctl{display:flex;align-items:center;gap:.5rem}
 .ahr .ax{background:none;border:0;color:var(--mut);font-size:1.8rem;line-height:1;padding:.1rem .4rem}
-.apb{height:3px;background:rgba(214,178,94,.18)}.apb i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s}
+.apb{height:3px;background:rgba(var(--gr),.18)}.apb i{display:block;height:100%;width:0;background:var(--gold);transition:width .25s}
 #adi{padding:0 .85rem 2rem;max-width:34rem;margin:0 auto}
 .atm{font-size:.85rem;color:var(--mut);line-height:1.8;text-align:center}
 .ad .h{margin-bottom:.5rem}
 .at{font-size:1.2rem;line-height:2.15;text-align:center;white-space:pre-line}
 .at.q{color:var(--gold)}
 .af{font-size:.82rem;color:var(--mut);line-height:1.8;text-align:center;margin-top:.7rem}
-.as{font-size:.74rem;color:rgba(169,194,180,.75);text-align:center;margin-top:.2rem;line-height:1.6}
-.ac{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.9rem auto 0;min-width:11rem;padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--gold);background:rgba(214,178,94,.16);color:var(--gold);font-size:.9rem}
+.as{font-size:.74rem;color:rgba(var(--mr),.75);text-align:center;margin-top:.2rem;line-height:1.6}
+.ac{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.9rem auto 0;min-width:11rem;padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--gold);background:rgba(var(--gr),.16);color:var(--gold);font-size:.9rem}
 .ac b{font-size:1.4rem;line-height:1}
-.ac:active{background:rgba(214,178,94,.4)}
+.ac:active{background:rgba(var(--gr),.4)}
 .ad.done{opacity:.6}
 .ad.done .ac{background:var(--g);color:var(--w);font-weight:700}
 /* nav */
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;height:4.1rem;background:rgba(4,23,15,.97);border-top:1px solid rgba(214,178,94,.35)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;height:4.1rem;background:var(--bar);border-top:1px solid rgba(var(--gr),.35)}
 nav button{flex:1;background:none;border:0;color:var(--mut);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.05rem;font-size:.78rem}
 nav button b{font-size:1.45rem;font-weight:400;filter:grayscale(.7)}
 nav button.on{color:var(--gold)}nav button.on b{filter:none}
@@ -177,9 +194,9 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <section class="tab" id="t2">
   <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
   <div class="card"><div class="h"><span>بوصلة القبلة</span><small id="qtx"></small></div>
-    <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" fill="rgba(255,255,255,.04)" stroke="#d6b25e" stroke-opacity=".5" stroke-width="2"/><g id="tk" stroke="#a9c2b4" stroke-width="2"></g>
-      <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">E</text><text x="100" y="187" fill="#a9c2b4" font-size="13" text-anchor="middle">S</text><text x="22" y="106" fill="#a9c2b4" font-size="13" text-anchor="middle">W</text></g>
-      <g id="ndl"><line x1="100" y1="100" x2="100" y2="40" stroke="#d6b25e" stroke-width="4" stroke-linecap="round"/><polygon points="100,28 92,46 108,46" fill="#d6b25e"/><text x="100" y="22" font-size="20" text-anchor="middle">🕋</text></g><circle cx="100" cy="100" r="6" fill="#d6b25e"/></svg></div>
+    <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" style="fill:rgba(var(--ov),.04);stroke:var(--gold)" stroke-opacity=".5" stroke-width="2"/><g id="tk" style="stroke:var(--mut)" stroke-width="2"></g>
+      <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" style="fill:var(--mut)" font-size="13" text-anchor="middle">E</text><text x="100" y="187" style="fill:var(--mut)" font-size="13" text-anchor="middle">S</text><text x="22" y="106" style="fill:var(--mut)" font-size="13" text-anchor="middle">W</text></g>
+      <g id="ndl"><line x1="100" y1="100" x2="100" y2="40" style="stroke:var(--gold)" stroke-width="4" stroke-linecap="round"/><polygon points="100,28 92,46 108,46" style="fill:var(--gold)"/><text x="100" y="22" font-size="20" text-anchor="middle">🕋</text></g><circle cx="100" cy="100" r="6" style="fill:var(--gold)"/></svg></div>
     <div class="note" style="text-align:center" id="qn">ضع الجوال أفقياً وبعيداً عن المعادن لدقة أفضل</div></div>
   <div class="card"><div class="h"><span>المسبحة</span><small id="tcy"></small></div>
     <div class="row" id="tkr" style="margin:0 0 .4rem"></div>
@@ -195,6 +212,13 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div id="adj"></div>
     <div class="note">اضغط على + أو − لزيادة أو نقصان الدقائق (يمكنك إبقاء الضغط للتكرار). التعديل يؤثر على العرض والعدّ التنازلي وتنبيه الأذان.</div></div>
   <div class="card"><div class="h"><span>مدة الإقامة بعد الأذان</span></div><div id="iqs"></div><div class="note">يبدأ عدّاد الإقامة تلقائياً عند دخول وقت كل صلاة. الافتراضي 15 دقيقة، والمغرب 5 دقائق.</div></div>
+  <div class="card"><div class="h"><span>المظهر</span></div>
+    <div class="sr"><span>شكل التطبيق<small>ليلي أو نهاري بألوان فاتحة</small></span><div class="seg" id="thseg"><button data-th="dark">🌙 ليلي</button><button data-th="light">☀️ نهاري</button></div></div>
+    <div class="sr"><span>حجم الخط<small>لكل نصوص التطبيق</small></span><div class="sp"><button id="fsm">−</button><span id="fsv"></span><button id="fsp">+</button></div></div>
+    <div class="note">حجم الخط من 80% إلى 140%. التغيير يظهر فوراً.</div></div>
+  <div class="card"><div class="h"><span>حجم الخط في الودجت</span></div>
+    <div class="sr"><span>حجم النصوص<small>للودجت الخارجي على الشاشة الرئيسية</small></span><div class="sp"><button id="wfm">−</button><span id="wfv"></span><button id="wfp">+</button></div></div>
+    <div class="note">اضغط + أو − لتكبير الخط أو تصغيره (من 70% إلى 150%). يتغيّر الودجت فوراً.</div></div>
   <div class="card"><div class="h"><span>التنبيهات</span></div>
     <div class="sr"><span>تنبيه عند دخول الصلاة<small>إشعار + صوت عند كل صلاة مفعّلة</small></span><label class="sw"><input type="checkbox" id="en"><i></i></label></div>
     <div class="sr"><span>صوت «الله أكبر»<small>يُشغَّل مرتين عند التنبيه</small></span><label class="sw"><input type="checkbox" id="snd"><i></i></label></div>
@@ -213,7 +237,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.6<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -245,7 +269,7 @@ var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,rm:1,re:1,rd:1,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,ln:1,rm:1,re:1,rd:1,wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص"}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -377,6 +401,19 @@ $("snd").onchange=function(){cfg.snd=this.checked?1:0;saveCfg()};
 $("pre").onchange=function(){cfg.pre=this.checked?1:0;saveCfg()};
 $("pres").onchange=function(){cfg.pres=this.checked?1:0;saveCfg()};
 $("iqr").onchange=function(){cfg.iqr=this.checked?1:0;saveCfg()};
+function lookApply(){var r=document.documentElement,l=cfg.th==="light";if(l)r.setAttribute("data-th","light");else r.removeAttribute("data-th");r.style.setProperty("--fs",(cfg.fs||100)/100);
+ var bs=document.querySelectorAll("#thseg button");for(var i=0;i<bs.length;i++)bs[i].className=bs[i].dataset.th===(l?"light":"dark")?"on":"";
+ $("fsv").textContent=(cfg.fs||100)+"%";try{if(window.App&&App.theme)App.theme(l)}catch(e){}}
+$("thseg").onclick=function(e){var b=e.target.closest("button");if(!b)return;cfg.th=b.dataset.th==="light"?"light":"dark";lookApply();saveCfg()};
+function fsStep(d){cfg.fs=Math.max(80,Math.min(140,(cfg.fs||100)+d));lookApply();saveCfg()}
+$("fsm").onclick=function(){fsStep(-10)};
+$("fsp").onclick=function(){fsStep(10)};
+lookApply();
+function wfsDraw(){$("wfv").textContent=(cfg.wfs||100)+"%"}
+function wfsStep(d){cfg.wfs=Math.max(70,Math.min(150,(cfg.wfs||100)+d));wfsDraw();saveCfg()}
+$("wfm").onclick=function(){wfsStep(-10)};
+$("wfp").onclick=function(){wfsStep(10)};
+wfsDraw();
 $("rm").onchange=function(){cfg.rm=this.checked?1:0;saveCfg()};
 $("rd").onchange=function(){cfg.rd=this.checked?1:0;saveCfg()};
 $("re").onchange=function(){cfg.re=this.checked?1:0;saveCfg()};
