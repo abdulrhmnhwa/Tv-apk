@@ -8,8 +8,8 @@ android {
         applicationId "sy.homs.mobile"
         minSdk 21
         targetSdk 34
-        versionCode 14
-        versionName "1.9.1"
+        versionCode 16
+        versionName "1.9.3"
     }
     buildTypes {
         release { minifyEnabled false }

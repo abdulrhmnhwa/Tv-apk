@@ -5,10 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>مواقيت الصلاة سوريا</title>
 <style>
+@font-face{font-family:"Amiri";font-style:normal;font-weight:400;font-display:block;src:url("fonts/Amiri-Regular.woff2") format("woff2"),url("fonts/Amiri-Regular.ttf") format("truetype")}
+@font-face{font-family:"Amiri";font-style:normal;font-weight:700;font-display:block;src:url("fonts/Amiri-Bold.woff2") format("woff2"),url("fonts/Amiri-Bold.ttf") format("truetype")}
 :root{--gold:#d6b25e;--red:#ce1126;--w:#f4f1e8;--mut:#a9c2b4;--g:#0f4d36;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html{font-size:clamp(14px,4.1vw,18px)}
-body{min-height:100vh;color:var(--w);font-family:"Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
+body{min-height:100vh;color:var(--w);font-family:"Amiri","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:#04170f linear-gradient(170deg,#0b3b2b,#04170f 60%) fixed;-webkit-user-select:none;user-select:none}
 button,select{font:inherit;color:inherit}
 #app{padding:0 .85rem 5.8rem;max-width:34rem;margin:0 auto}
 .tab{display:none}.tab.on{display:block}
@@ -210,7 +212,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
