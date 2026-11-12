@@ -240,7 +240,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.7<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.8<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -279,17 +279,20 @@ var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c
 function ls(k,v){try{if(v===undefined)return JSON.parse(localStorage.getItem(k));localStorage.setItem(k,JSON.stringify(v))}catch(e){}return null}
 cfg=loadCfg();
 /* ---------- الحساب ---------- */
+var DDH=1,DMG=2; // احتياط الظهر +1 د، والمغرب +2 د (معايرة وزارة الأوقاف)
 function pt(y,m,d){
- var la=cfg.lat,ln=cfg.lng,D=Date.UTC(y,m,d,12)/864e5+2440587.5-2451545;
- var g=(357.529+.98560028*D)%360*R,q=((280.459+.98564736*D)%360+360)%360;
- var L=(q+1.915*Math.sin(g)+.02*Math.sin(2*g))*R,e=(23.439-4e-7*D)*R;
- var dec=Math.asin(Math.sin(e)*Math.sin(L));
- var ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))/R/15;ra=(ra+24)%24;
- var eq=q/15-ra;eq=((eq+12)%24+24)%24-12;
- var noon=12+TZ-ln/15-eq+.017;
+ // حساب فلكي دقيق لموقع الشمس (معادلات NOAA) + معايرة على جدول وزارة الأوقاف لمدينة حمص
+ var la=cfg.lat,ln=cfg.lng,D=Date.UTC(y,m,d,12)/864e5+2440587.5-2451545,T=D/36525;
+ var L0=((280.46646+36000.76983*T+.0003032*T*T)%360+360)%360,M=(357.52911+35999.05029*T-.0001537*T*T)*R;
+ var C=(1.914602-.004817*T-.000014*T*T)*Math.sin(M)+(.019993-.000101*T)*Math.sin(2*M)+.000289*Math.sin(3*M);
+ var om=(125.04-1934.136*T)*R,lam=(L0+C-.00569-.00478*Math.sin(om))*R,ep=(23.439291-.0130042*T+.00256*Math.cos(om))*R;
+ var dec=Math.asin(Math.sin(ep)*Math.sin(lam));
+ var yy=Math.pow(Math.tan(ep/2),2),l0=L0*R,ec=.016708634-.000042037*T;
+ var eq=4*(yy*Math.sin(2*l0)-2*ec*Math.sin(M)+4*ec*yy*Math.sin(M)*Math.cos(2*l0)-.5*yy*yy*Math.sin(4*l0)-1.25*ec*ec*Math.sin(2*M))/R/60;
+ var noon=12+TZ-ln/15-eq;
  function h(a){return Math.acos((Math.sin(a*R)-Math.sin(la*R)*Math.sin(dec))/(Math.cos(la*R)*Math.cos(dec)))/R/15}
- var asr=Math.atan(1/(cfg.asr+Math.tan(Math.abs(la*R-dec))))/R,mg=noon+h(-.833);
- return [noon-h(-cfg.fa),noon-h(-.833),noon,noon+h(asr),mg,cfg.im>0?mg+cfg.im/60:noon+h(-cfg.ia)];
+ var asr=Math.atan(1/(cfg.asr+Math.tan(Math.abs(la*R-dec))))/R,mg=noon+h(-.833)+DMG/60;
+ return [noon-h(-cfg.fa),noon-h(-.833),noon+DDH/60,noon+h(asr),mg,cfg.im>0?mg+cfg.im/60:noon+h(-cfg.ia)];
 }
 function PT(y,m,d){return pt(y,m,d).map(function(v,i){return v+cfg.adj[i]/60})}
 function z(n){return n<10?"0"+n:n}
