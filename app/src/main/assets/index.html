@@ -478,7 +478,7 @@ function tlShow(i){var c=TLC[i];if(!c)return;tlOpen=i;$("tlt").textContent=TLN[i
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
 function tlClose(){if(tlOpen!==null){$("tlh").appendChild(TLC[tlOpen]);tlOpen=null}$("tl").className=""}
 (function(){TLC=[].slice.call($("tlh").children)})();
-$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){try{if(window.App&&App.openWeb)App.openWeb("https://www.ayat.org/index.html");else alert("افتح التطبيق بآخر نسخة لتشغيل القرآن داخله")}catch(x){}}else tlShow(+k)};
+$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net");else alert("افتح التطبيق بآخر نسخة لتشغيل القرآن داخله")}catch(x){}}else tlShow(+k)};
 $("tlx").onclick=tlClose;
 window.goBack=function(){if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
