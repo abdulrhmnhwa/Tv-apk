@@ -77,6 +77,7 @@ public class WidgetProvider extends AppWidgetProvider {
                 x.add(Calendar.DAY_OF_MONTH, d);
                 days[d + 1] = Scheduler.dayMs(o, x.get(Calendar.YEAR), x.get(Calendar.MONTH), x.get(Calendar.DAY_OF_MONTH));
             }
+            WidgetTip.nightBefore = (int) ((days[1][0] - WidgetTip.thirdAt(days[0][4], days[1][0], o.optInt("lb", 0))) / 60000L);
             long lastT = -1;
             int lastI = -1;
             for (long[] r : days) for (int i : IDX) if (r[i] <= now && r[i] > lastT) { lastT = r[i]; lastI = i; }

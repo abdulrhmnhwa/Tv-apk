@@ -61,7 +61,7 @@ public class Scheduler {
         long base = mid.getTimeInMillis() - TZ * 3600000L;
         long[] r = new long[6];
         for (int i = 0; i < 6; i++)
-            r[i] = base + (long) ((t[i] * 60 + (adj != null ? adj.optDouble(i, 0) : 0)) * 60000);
+            r[i] = base + Math.round(t[i] * 60 + (adj != null ? adj.optDouble(i, 0) : 0)) * 60000L; // تقريب لأقرب دقيقة كما في واجهة التطبيق
         return r;
     }
 
@@ -104,7 +104,7 @@ public class Scheduler {
             Calendar pd = (Calendar) day.clone();
             pd.add(Calendar.DAY_OF_MONTH, -1);
             long[] pr = dayMs(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH));
-            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.lastThird(pr[4], r[0])};
+            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.thirdAt(pr[4], r[0], o.optInt("lb", 0))};
             int[] ek = {3, 4, 5, 6};
             boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1};
             for (int k = 0; k < 4; k++) {

@@ -12,7 +12,7 @@ public class WidgetTip {
     static final int DH_LEN = 60;      // مدة إظهار تذكير الضحى
     static final int DH_GAP = 25;      // الضحى ينتهي قبل الظهر بهذه الدقائق
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
-    static final int NIGHT_BEFORE = 120;// الثلث الأخير: قبل الفجر بهذه الدقائق
+    static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
     static final int POST_LEN = 30;    // مدة إظهار «أذكار بعد الصلاة»
     static final int SAT = 7, SUN = 1, MON = 2, THU = 5, FRI = 6; // قيم Calendar.DAY_OF_WEEK
 
@@ -75,9 +75,9 @@ public class WidgetTip {
             return t("🌤️ صلاة الضحى", "حان وقت صلاة الضحى — ركعتان فأكثر تجزئ عن صدقة كل مفصل في الجسم", "");
         if (now >= r[3] && now < r[4])
             return t("🌙 أذكار المساء", "حان وقت أذكار المساء — يمتد وقتها حتى غروب الشمس", "e");
-        if (now >= r[5] + SLEEP_AFTER * MIN || now < r[0] - NIGHT_BEFORE * MIN)
+        if (now >= r[5] + SLEEP_AFTER * MIN || now < r[0] - nightBefore * MIN)
             return t("😴 أذكار النوم", "لا تنسَ أذكار النوم — آية الكرسي والمعوذات وخواتيم البقرة", "sleep");
-        if (now >= r[0] - NIGHT_BEFORE * MIN && now < r[0])
+        if (now >= r[0] - nightBefore * MIN && now < r[0])
             return t("🌌 الثلث الأخير من الليل", "ينزل ربنا إلى السماء الدنيا فيقول: من يدعوني فأستجيب له، من يستغفرني فأغفر له", "tab");
         int[] pp = {2, 4, 5};
         for (int i : pp) {
@@ -112,7 +112,7 @@ public class WidgetTip {
         for (long[] r : days) {
             if (r == null) continue;
             long[] b = {
-                r[0] - NIGHT_BEFORE * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN,
+                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN,
                 postStart(r, iq, 2), postStart(r, iq, 2) + POST_LEN * MIN,
                 postStart(r, iq, 4), postStart(r, iq, 4) + POST_LEN * MIN,
                 postStart(r, iq, 5), postStart(r, iq, 5) + POST_LEN * MIN
@@ -131,4 +131,9 @@ public class WidgetTip {
 
     /** بداية الثلث الأخير من الليل: الليل من المغرب إلى الفجر التالي */
     static long lastThird(long maghrib, long nextFajr) { return nextFajr - (nextFajr - maghrib) / 3; }
+
+    /** بداية الثلث الأخير: lb دقيقة قبل الفجر إن كانت > 0، وإلا ثلث الليل الحقيقي */
+    static long thirdAt(long maghrib, long nextFajr, int lb) {
+        return lb > 0 ? nextFajr - lb * MIN : lastThird(maghrib, nextFajr);
+    }
 }
