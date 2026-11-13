@@ -16,11 +16,16 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.os.VibratorManager;
 import android.view.HapticFeedbackConstants;
+import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONObject;
@@ -73,6 +78,7 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
+        @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> openWebUi(u)); }
         @JavascriptInterface public void askNotif() { runOnUiThread(() -> requestNotif(true)); }
     }
 
@@ -101,7 +107,9 @@ public class MainActivity extends Activity {
             }
         });
         w.addJavascriptInterface(new Bridge(), "App");
-        setContentView(w);
+        root = new FrameLayout(this);
+        root.addView(w, new FrameLayout.LayoutParams(-1, -1));
+        setContentView(root);
 
         Scheduler.schedule(this);
         requestNotif(false);
@@ -153,6 +161,66 @@ public class MainActivity extends Activity {
                     + " · وضع الصوت: " + mode, Toast.LENGTH_LONG).show();
         }
     }
+
+    private FrameLayout root;
+    private LinearLayout webBox;
+    private WebView web;
+
+    /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
+    @SuppressWarnings("SetJavaScriptEnabled")
+    private void openWebUi(String u) {
+        if (u == null || !u.startsWith("https://")) return;
+        if (webBox == null) {
+            webBox = new LinearLayout(this);
+            webBox.setOrientation(LinearLayout.VERTICAL);
+            webBox.setBackgroundColor(0xFF04170F);
+            LinearLayout bar = new LinearLayout(this);
+            bar.setOrientation(LinearLayout.HORIZONTAL);
+            bar.setGravity(Gravity.CENTER_VERTICAL);
+            bar.setBackgroundColor(0xFF04170F);
+            int pad = (int) (10 * getResources().getDisplayMetrics().density);
+            bar.setPadding(pad, pad / 2, pad, pad / 2);
+            TextView close = new TextView(this);
+            close.setText("✕");
+            close.setTextSize(22);
+            close.setTextColor(0xFFD9B85C);
+            close.setPadding(pad, 0, pad, 0);
+            close.setOnClickListener(v -> closeWeb());
+            TextView t = new TextView(this);
+            t.setText("القرآن الكريم");
+            t.setTextSize(18);
+            t.setTextColor(0xFFD9B85C);
+            t.setGravity(Gravity.CENTER);
+            bar.addView(close, new LinearLayout.LayoutParams(-2, -2));
+            bar.addView(t, new LinearLayout.LayoutParams(0, -2, 1));
+            View sp = new View(this);
+            bar.addView(sp, new LinearLayout.LayoutParams(close.getPaddingLeft() * 2 + (int) (22 * getResources().getDisplayMetrics().density), 1));
+            webBox.addView(bar, new LinearLayout.LayoutParams(-1, -2));
+            web = new WebView(this);
+            web.setBackgroundColor(0xFF04170F);
+            WebSettings ws = web.getSettings();
+            ws.setJavaScriptEnabled(true);
+            ws.setDomStorageEnabled(true);
+            ws.setAllowFileAccess(false);
+            ws.setBuiltInZoomControls(true);
+            ws.setDisplayZoomControls(false);
+            web.setWebViewClient(new WebViewClient() {
+                @Override public boolean shouldOverrideUrlLoading(WebView v, android.webkit.WebResourceRequest rq) {
+                    String sc = rq.getUrl().getScheme(); return sc == null || !sc.startsWith("http"); // الروابط داخل التطبيق
+                }
+                @Override public void onReceivedError(WebView v, android.webkit.WebResourceRequest rq, android.webkit.WebResourceError er) {
+                    if (rq.isForMainFrame())
+                        v.loadDataWithBaseURL(null, "<html dir='rtl'><body style='background:#04170f;color:#d9b85c;font:18px sans-serif;text-align:center;padding:3rem 1rem'>يتطلب اتصالاً بالإنترنت<br><br>تحقق من الاتصال ثم أعد فتح النافذة</body></html>", "text/html", "utf-8", null);
+                }
+            });
+            webBox.addView(web, new LinearLayout.LayoutParams(-1, 0, 1));
+            root.addView(webBox, new FrameLayout.LayoutParams(-1, -1));
+        }
+        webBox.setVisibility(View.VISIBLE);
+        if (web.getUrl() == null) web.loadUrl(u);
+    }
+
+    private void closeWeb() { if (webBox != null) webBox.setVisibility(View.GONE); }
 
     private static final int REQ_TONE = 77;
     private Ringtone testing;
@@ -223,12 +291,16 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        if (webBox != null && webBox.getVisibility() == View.VISIBLE) {
+            if (web.canGoBack()) web.goBack(); else closeWeb();
+            return;
+        }
         w.evaluateJavascript("window.goBack?window.goBack():false", v -> {
             if (!"true".equals(v)) finish();
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); }
-    @Override protected void onPause() { w.onPause(); super.onPause(); }
-    @Override protected void onDestroy() { w.destroy(); super.onDestroy(); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); }
+    @Override protected void onPause() { w.onPause(); if (web != null) web.onPause(); super.onPause(); }
+    @Override protected void onDestroy() { if (web != null) web.destroy(); w.destroy(); super.onDestroy(); }
 }

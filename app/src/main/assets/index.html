@@ -131,6 +131,7 @@ select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius
 .adg .adb b{font-size:1.6rem}
 #adk{position:fixed;top:0;left:0;right:0;bottom:0;z-index:40;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg0) var(--bgi) fixed}
 #adk.on{display:block}
+#tl{position:fixed;top:0;left:0;right:0;bottom:0;z-index:41;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;background:var(--bg0) var(--bgi) fixed}#tl.on{display:block}#tlb{padding:0 .85rem 2rem;max-width:34rem;margin:0 auto}#tlb .card{margin-top:.4rem}#tlb .card>.h{display:none}#tlb #dtd{display:inline-block}.tld{display:flex;justify-content:flex-end;margin-bottom:.5rem}
 .ahd{position:sticky;top:0;z-index:3;background:var(--bar);border-bottom:1px solid rgba(var(--gr),.35)}
 .ahr{display:flex;align-items:center;justify-content:space-between;height:3.2rem;max-width:34rem;margin:0 auto;padding:0 .85rem}
 .ahr h1{font-size:1.15rem;color:var(--gold);font-weight:700}
@@ -196,6 +197,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الأدوات -->
 <section class="tab" id="t2">
   <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
+  <div class="adg" id="tlg" style="margin-top:.8rem"><button class="adb" data-tl="0"><b>🧭</b>بوصلة القبلة<small>اتجاه الكعبة</small></button><button class="adb" data-tl="1"><b>📿</b>المسبحة<small>عدّاد التسبيح</small></button><button class="adb" data-tl="2"><b>📅</b>الذهاب إلى تاريخ<small>أوقات أي يوم</small></button><button class="adb" data-tl="3"><b>🗓️</b>المناسبات القادمة<small>تقريبي</small></button><button class="adb" data-tl="q" style="grid-column:1/3"><b>📖</b>القرآن الكريم<small>يتطلب اتصالاً بالإنترنت</small></button></div>
+  <div id="tlh" style="display:none">
   <div class="card"><div class="h"><span>بوصلة القبلة</span><small id="qtx"></small></div>
     <div class="cp"><svg viewBox="0 0 200 200"><g id="dial"><circle cx="100" cy="100" r="94" style="fill:rgba(var(--ov),.04);stroke:var(--gold)" stroke-opacity=".5" stroke-width="2"/><g id="tk" style="stroke:var(--mut)" stroke-width="2"></g>
       <text x="100" y="28" fill="#ce1126" font-size="15" text-anchor="middle" font-weight="700">N</text><text x="178" y="106" style="fill:var(--mut)" font-size="13" text-anchor="middle">E</text><text x="100" y="187" style="fill:var(--mut)" font-size="13" text-anchor="middle">S</text><text x="22" y="106" style="fill:var(--mut)" font-size="13" text-anchor="middle">W</text></g>
@@ -211,6 +214,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" style="margin-top:.5rem"><button class="btn" id="dtp">‹ اليوم السابق</button><button class="btn" id="dtn">اليوم التالي ›</button></div>
     <div id="dto" style="margin-top:.6rem"></div></div>
   <div class="card"><div class="h"><span>المناسبات القادمة</span><small>تقريبي</small></div><div id="evs"></div></div>
+  </div>
 </section>
 
 <!-- الإعدادات -->
@@ -224,7 +228,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>شكل التطبيق<small>ليلي أو نهاري بألوان فاتحة</small></span><div class="seg" id="thseg"><button data-th="dark">🌙 ليلي</button><button data-th="light">☀️ نهاري</button></div></div>
     <div class="sr"><span>حجم الخط<small>لكل نصوص التطبيق</small></span><div class="sp"><button id="fsm">−</button><span id="fsv"></span><button id="fsp">+</button></div></div>
     <div class="note">حجم الخط من 80% إلى 140%. التغيير يظهر فوراً.</div></div>
-  <div class="card"><div class="h"><span>حجم الخط في الودجت</span></div>
+  <div class="card"><div class="h"><span>حجم الخط على الشاشة الرئيسية</span></div>
     <div class="sr"><span>حجم النصوص<small>للودجت الخارجي على الشاشة الرئيسية</small></span><div class="sp"><button id="wfm">−</button><span id="wfv"></span><button id="wfp">+</button></div></div>
     <div class="note">اضغط + أو − لتكبير الخط أو تصغيره (من 70% إلى 150%). يتغيّر الودجت فوراً.</div></div>
   <div class="card"><div class="h"><span>التنبيهات</span></div>
@@ -248,11 +252,12 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>طريقة الحساب<small id="mtd"></small></span><select id="mt"></select></div>
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.10<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.14<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
 <div id="spm"><div class="spc"><button class="spx" id="spx">×</button><img src="support.jpg" alt="QR"><p>إذا أعجبك التطبيق يمكنك دعمي لأستمر 🌹 .. وشكراً لك من القلب ♥️</p></div></div>
+<div id="tl"><div class="ahd"><div class="ahr"><h1 id="tlt"></h1><div class="ctl"><button class="ax" id="tlx">×</button></div></div></div><div id="tlb"></div></div>
 <div id="adk"><div class="ahd"><div class="ahr"><h1 id="adt"></h1><div class="ctl"><span class="mut" id="adp" style="font-size:.85rem"></span><button class="btn" id="adr" style="padding:.2rem .7rem;font-size:.8rem">إعادة</button><button class="ax" id="adx">×</button></div></div><div class="apb"><i id="apg"></i></div></div><div id="adi"></div></div>
 <nav>
   <button class="on" data-t="0"><b>🕌</b>الرئيسية</button>
@@ -381,7 +386,7 @@ var ts=ls("tsb")||{n:0,t:33,k:0,c:0};
 function vib(ms){try{if(window.App)App.vib(ms);else if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
 var cust=ls("tsbc")||[];
 function DKL(){return DK.concat(cust)}
-function drawTs(){if(ts.k>=DKL().length)ts.k=0;$("tnd").style.display=ts.k>=DK.length?"":"none";$("tb").textContent=ts.n;$("tt").textContent="الهدف: "+(ts.t||"∞");$("tcy").textContent=ts.c?"دورات: "+ts.c:"";
+function drawTs(){if(ts.k>=DKL().length)ts.k=0;$("tnd").style.display=ts.k>=DK.length?"":"none";$("tnd").textContent="🗑 حذف هذا الذكر";$("tb").textContent=ts.n;$("tt").textContent="الهدف: "+(ts.t||"∞");$("tcy").textContent=ts.c?"دورات: "+ts.c:"";
  $("tkr").innerHTML=DKL().map(function(x,i){return'<button class="chp'+(i===ts.k?' on':'')+'" data-k="'+i+'">'+x+'</button>'}).join("")}
 $("tb").onclick=function(){ts.n++;if(ts.t&&ts.n>=ts.t){ts.n=0;ts.c++;vib(50)}ls("tsb",ts);drawTs()};
 $("tt").onclick=function(){var o=[33,99,100,0];ts.t=o[(o.indexOf(ts.t)+1)%o.length];ls("tsb",ts);drawTs()};
@@ -391,7 +396,8 @@ $("tkr").onclick=function(e){var b=e.target.closest("[data-k]");if(b){ts.k=+b.da
 $("tna").onclick=function(){$("tadd").style.display="";$("tni").value="";$("tni").focus()};
 $("tnc").onclick=function(){$("tadd").style.display="none"};
 $("tns").onclick=function(){var v=$("tni").value.replace(/\s+/g," ").trim();if(!v)return;if(DKL().indexOf(v)<0){cust.push(v);ls("tsbc",cust)}ts.k=DKL().indexOf(v);ts.n=0;ts.c=0;ls("tsb",ts);$("tadd").style.display="none";drawTs()};
-$("tnd").onclick=function(){if(ts.k<DK.length)return;if(!confirm("حذف هذا الذكر؟"))return;cust.splice(ts.k-DK.length,1);ls("tsbc",cust);ts.k=0;ts.n=0;ts.c=0;ls("tsb",ts);drawTs()};
+var tdArm=0,tdT;
+$("tnd").onclick=function(){if(ts.k<DK.length)return;if(!tdArm){tdArm=1;this.textContent="اضغط مرة أخرى للتأكيد";clearTimeout(tdT);tdT=setTimeout(function(){tdArm=0;drawTs()},3000);return}tdArm=0;clearTimeout(tdT);cust.splice(ts.k-DK.length,1);ls("tsbc",cust);ts.k=0;ts.n=0;ts.c=0;ls("tsb",ts);drawTs()};
 drawTs();
 /* ---------- الذهاب إلى تاريخ ---------- */
 function p2(n){return(n<10?"0":"")+n}
@@ -466,7 +472,15 @@ $("wr").onclick=weather;
 /* ---------- التنقل ---------- */
 function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
-window.goBack=function(){if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+var TLC=[],TLN=["بوصلة القبلة","المسبحة","الذهاب إلى تاريخ","المناسبات القادمة"],tlOpen=null;
+function tlShow(i){var c=TLC[i];if(!c)return;tlOpen=i;$("tlt").textContent=TLN[i];$("tlb").innerHTML="";
+ if(i===2){var d=document.createElement("div");d.className="tld";d.innerHTML='<button class="btn" id="dtd2" style="padding:.25rem .7rem;font-size:.8rem">اليوم</button>';$("tlb").appendChild(d);d.firstChild.onclick=dtToday}
+ $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
+function tlClose(){if(tlOpen!==null){$("tlh").appendChild(TLC[tlOpen]);tlOpen=null}$("tl").className=""}
+(function(){TLC=[].slice.call($("tlh").children)})();
+$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){try{if(window.App&&App.openWeb)App.openWeb("https://www.ayat.org/index.html");else alert("افتح التطبيق بآخر نسخة لتشغيل القرآن داخله")}catch(x){}}else tlShow(+k)};
+$("tlx").onclick=tlClose;
+window.goBack=function(){if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
 var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
