@@ -79,6 +79,10 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
         @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> openWebUi(u)); }
+        @JavascriptInterface public void wx2(int code, int max, int min) { Weather.storeTomorrow(MainActivity.this, code, max, min); WidgetProvider.refresh(MainActivity.this); }
+        @JavascriptInterface public void tsSet(int n, int t, int c) { if (FloatTasbih.prefs(MainActivity.this).getBoolean("dirty", false)) return; FloatTasbih.prefs(MainActivity.this).edit().putInt("n", n).putInt("t", t).putInt("c", c).apply(); }
+        @JavascriptInterface public boolean floatState() { return FloatTasbih.running(MainActivity.this); }
+        @JavascriptInterface public void floatOn(boolean on) { runOnUiThread(() -> floatToggle(on)); }
         @JavascriptInterface public void askNotif() { runOnUiThread(() -> requestNotif(true)); }
     }
 
@@ -99,6 +103,7 @@ public class MainActivity extends Activity {
         w.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView v, String url) {
                 loaded = true;
+                syncTs();
                 if (pendingOpen != null) {
                     String k = pendingOpen;
                     pendingOpen = null;
@@ -222,6 +227,27 @@ public class MainActivity extends Activity {
 
     private void closeWeb() { if (webBox != null) webBox.setVisibility(View.GONE); }
 
+    private void floatToggle(boolean on) {
+        if (!on) { FloatTasbih.stop(this); return; }
+        if (Build.VERSION.SDK_INT >= 23 && !android.provider.Settings.canDrawOverlays(this)) {
+            Toast.makeText(this, "فعّل «السماح بالظهور فوق التطبيقات» للتطبيق ثم عُد وفعّل المسبحة العائمة", Toast.LENGTH_LONG).show();
+            try { startActivity(new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()))); } catch (Exception ignored) {}
+            return;
+        }
+        FloatTasbih.start(this);
+    }
+
+    /** يمرّر عدّ المسبحة العائمة إلى الواجهة عند الرجوع للتطبيق */
+    private final Runnable poll = new Runnable() { @Override public void run() { syncTs(); w.postDelayed(this, 500); } };
+
+    private void syncTs() {
+        if (!loaded) return;
+        android.content.SharedPreferences p = FloatTasbih.prefs(this);
+        if (!p.getBoolean("dirty", false)) return;
+        p.edit().putBoolean("dirty", false).apply();
+        w.evaluateJavascript("window.tsSync&&window.tsSync(" + p.getInt("n", 0) + "," + p.getInt("c", 0) + ")", null);
+    }
+
     private static final int REQ_TONE = 77;
     private Ringtone testing;
 
@@ -300,7 +326,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); }
-    @Override protected void onPause() { w.onPause(); if (web != null) web.onPause(); super.onPause(); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); }
+    @Override protected void onPause() { w.removeCallbacks(poll); w.evaluateJavascript("window.selReset&&window.selReset()", null); w.onPause(); if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() { if (web != null) web.destroy(); w.destroy(); super.onDestroy(); }
 }

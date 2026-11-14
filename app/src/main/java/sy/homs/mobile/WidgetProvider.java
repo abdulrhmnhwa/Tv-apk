@@ -97,7 +97,8 @@ public class WidgetProvider extends AppWidgetProvider {
             }
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
             String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, ids[0]));
-            rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
+            String tw = Weather.tomorrow(c); // يُقصّ من الآخر إن ضاق المكان فلا يؤثر على شيء
+            rv.setTextViewText(R.id.wcity, (wl.isEmpty() ? city : city + "  " + wl) + (tw.isEmpty() ? "" : "  ·  " + tw));
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));

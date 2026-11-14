@@ -33,7 +33,7 @@ public class Weather {
         try {
             JSONObject o = Prefs.obj(c);
             URL u = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + o.optDouble("lat", 34.7324)
-                    + "&longitude=" + o.optDouble("lng", 36.7137) + "&current=temperature_2m,weather_code&timezone=auto");
+                    + "&longitude=" + o.optDouble("lng", 36.7137) + "&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=2&timezone=auto");
             h = (HttpURLConnection) u.openConnection();
             h.setConnectTimeout(8000);
             h.setReadTimeout(8000);
@@ -42,12 +42,33 @@ public class Weather {
             String line;
             while ((line = r.readLine()) != null) sb.append(line);
             r.close();
-            JSONObject cur = new JSONObject(sb.toString()).getJSONObject("current");
+            JSONObject all = new JSONObject(sb.toString());
+            JSONObject cur = all.getJSONObject("current");
             store(c, (int) Math.round(cur.getDouble("temperature_2m")), cur.getInt("weather_code"));
+            try {
+                JSONObject d = all.getJSONObject("daily");
+                storeTomorrow(c, d.getJSONArray("weather_code").getInt(1),
+                        (int) Math.round(d.getJSONArray("temperature_2m_max").getDouble(1)),
+                        (int) Math.round(d.getJSONArray("temperature_2m_min").getDouble(1)));
+            } catch (Throwable ignored) {}
         } catch (Throwable ignored) {
         } finally {
             if (h != null) h.disconnect();
         }
+    }
+
+    static void storeTomorrow(Context c, int code, int max, int min) {
+        sp(c).edit().putInt("tc", code).putInt("tmax", max).putInt("tmin", min).putLong("tat", System.currentTimeMillis())
+                .putString("tcn", Prefs.obj(c).optString("cn", "حمص")).apply();
+    }
+
+    /** طقس الغد للودجت، مثل «غداً 🌧️ 12–19°»، وفارغ إن لم تتوفر بيانات حديثة */
+    static String tomorrow(Context c) {
+        SharedPreferences p = sp(c);
+        long at = p.getLong("tat", 0);
+        if (at == 0 || System.currentTimeMillis() - at > 8 * 3600000L) return "";
+        if (!Prefs.obj(c).optString("cn", "حمص").equals(p.getString("tcn", ""))) return "";
+        return "غداً " + describe(p.getInt("tc", 0))[1] + " " + p.getInt("tmin", 0) + "–" + p.getInt("tmax", 0) + "°";
     }
 
     static void store(Context c, int temp, int code) {
