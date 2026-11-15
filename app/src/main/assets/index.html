@@ -34,6 +34,7 @@ button,select{font:inherit;color:inherit}
 .tab{display:none}.tab.on{display:block}
 .top{position:relative;display:flex;align-items:center;justify-content:space-between;height:3.2rem}
 .top h1{font-size:1.15rem;color:var(--gold);font-weight:700}
+#cty{display:flex;flex-direction:column;line-height:1.1;font-size:1rem}#cty small{font-size:.68rem;font-weight:400;opacity:.85;margin-top:.1rem}
 .top .ic{display:flex;align-items:center;gap:.6rem;font-size:1.1rem}
 #eg{position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65}
 #nw{width:1.35rem;height:1.35rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
@@ -176,7 +177,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 
 <!-- الرئيسية -->
 <section class="tab on" id="t0">
-  <div class="top"><h1 id="cty">حمص عاصمة الثورة</h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell">🔔</span><svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg></div></div>
+  <div class="top"><h1 id="cty"><span>حمص</span><small>عاصمة الثورة</small></h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell">🔔</span><svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg></div></div>
   <div class="card bt">
     <div class="dt" id="dates"></div>
     <div class="ring"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="90"/><circle class="pg" id="pg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="565.5"/></svg>
@@ -282,7 +283,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 1.9.22<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.0.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -469,9 +470,9 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-bell
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rln").checked=!!cfg.rl;lbDraw();$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;
+function syncSet(){$("fxc").style.display=cfg.cn==="حمص"?"":"none";var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").checked=!!cfg.en;$("snd").checked=!!cfg.snd;$("pre").checked=!!cfg.pre;$("pres").checked=!!cfg.pres;$("iqr").checked=!!cfg.iqr;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rln").checked=!!cfg.rl;lbDraw();$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
- $("cty").textContent=SLOG[cfg.city]||cfg.cn;$("bell").textContent=cfg.en?"🔔":"🔕"}
+ var sl=SLOG[cfg.city]||"",tg=sl.indexOf(cfg.cn)===0?sl.slice(cfg.cn.length).replace(/^[\s,،]+/,""):"";$("cty").innerHTML="";var cs=document.createElement("span");cs.textContent=cfg.cn;$("cty").appendChild(cs);if(tg){var sm=document.createElement("small");sm.textContent=tg;$("cty").appendChild(sm)};$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
 $("mt").onchange=function(){cfg.mt=+this.value;saveCfg();syncSet();lastKey="";tick()};
 $("en").onchange=function(){cfg.en=this.checked?1:0;saveCfg();syncSet()};
@@ -519,7 +520,7 @@ function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;$("tlt").textContent=TLN[
  if(id==="c_s1"){var d1=document.createElement("div");d1.className="tld";d1.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button>';$("tlb").appendChild(d1);d1.firstChild.onclick=function(){$("rs").click()}}
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
 function tlClose(){if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className=""}
-$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#19:1");else alert("افتح التطبيق بآخر نسخة لتشغيل القرآن داخله")}catch(x){}}else{if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
+$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1");else alert("افتح التطبيق بآخر نسخة لتشغيل القرآن داخله")}catch(x){}}else{if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
 $("tlx").onclick=tlClose;$("stg").onclick=$("tlg").onclick;
 /* ---------- التقويم الهجري ---------- */
 var GM=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],hcD=null;
@@ -543,7 +544,9 @@ function asDraw(){if($("asb").firstChild)return;var A=window.ASMA||[],d=Math.flo
  var o='<div class="nmg"><div class="nm1 big"><em>اسم اليوم · رقم '+(d+1)+'</em><b>'+t[0]+'</b><small>'+t[1]+'</small></div>';
  A.forEach(function(x,i){o+='<div class="nm1"><i>'+(i+1)+'</i><b>'+x[0]+'</b><small>'+x[1]+'</small></div>'});$("asb").innerHTML=o+'</div>'}
 /* ---------- ختمة القرآن ---------- */
-var KP=604,KHS=ls("khm2"),khAdd=0,khD=30;
+var KP=604,KE=(function(){var a=[21];for(var i=2;i<=29;i++)a.push(21+(i-1)*20);a.push(604);return a})();
+function khFin(p){var n=0;while(n<30&&KE[n]<=p)n++;return n}
+var KHS=ls("khm2"),khAdd=0,khD=30;
 if(!KHS){KHS={list:[],sel:0,done:0};var oldk=ls("khm");if(oldk){KHS.done=oldk.done||0;if(oldk.on)KHS.list.push({name:"ختمتي",start:oldk.start,days:oldk.days,pages:oldk.pages})}}
 function khSave(){ls("khm2",KHS)}
 function khDraw(){var b=$("khb"),o="",L=KHS.list;if(KHS.sel>=L.length)KHS.sel=0;
@@ -555,13 +558,13 @@ function khDraw(){var b=$("khb"),o="",L=KHS.list;if(KHS.sel>=L.length)KHS.sel=0;
   $("khgo").onclick=function(){var nm=$("khnm").value.replace(/\s+/g," ").trim()||"ختمة "+(L.length+1);L.push({name:nm,start:nowU(),days:khD,pages:0});KHS.sel=L.length-1;khAdd=0;khSave();khDraw()};
   if($("khcn"))$("khcn").onclick=function(){khAdd=0;khDraw()};
   $("khnew")&&($("khnew").onclick=function(){});bindKs(b);return}
- var kh=L[KHS.sel],el=Math.floor((nowU()-kh.start)/864e5),left=Math.max(1,kh.days-el),rem=KP-kh.pages,wird=Math.ceil(rem/left),pct=Math.round(kh.pages/KP*1000)/10,juz=Math.min(30,Math.floor(kh.pages/20)+1),late=el>=kh.days&&rem>0;
+ var kh=L[KHS.sel],el=Math.floor((nowU()-kh.start)/864e5),left=Math.max(1,kh.days-el),rem=KP-kh.pages,wird=Math.ceil(rem/left),pct=Math.round(kh.pages/KP*1000)/10,juz=Math.min(30,khFin(kh.pages)+1),late=el>=kh.days&&rem>0;
  o+='<div style="text-align:center;color:var(--gold);font-weight:700;margin-bottom:.2rem">'+kh.name.replace(/</g,"&lt;")+'</div><div class="kst"><div><b>'+kh.pages+'</b><small>صفحة مقروءة</small></div><div><b>'+rem+'</b><small>صفحة متبقية</small></div><div><b>'+(kh.pages>=KP?30:juz)+'</b><small>الجزء الحالي</small></div></div><div class="khp"><i style="width:'+pct+'%"></i></div><div class="mut" style="text-align:center;font-size:.85rem">'+pct+'% · اليوم '+(el+1)+' من '+kh.days+(KHS.done?' · ختمات مكتملة: '+KHS.done:'')+'</div>';
  if(rem>0)o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.05rem">'+(late?"تجاوزت المدة المحددة؛ ":"")+'وردك اليومي: <b>'+wird+'</b> صفحة ≈ '+(Math.round(wird/20*10)/10)+' جزء</div>';
  else o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.1rem">🎉 ما شاء الله، أتممت الختمة! تقبّل الله منك</div>';
- o+='<div class="row">'+(rem>0?'<button class="btn" id="kh1">+1 صفحة</button><button class="btn" id="kh5">+5</button><button class="btn" id="khj">+ جزء</button><button class="btn" id="khw">قرأت وردي</button>':'<button class="btn" id="khfin">إنهاء الختمة</button>')+'</div><div class="row" style="margin-top:.4rem"><button class="btn" id="khm1">−1 صفحة</button><button class="btn" id="khx">حذف الختمة</button></div>';
+ o+='<div class="row">'+(rem>0?'<button class="btn" id="kh1">+1 صفحة</button><button class="btn" id="kh5">+5</button><button class="btn" id="khj">'+(kh.pages===0||KE.indexOf(kh.pages)>=0?"+ جزء":"+ أتممت الجزء")+'</button><button class="btn" id="khw">قرأت وردي</button>':'<button class="btn" id="khfin">إنهاء الختمة</button>')+'</div><div class="row" style="margin-top:.4rem"><button class="btn" id="khm1">−1 صفحة</button><button class="btn" id="khx">حذف الختمة</button></div>';
  b.innerHTML=o;bindKs(b);var add=function(n){kh.pages=Math.max(0,Math.min(KP,kh.pages+n));khSave();khDraw()};
- if($("kh1")){$("kh1").onclick=function(){add(1)};$("kh5").onclick=function(){add(5)};$("khj").onclick=function(){add(20)};$("khw").onclick=function(){add(wird)}}
+ if($("kh1")){$("kh1").onclick=function(){add(1)};$("kh5").onclick=function(){add(5)};$("khj").onclick=function(){var f=khFin(kh.pages);if(f<30)add(KE[f]-kh.pages)};$("khw").onclick=function(){add(wird)}}
  $("khm1").onclick=function(){add(-1)};
  if($("khfin"))$("khfin").onclick=function(){KHS.done++;L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()};
  var x=$("khx"),arm=0;x.onclick=function(){if(!arm){arm=1;x.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;x.textContent="حذف الختمة"},3000);return}L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()}}
@@ -625,7 +628,9 @@ function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"أفضل و
  for(var i=0;i<CATS.length;i++)if(CATS[i].k===adm)return{t:CATS[i].t,d:CATS[i].d};return{t:"",d:""}}
 function adDraw(){var q=adInfo();$("adt").textContent=q.t;
  $("adi").innerHTML='<div class="card"><div class="atm">'+q.d+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
-function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
+var TENX={i:9001,t:"ذكر ما بعد الفجر والمغرب",n:10,a:"لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",s:"كتب الله له بهن عشر حسنات، ومحا بهن عشر سيئات، ورفع له بهن عشر درجات، وكُنَّ له عِدل عتاقة أربع رقاب، وكُنَّ له حرساً حتى يمسي. ومن قالهن إذا صلى المغرب دبر صلاته فمثل ذلك حتى يصبح."};
+function tenxOn(){var n=new Date(Date.now()+TZ*36e5),t=PT(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),h=n.getUTCHours()+n.getUTCMinutes()/60;return(h>=t[0]&&h<t[2])||(h>=t[4]&&h<t[5])}
+function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;if(m==="salah"&&tenxOn())adL=[TENX].concat(adL);adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
 $("tadk").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
 $("adx").onclick=function(){$("adk").className=""};
 $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};

@@ -23,7 +23,7 @@ public class WidgetProvider extends AppWidgetProvider {
     static final int GOLD = 0xFFD6B25E, MUTED = 0xFFA9C2B4, WHITE = 0xFFF4F1E8;
     static final int[] IDX = {0, 2, 3, 4, 5};
     static final int[] NID = {R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4};
-    static final int[] TID = {R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4};
+    static final int[] TID = {R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.wtom};
     static final int[] CID = {R.id.c0, R.id.c1, R.id.c2, R.id.c3, R.id.c4};
 
     @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { refresh(c); }
@@ -53,7 +53,7 @@ public class WidgetProvider extends AppWidgetProvider {
     private static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt, R.id.wtl, R.id.wtx,
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4};
     private static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22, 13, 13,
-            12, 12, 12, 12, 12, 13, 13, 13, 13, 13};
+            12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
         if (pct == 100) return; // الأحجام الافتراضية من ملف التخطيط
@@ -98,7 +98,9 @@ public class WidgetProvider extends AppWidgetProvider {
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
             String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, ids[0]));
             String tw = Weather.tomorrow(c); // يُقصّ من الآخر إن ضاق المكان فلا يؤثر على شيء
-            rv.setTextViewText(R.id.wcity, (wl.isEmpty() ? city : city + "  " + wl) + (tw.isEmpty() ? "" : "  ·  " + tw));
+            rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
+            rv.setTextViewText(R.id.wtom, tw);
+            rv.setViewVisibility(R.id.wtom, tw.isEmpty() ? View.GONE : View.VISIBLE);
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
