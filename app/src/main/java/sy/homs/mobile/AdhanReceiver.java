@@ -81,6 +81,8 @@ public class AdhanReceiver extends BroadcastReceiver {
         } catch (Exception e) { return "remind"; }
     }
 
+    private static final int NOTE_ID = 4000; // معرّف موحّد: كل إشعار جديد يحلّ محلّ السابق
+
     private void notifyNow(Context c, int id, String channel, String title, String text) {
         notifyNow(c, id, channel, title, text, null);
     }
@@ -110,7 +112,16 @@ public class AdhanReceiver extends BroadcastReceiver {
             PendingIntent pi = PendingIntent.getActivity(c, open == null ? 2 : id, oi, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
             b.setSmallIcon(R.drawable.ic_stat_mosque).setContentTitle(title).setContentText(text)
                     .setContentIntent(pi).setAutoCancel(true);
-            nm.notify(id, b.build());
+            // يبقى أحدث إشعار فقط: نزيل إشعارات التطبيق السابقة (ما عدا إشعار القفل والمسبحة العائمة)
+            if (Build.VERSION.SDK_INT >= 23) {
+                try {
+                    for (android.service.notification.StatusBarNotification sn : nm.getActiveNotifications()) {
+                        int i = sn.getId();
+                        if (i != LockNotif.ID && i != FloatTasbih.NID) nm.cancel(i);
+                    }
+                } catch (Throwable ignored) {}
+            }
+            nm.notify(NOTE_ID, b.build());
         } catch (Exception ignored) {}
     }
 }
