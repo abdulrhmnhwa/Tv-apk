@@ -281,7 +281,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.2<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -574,15 +574,16 @@ function qPage(s,a){var st=SP[s-1],en=s<114?SP[s]:604;return Math.max(1,Math.min
 function qHash(p){p=Math.max(1,Math.min(604,p));var s=1;for(var i=0;i<114;i++)if(SP[i]<=p)s=i+1;var st=SP[s-1],en=s<114?SP[s]:604,sp=Math.max(1,en-st);return s+":"+Math.max(1,Math.min(AC[s-1],1+Math.round((p-st)/sp*AC[s-1])))}
 var kq=null;
 function khRead(kh){var st=kh.pages||0;kq={i:KHS.sel,st:st};
- var u="https://tanzil.net/#"+(st>0?"page-"+Math.min(604,st+1):"1:1");
+ var u=kh.lu==="B"?"https://tanzil.net/":"https://tanzil.net/#"+(kh.lu||(st>0?"page-"+Math.min(604,st+1):"1:1"));
  try{if(window.App&&App.openQuran)App.openQuran(u);else if(window.App&&App.openWeb)App.openWeb(u);else alert("افتح التطبيق بآخر نسخة لتفعيل القراءة")}catch(e){}}
-window.quranDone=function(){if(!kq)return;kqShow(0,false,"")};
+window.quranDone=function(u){if(!kq)return;var i=(u||"").indexOf("#");kq.lu=i>=0&&i<u.length-1?u.slice(i+1):(u?"B":"");kqShow(0,false,"")};
+function kqKeep(kh){if(kq.lu){kh.lu=kq.lu;khSave()}}
 function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem";document.body.appendChild(d)}
  var st=kq.st;
  d.innerHTML='<div class="card" style="max-width:22rem;width:100%;text-align:center"><div style="color:var(--gold);font-weight:700;font-size:1.1rem;margin-bottom:.4rem">📖 انتهت قراءتك</div><div class="mut" style="font-size:.85rem" id="kqn">اكتب رقم الصفحة التي وصلت إليها</div><div style="margin:.7rem 0">أنا الآن في الصفحة <input class="tin" id="kqp" type="number" min="1" max="604" value="" style="width:5.5rem;display:inline-block;text-align:center"></div><div id="kqm" style="color:var(--gold);margin-bottom:.7rem"></div><div class="row"><button class="btn" id="kqok">إضافة للختمة</button><button class="btn" id="kqno">تجاهل</button></div></div>';
  var inp=$("kqp"),upd=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;$("kqm").textContent=k>0?"ستُضاف "+k+" صفحة (المقروء: "+(p-1)+") إلى «"+kh.name.replace(/</g,"&lt;")+"»":"لا صفحات جديدة للإضافة"};inp.oninput=upd;upd();
- $("kqno").onclick=function(){d.remove();kq=null};
- $("kqok").onclick=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;if(!(k>0)){d.remove();kq=null;return}kh.pages=Math.min(KP,kh.pages+k);khSave();d.remove();kq=null;khDraw()}}
+ $("kqno").onclick=function(){kqKeep(kh);d.remove();kq=null};
+ $("kqok").onclick=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;if(!(k>0)){kqKeep(kh);d.remove();kq=null;return}delete kh.lu;kh.pages=Math.min(KP,kh.pages+k);khSave();d.remove();kq=null;khDraw()}}
 /* ---------- قضاء الفوائت ---------- */
 var qd=ls("qd")||{f:0,z:0,a:0,m:0,i:0},QN=[["f","الفجر"],["z","الظهر"],["a","العصر"],["m","المغرب"],["i","العشاء"]];
 function qdDraw(){var tot=0,o="";QN.forEach(function(q){tot+=qd[q[0]]||0;o+='<div class="qdr"><span>'+q[1]+'</span><button data-q="'+q[0]+',-1">✓ قضيت</button><b>'+(qd[q[0]]||0)+'</b><button data-q="'+q[0]+',1">+</button></div>'});

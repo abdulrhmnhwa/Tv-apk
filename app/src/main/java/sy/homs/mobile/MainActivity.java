@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
 
     private FrameLayout root;
     private LinearLayout webBox;
-    private boolean trackWeb, clearHist;
+    private boolean trackWeb, clearHist, webOut;
     private WebView web;
 
     /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
@@ -228,8 +228,16 @@ public class MainActivity extends Activity {
             root.addView(webBox, new FrameLayout.LayoutParams(-1, -1));
         }
         webBox.setVisibility(View.VISIBLE);
-        // كل فتح يبدأ من الرابط المطلوب (ختمة: صفحتها، القرآن العادي: أول صفحة) وليس من آخر موضع سابق
-        final String target = u;
+        final boolean khatma = trackWeb;
+        String t0 = u;
+        if (!khatma) {
+            // القرآن من الخارج: يرجع لآخر موضع محفوظ (أو للموقع نفسه الذي يتذكر آخر آية)
+            String cur = web.getUrl();
+            if (webOut && cur != null && cur.startsWith("http")) return; // ما زال مفتوحاً على موضعه
+            t0 = getSharedPreferences("quran", 0).getString("out", "https://tanzil.net/");
+        }
+        final String target = t0;
+        webOut = !khatma;
         clearHist = true;
         if (web.getUrl() == null) web.loadUrl(target);
         else { web.loadUrl("about:blank"); web.postDelayed(() -> web.loadUrl(target), 150); }
@@ -237,9 +245,13 @@ public class MainActivity extends Activity {
 
     private void closeWeb() {
         if (webBox == null) return;
+        String cur = web != null ? web.getUrl() : null;
+        if (cur != null && !cur.startsWith("http")) cur = null;
         if (trackWeb && web != null) {
             trackWeb = false;
-            w.evaluateJavascript("window.quranDone&&window.quranDone()", null);
+            w.evaluateJavascript("window.quranDone&&window.quranDone(" + org.json.JSONObject.quote(cur == null ? "" : cur) + ")", null);
+        } else if (cur != null) {
+            getSharedPreferences("quran", 0).edit().putString("out", cur).apply();
         }
         webBox.setVisibility(View.GONE);
     }
