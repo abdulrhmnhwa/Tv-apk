@@ -27,7 +27,7 @@
 :root[data-th="light"] .sw i:after{box-shadow:0 1px 3px rgba(0,0,0,.3)}
 :root[data-th="light"] .p.on{border-color:rgba(var(--gr),.7)}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html{font-size:calc(clamp(14px,4.1vw,18px)*var(--fs,1))}
+html{font-size:calc(15px*var(--fs,1));font-size:calc(clamp(14px,4.1vw,18px)*var(--fs,1))}
 body{min-height:100vh;color:var(--w);font-family:"GoogleSans","Noto Naskh Arabic","Noto Sans Arabic",Roboto,Arial,sans-serif;font-variant-ligatures:normal;text-rendering:optimizeLegibility;background:var(--bg0) var(--bgi) fixed;-webkit-user-select:none;user-select:none}
 button,select{font:inherit;color:inherit}
 #app{padding:0 .85rem 5.8rem;max-width:34rem;margin:0 auto}
@@ -40,7 +40,7 @@ button,select{font:inherit;color:inherit}
 #nw{width:1.35rem;height:1.35rem;color:#3ddc84;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 #nw.off{color:#e04b4b}#sl{display:none}#nw.off #sl{display:block}
 .card{position:relative;overflow:hidden;background:var(--cardbg);border:1px solid rgba(var(--gr),.4);border-radius:1.1rem;padding:1rem;margin-top:.8rem}
-.card::before{content:"";position:absolute;inset:0;background:center/auto 100% no-repeat;pointer-events:none;opacity:.12}
+.card::before{content:"";position:absolute;top:0;right:0;bottom:0;left:0;background:center/auto 100% no-repeat;pointer-events:none;opacity:.12}
 .card>*{position:relative}
 .bt::before{background-image:url(tower.webp);background-position:right bottom}
 .bm::before{background-image:url(mosque.webp);background-size:contain;opacity:.1}
@@ -54,7 +54,7 @@ button,select{font:inherit;color:inherit}
 .ring svg{width:100%;height:100%;transform:rotate(-90deg)}
 .ring circle{fill:none;stroke-width:9}
 .ring .tr{stroke:rgba(var(--gr),.18)}.ring .pg{stroke:var(--gold);stroke-linecap:round}
-.rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.rc{position:absolute;top:0;right:0;bottom:0;left:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
 .rc .l{font-size:.85rem;color:var(--mut)}.rc .n{font-size:1.75rem;color:var(--gold);font-weight:700;line-height:1.3}
 .rc .c{font-size:2rem;font-weight:700;direction:ltr;line-height:1.2}.rc .t{font-size:.9rem;color:var(--mut)}
 .rnote{display:none;text-align:center;color:var(--warn);font-size:.95rem;margin:.1rem 0 .4rem;line-height:1.6}
@@ -101,7 +101,7 @@ button,select{font:inherit;color:inherit}
 .sr small{display:block;color:var(--mut);font-size:.75rem}
 select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius:.7rem;padding:.45rem .6rem;font-size:.95rem;max-width:12rem}
 .sw{position:relative;width:3rem;height:1.7rem;flex:none}.sw input{display:none}
-.sw i{position:absolute;inset:0;background:rgba(var(--ov),.18);border-radius:2rem;transition:background .2s}
+.sw i{position:absolute;top:0;right:0;bottom:0;left:0;background:rgba(var(--ov),.18);border-radius:2rem;transition:background .2s}
 .sw i:after{content:"";position:absolute;top:.2rem;right:.2rem;width:1.3rem;height:1.3rem;border-radius:50%;background:#fff;transition:transform .2s}
 .sw input:checked+i{background:var(--g);box-shadow:0 0 0 1px var(--gold)}
 .sw input:checked+i:after{transform:translateX(-1.3rem);background:var(--gold)}
@@ -158,6 +158,7 @@ select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius
 .ad .h{margin-bottom:.5rem}
 .at{font-size:1.2rem;line-height:2.15;text-align:center;white-space:pre-line}
 .at.q{color:var(--gold)}
+.ay{display:inline-block;box-sizing:border-box;min-width:1.9em;height:1.9em;padding:0 .25em;line-height:1.75em;border:1.5px solid currentColor;border-radius:50%;font-size:.62em;text-align:center;vertical-align:middle;margin:0 .25em;white-space:nowrap}
 .af{font-size:.82rem;color:var(--mut);line-height:1.8;text-align:center;margin-top:.7rem}
 .as{font-size:.74rem;color:rgba(var(--mr),.75);text-align:center;margin-top:.2rem;line-height:1.6}
 .ac{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.9rem auto 0;min-width:11rem;padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--gold);background:rgba(var(--gr),.16);color:var(--gold);font-size:.9rem}
@@ -643,7 +644,7 @@ setInterval(function(){if($("adk").className!=="on"||["m","e","salah"].indexOf(a
 function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
-function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
+function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;a=a.replace(/\u06DD([\u0660-\u0669]+)/g,'<span class="ay">$1</span>');
  return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
 function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
 function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"أفضل وقت لها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"أفضل وقت لها من بعد صلاة العصر حتى غروب الشمس"};
