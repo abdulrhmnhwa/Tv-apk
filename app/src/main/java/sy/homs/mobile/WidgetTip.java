@@ -13,7 +13,9 @@ public class WidgetTip {
     static final int DH_GAP = 25;      // الضحى ينتهي قبل الظهر بهذه الدقائق
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
     static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
-    static final int POST_LEN = 30;    // مدة إظهار «أذكار بعد الصلاة»
+    static final int POST_LEN = 15;    // مدة إظهار «أذكار بعد الصلاة» (ربع ساعة)
+    static final int POST_GAP = 2;     // تبدأ بعد انتهاء مدة الإقامة بدقيقتين
+    static final int[] POST_P = {0, 2, 3, 4, 5}; // الفجر والظهر والعصر والمغرب والعشاء
     static final int SAT = 7, SUN = 1, MON = 2, THU = 5, FRI = 6; // قيم Calendar.DAY_OF_WEEK
 
     static final String[][] GEN = {
@@ -51,7 +53,7 @@ public class WidgetTip {
 
     static long dhStart(long[] r) { return r[1] + MK * MIN; }
     static long dhEnd(long[] r) { return Math.min(dhStart(r) + DH_LEN * MIN, r[2] - DH_GAP * MIN); }
-    static long postStart(long[] r, int[] iq, int i) { return r[i] + (iq[i] > 0 ? iq[i] : 10) * MIN; }
+    static long postStart(long[] r, int[] iq, int i) { return r[i] + ((iq[i] > 0 ? iq[i] : 10) + POST_GAP) * MIN; }
 
     static final String[] NM = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
 
@@ -68,6 +70,13 @@ public class WidgetTip {
     static String[] pick(long now, long[] r, int[] iq, int dow, int code, int temp) {
         int slot = (int) ((now / (30 * MIN)) % 100000);
 
+        // 0) أذكار بعد الصلاة: لها الأولوية على أذكار الصباح والمساء، وبعد انتهائها يعود البرنامج لمجراه
+        for (int i : POST_P) {
+            long s = postStart(r, iq, i);
+            if (now >= s && now < s + POST_LEN * MIN)
+                return t("🤲 بعد الصلاة", "أذكار بعد صلاة " + NM[i] + " — التسبيح والتحميد والتكبير ثلاثاً وثلاثين", "salah");
+        }
+
         // 1) نوافذ الأذكار والصلوات
         if (now >= r[0] && now < dhStart(r))
             return t("☀️ أذكار الصباح", "حان وقت أذكار الصباح — حصّن نفسك بآية الكرسي والمعوذات", "m");
@@ -79,12 +88,6 @@ public class WidgetTip {
             return t("😴 أذكار النوم", "لا تنسَ أذكار النوم — آية الكرسي والمعوذات وخواتيم البقرة", "sleep");
         if (now >= r[0] - nightBefore * MIN && now < r[0])
             return t("🌌 الثلث الأخير من الليل", "ينزل ربنا إلى السماء الدنيا فيقول: من يدعوني فأستجيب له، من يستغفرني فأغفر له", "tab");
-        int[] pp = {2, 4, 5};
-        for (int i : pp) {
-            long s = postStart(r, iq, i);
-            if (now >= s && now < s + POST_LEN * MIN)
-                return t("🤲 بعد الصلاة", "أذكار بعد صلاة " + NM[i] + " — التسبيح والتحميد والتكبير ثلاثاً وثلاثين", "salah");
-        }
 
         // 2) الطقس
         if (code >= 95)
@@ -113,7 +116,9 @@ public class WidgetTip {
             if (r == null) continue;
             long[] b = {
                 r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN,
+                postStart(r, iq, 0), postStart(r, iq, 0) + POST_LEN * MIN,
                 postStart(r, iq, 2), postStart(r, iq, 2) + POST_LEN * MIN,
+                postStart(r, iq, 3), postStart(r, iq, 3) + POST_LEN * MIN,
                 postStart(r, iq, 4), postStart(r, iq, 4) + POST_LEN * MIN,
                 postStart(r, iq, 5), postStart(r, iq, 5) + POST_LEN * MIN
             };

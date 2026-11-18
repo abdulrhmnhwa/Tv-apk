@@ -78,7 +78,9 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
-        @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> openWebUi(u)); }
+        @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> { trackWeb = false; openWebUi(u); }); }
+        /** فتح القرآن مع تتبّع الموضع: عند الإغلاق تُرسل الصفحة/الموضع للواجهة لإضافتها على الختمة */
+        @JavascriptInterface public void openQuran(String u) { runOnUiThread(() -> { trackWeb = true; openWebUi(u); }); }
         @JavascriptInterface public void wx2(int code, int max, int min) { Weather.storeTomorrow(MainActivity.this, code, max, min); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void tsSet(int n, int t, int c) { if (FloatTasbih.prefs(MainActivity.this).getBoolean("dirty", false)) return; FloatTasbih.prefs(MainActivity.this).edit().putInt("n", n).putInt("t", t).putInt("c", c).apply(); }
         @JavascriptInterface public boolean floatState() { return FloatTasbih.running(MainActivity.this); }
@@ -169,6 +171,7 @@ public class MainActivity extends Activity {
 
     private FrameLayout root;
     private LinearLayout webBox;
+    private boolean trackWeb;
     private WebView web;
 
     /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
@@ -225,7 +228,17 @@ public class MainActivity extends Activity {
         if (web.getUrl() == null) web.loadUrl(u);
     }
 
-    private void closeWeb() { if (webBox != null) webBox.setVisibility(View.GONE); }
+    private void closeWeb() {
+        if (webBox == null) return;
+        if (trackWeb && web != null) {
+            trackWeb = false;
+            // نقرأ موضع القراءة من الصفحة (قوائم الصفحات + الرابط) ونسلّمه للواجهة
+            web.evaluateJavascript("(function(){try{var s=[];[].forEach.call(document.querySelectorAll('select'),function(e){s.push([e.options.length,e.selectedIndex,e.value])});return JSON.stringify({h:location.hash,s:s})}catch(x){return JSON.stringify({h:'',s:[]})}})()", v -> {
+                if (v != null && !v.equals("null")) w.evaluateJavascript("window.quranDone&&window.quranDone(" + v + ")", null);
+            });
+        }
+        webBox.setVisibility(View.GONE);
+    }
 
     private void floatToggle(boolean on) {
         if (!on) { FloatTasbih.stop(this); return; }

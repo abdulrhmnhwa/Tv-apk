@@ -562,13 +562,34 @@ function khDraw(){var b=$("khb"),o="",L=KHS.list;if(KHS.sel>=L.length)KHS.sel=0;
  o+='<div style="text-align:center;color:var(--gold);font-weight:700;margin-bottom:.2rem">'+kh.name.replace(/</g,"&lt;")+'</div><div class="kst"><div><b>'+kh.pages+'</b><small>صفحة مقروءة</small></div><div><b>'+rem+'</b><small>صفحة متبقية</small></div><div><b>'+(kh.pages>=KP?30:juz)+'</b><small>الجزء الحالي</small></div></div><div class="khp"><i style="width:'+pct+'%"></i></div><div class="mut" style="text-align:center;font-size:.85rem">'+pct+'% · اليوم '+(el+1)+' من '+kh.days+(KHS.done?' · ختمات مكتملة: '+KHS.done:'')+'</div>';
  if(rem>0)o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.05rem">'+(late?"تجاوزت المدة المحددة؛ ":"")+'وردك اليومي: <b>'+wird+'</b> صفحة ≈ '+(Math.round(wird/20*10)/10)+' جزء</div>';
  else o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.1rem">🎉 ما شاء الله، أتممت الختمة! تقبّل الله منك</div>';
+ if(rem>0)o+='<div class="row" style="margin:.2rem 0 .6rem"><button class="btn" id="khrd" style="flex:1">📖 ابدأ القراءة الآن</button></div>';
  o+='<div class="row">'+(rem>0?'<button class="btn" id="kh1">+1 صفحة</button><button class="btn" id="kh5">+5</button><button class="btn" id="khj">'+(kh.pages===0||KE.indexOf(kh.pages)>=0?"+ جزء":"+ أتممت الجزء")+'</button><button class="btn" id="khw">قرأت وردي</button>':'<button class="btn" id="khfin">إنهاء الختمة</button>')+'</div><div class="row" style="margin-top:.4rem"><button class="btn" id="khm1">−1 صفحة</button><button class="btn" id="khx">حذف الختمة</button></div>';
  b.innerHTML=o;bindKs(b);var add=function(n){kh.pages=Math.max(0,Math.min(KP,kh.pages+n));khSave();khDraw()};
+ if($("khrd"))$("khrd").onclick=function(){khRead(kh)};
  if($("kh1")){$("kh1").onclick=function(){add(1)};$("kh5").onclick=function(){add(5)};$("khj").onclick=function(){var f=khFin(kh.pages);if(f<30)add(KE[f]-kh.pages)};$("khw").onclick=function(){add(wird)}}
  $("khm1").onclick=function(){add(-1)};
  if($("khfin"))$("khfin").onclick=function(){KHS.done++;L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()};
  var x=$("khx"),arm=0;x.onclick=function(){if(!arm){arm=1;x.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;x.textContent="حذف الختمة"},3000);return}L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()}}
 function bindKs(b){[].forEach.call(b.querySelectorAll("[data-ks]"),function(c){c.onclick=function(){KHS.sel=+c.dataset.ks;khAdd=0;khSave();khDraw()}});var n=$("khnew");if(n)n.onclick=function(){khAdd=1;khDraw()}}
+/* ---------- قراءة القرآن داخل التطبيق وإضافتها على الختمة تلقائياً ---------- */
+var SP=[1,2,50,77,106,128,151,177,187,208,221,235,249,255,262,267,282,293,305,312,322,332,342,350,359,367,377,385,396,404,411,415,418,428,434,440,446,453,458,467,477,483,489,496,499,502,507,511,515,518,520,523,526,528,531,534,537,542,545,549,551,553,554,556,558,560,562,564,566,568,570,572,574,575,577,578,580,582,583,585,586,587,587,589,590,591,591,592,593,594,595,595,596,596,597,597,598,598,599,599,600,600,601,601,601,602,602,602,603,603,603,604,604,604],
+AC=[7,286,200,176,120,165,206,75,129,109,123,111,43,52,99,128,111,110,98,135,112,78,118,64,77,227,93,88,69,60,34,30,73,54,45,83,182,88,75,85,54,53,89,59,37,35,38,29,18,45,60,49,62,55,78,96,29,22,24,13,14,11,11,18,12,12,30,52,52,44,28,28,20,56,40,31,50,40,46,42,29,19,36,25,22,17,19,26,30,20,15,21,11,8,8,19,5,8,8,11,11,8,3,9,5,4,7,3,6,3,5,4,5,6];
+function qPage(s,a){var st=SP[s-1],en=s<114?SP[s]:604;return Math.max(1,Math.min(604,st+Math.round((a-1)/AC[s-1]*Math.max(0,en-st))))}
+function qHash(p){p=Math.max(1,Math.min(604,p));var s=1;for(var i=0;i<114;i++)if(SP[i]<=p)s=i+1;var st=SP[s-1],en=s<114?SP[s]:604,sp=Math.max(1,en-st);return s+":"+Math.max(1,Math.min(AC[s-1],1+Math.round((p-st)/sp*AC[s-1])))}
+var kq=null;
+function khRead(kh){var st=kh.rp!=null?kh.rp:kh.pages;kq={i:KHS.sel,st:st};
+ var u="https://tanzil.net/#"+(kh.rh||(st>0?qHash(st+1):"1:1"));
+ try{if(window.App&&App.openQuran)App.openQuran(u);else if(window.App&&App.openWeb)App.openWeb(u);else alert("افتح التطبيق بآخر نسخة لتفعيل القراءة")}catch(e){}}
+window.quranDone=function(str){if(!kq)return;var o={};try{o=JSON.parse(str)}catch(e){}var pg=0,ex=false,m=/#(\d+):(\d+)/.exec(o.h||"");
+ (o.s||[]).forEach(function(s){if(s[0]>=604&&s[0]<=606){var v=+s[2];pg=v>=1&&v<=604?v:s[1]+1;ex=true}});
+ if(!pg&&m&&+m[1]>=1&&+m[1]<=114)pg=qPage(+m[1],Math.max(1,+m[2]));
+ kqShow(pg,ex,m?m[1]+":"+m[2]:"")};
+function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem";document.body.appendChild(d)}
+ var st=kq.st;if(!pg)pg=st;
+ d.innerHTML='<div class="card" style="max-width:22rem;width:100%;text-align:center"><div style="color:var(--gold);font-weight:700;font-size:1.1rem;margin-bottom:.4rem">📖 انتهت قراءتك</div><div class="mut" style="font-size:.85rem" id="kqn">'+(ex?"تعرّفتُ على موضعك تلقائياً":hash?"قدّرتُ الصفحة من موضعك ("+hash+") وقد تختلف قليلاً":"لم أستطع معرفة موضعك، اكتب الصفحة التي وصلت إليها")+'</div><div style="margin:.7rem 0">وصلت إلى الصفحة <input class="tin" id="kqp" type="number" min="1" max="604" value="'+pg+'" style="width:5.5rem;display:inline-block;text-align:center"></div><div id="kqm" style="color:var(--gold);margin-bottom:.7rem"></div><div class="row"><button class="btn" id="kqok">إضافة للختمة</button><button class="btn" id="kqno">تجاهل</button></div></div>';
+ var inp=$("kqp"),upd=function(){var p=Math.max(1,Math.min(604,+inp.value||0)),k=p-st;$("kqm").textContent=k>0?"ستُضاف "+k+" صفحة إلى «"+kh.name.replace(/</g,"&lt;")+"»":"لا صفحات جديدة للإضافة"};inp.oninput=upd;upd();
+ $("kqno").onclick=function(){d.remove();kq=null};
+ $("kqok").onclick=function(){var p=Math.max(1,Math.min(604,+inp.value||0)),k=p-st;if(k>0)kh.pages=Math.min(KP,kh.pages+k);kh.rp=p;kh.rh=hash||qHash(p);khSave();d.remove();kq=null;khDraw()}}
 /* ---------- قضاء الفوائت ---------- */
 var qd=ls("qd")||{f:0,z:0,a:0,m:0,i:0},QN=[["f","الفجر"],["z","الظهر"],["a","العصر"],["m","المغرب"],["i","العشاء"]];
 function qdDraw(){var tot=0,o="";QN.forEach(function(q){tot+=qd[q[0]]||0;o+='<div class="qdr"><span>'+q[1]+'</span><button data-q="'+q[0]+',-1">✓ قضيت</button><b>'+(qd[q[0]]||0)+'</b><button data-q="'+q[0]+',1">+</button></div>'});
@@ -617,7 +638,14 @@ var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
 CATS.forEach(function(c){c.items.forEach(function(x,i){x.i=i})});
 $("adg").innerHTML=CATS.map(function(c){return'<button class="adb" data-m="'+c.k+'"><b>'+c.ic+'</b>'+c.t+'<small>'+c.d+'</small></button>'}).join("");
-function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};adO=o}
+/* إعادة العدّادات تلقائياً: الصباح بانتهاء وقته (بداية الضحى)، المساء بالمغرب، وبعد الصلاة عند بداية كل وقت جديد */
+function adEpoch(k){var n=new Date(Date.now()+TZ*36e5),now=Date.now(),best=0;
+ for(var d=-1;d<=0;d++){var q=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+d)),T=PT(q.getUTCFullYear(),q.getUTCMonth(),q.getUTCDate()),b=q.getTime()-TZ*36e5,ev=k==="m"?[T[1]+20/60]:k==="e"?[T[4]]:T;
+  ev.forEach(function(h){var ts=b+h*36e5;if(ts<=now&&ts>best)best=ts})}
+ return best}
+function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};
+ ["m","e","salah"].forEach(function(k){if(!o[k])return;if(!o[k].ts)o[k].ts=Date.now();else if(o[k].ts<adEpoch(k))delete o[k]});adO=o}
+setInterval(function(){if($("adk").className!=="on"||["m","e","salah"].indexOf(adm)<0)return;var b=JSON.stringify(adO[adm]||null);adLoad();if(JSON.stringify(adO[adm]||null)!==b){ls("adk",adO);adDraw()}},20000);
 function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
@@ -634,7 +662,7 @@ function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){ret
 $("tadk").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
 $("adx").onclick=function(){$("adk").className=""};
 $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
-$("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;ls("adk",adO);
+$("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;adO[adm].ts=Date.now();ls("adk",adO);
  var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
 /* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
 window.openAdhkar=function(k){show(2);$("adk").className="";if(k&&k!=="tab")adOpen(k)};
