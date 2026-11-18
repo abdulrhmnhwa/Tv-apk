@@ -171,7 +171,7 @@ public class MainActivity extends Activity {
 
     private FrameLayout root;
     private LinearLayout webBox;
-    private boolean trackWeb;
+    private boolean trackWeb, clearHist;
     private WebView web;
 
     /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
@@ -213,6 +213,9 @@ public class MainActivity extends Activity {
             ws.setBuiltInZoomControls(true);
             ws.setDisplayZoomControls(false);
             web.setWebViewClient(new WebViewClient() {
+                @Override public void onPageFinished(WebView v, String url) {
+                    if (clearHist && url != null && url.startsWith("http")) { clearHist = false; v.clearHistory(); }
+                }
                 @Override public boolean shouldOverrideUrlLoading(WebView v, android.webkit.WebResourceRequest rq) {
                     String sc = rq.getUrl().getScheme(); return sc == null || !sc.startsWith("http"); // الروابط داخل التطبيق
                 }
@@ -225,17 +228,18 @@ public class MainActivity extends Activity {
             root.addView(webBox, new FrameLayout.LayoutParams(-1, -1));
         }
         webBox.setVisibility(View.VISIBLE);
-        if (web.getUrl() == null) web.loadUrl(u);
+        // كل فتح يبدأ من الرابط المطلوب (ختمة: صفحتها، القرآن العادي: أول صفحة) وليس من آخر موضع سابق
+        final String target = u;
+        clearHist = true;
+        if (web.getUrl() == null) web.loadUrl(target);
+        else { web.loadUrl("about:blank"); web.postDelayed(() -> web.loadUrl(target), 150); }
     }
 
     private void closeWeb() {
         if (webBox == null) return;
         if (trackWeb && web != null) {
             trackWeb = false;
-            // نقرأ موضع القراءة من الصفحة (قوائم الصفحات + الرابط) ونسلّمه للواجهة
-            web.evaluateJavascript("(function(){var R={h:location.hash,s:[],v:[],k:[],c:document.cookie.slice(0,600)};try{[].forEach.call(document.querySelectorAll('select'),function(e){R.s.push([e.options.length,e.selectedIndex,e.value])});var re=/(?:^|#|\\/)(page-)?(\\d{1,3})(?::(\\d{1,3}))?$/;[].forEach.call(document.querySelectorAll('*'),function(e){var r;try{r=e.getBoundingClientRect()}catch(x){return}if(!(r.bottom>0&&r.top<innerHeight&&r.height>0))return;var vals=[e.id,e.getAttribute('href')];[].forEach.call(e.attributes,function(a){if(a.name.indexOf('data-')===0)vals.push(a.value)});vals.forEach(function(t){if(!t||t.length>40)return;var m=re.exec(t);if(m&&(m[1]||m[3]))R.v.push([m[1]?'p':'a',+m[2],m[3]?+m[3]:0,r.top])})});R.v.sort(function(a,b){return a[3]-b[3]});R.v=R.v.slice(0,6);for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i),t=localStorage.getItem(k);if(t&&t.length<200)R.k.push([k,t])}}catch(x){}return JSON.stringify(R)})()", v -> {
-                if (v != null && !v.equals("null")) w.evaluateJavascript("window.quranDone&&window.quranDone(" + v + ")", null);
-            });
+            w.evaluateJavascript("window.quranDone&&window.quranDone()", null);
         }
         webBox.setVisibility(View.GONE);
     }
