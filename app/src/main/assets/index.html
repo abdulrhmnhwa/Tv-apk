@@ -281,7 +281,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -574,7 +574,7 @@ function qPage(s,a){var st=SP[s-1],en=s<114?SP[s]:604;return Math.max(1,Math.min
 function qHash(p){p=Math.max(1,Math.min(604,p));var s=1;for(var i=0;i<114;i++)if(SP[i]<=p)s=i+1;var st=SP[s-1],en=s<114?SP[s]:604,sp=Math.max(1,en-st);return s+":"+Math.max(1,Math.min(AC[s-1],1+Math.round((p-st)/sp*AC[s-1])))}
 var kq=null;
 function khRead(kh){var st=kh.pages||0;kq={i:KHS.sel,st:st};
- var u="https://tanzil.net/#page-"+Math.min(604,st+1);
+ var pn=Math.min(604,st+1),u="https://tanzil.net/#page-"+pn+" https://tanzil.net/#"+qHash(pn);
  try{if(window.App&&App.openQuran)App.openQuran(u);else if(window.App&&App.openWeb)App.openWeb(u);else alert("افتح التطبيق بآخر نسخة لتفعيل القراءة")}catch(e){}}
 window.quranDone=function(){if(!kq)return;kqShow(0,false,"")};
 function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem";document.body.appendChild(d)}

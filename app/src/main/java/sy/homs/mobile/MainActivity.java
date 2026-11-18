@@ -173,7 +173,10 @@ public class MainActivity extends Activity {
     private LinearLayout webBox;
     private boolean trackWeb, clearHist;
     private String gotoUrl = "";
+    private int goTry;
     private TextView goBtn;
+    private LinearLayout goRow;
+    private final Runnable goHide = () -> { if (goRow != null) goRow.setVisibility(View.GONE); };
     private WebView web;
 
     /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
@@ -210,11 +213,35 @@ public class MainActivity extends Activity {
             goBtn.setText("📖 الذهاب إلى صفحة الختمة");
             goBtn.setTextSize(16);
             goBtn.setTextColor(0xFF04170F);
-            goBtn.setBackgroundColor(0xFFD9B85C);
-            goBtn.setGravity(Gravity.CENTER);
+                        goBtn.setGravity(Gravity.CENTER);
             goBtn.setPadding(pad, pad, pad, pad);
-            goBtn.setOnClickListener(v -> { if (web != null && gotoUrl.startsWith("https://")) web.loadUrl(gotoUrl); });
-            webBox.addView(goBtn, new LinearLayout.LayoutParams(-1, -2));
+            goBtn.setOnClickListener(v -> {
+                if (web == null) return;
+                String[] g = gotoUrl.split(" ");
+                if (g.length == 0 || !g[0].startsWith("https://")) return;
+                // تحميل جديد كامل بالرابط (الموقع يقرأ الموضع عند التحميل). الضغطة الثانية تجرّب صيغة سورة:آية
+                final String t = g[goTry % g.length];
+                goTry++;
+                goBtn.setText(g.length > 1 ? "📖 لم تصل للصفحة؟ اضغط للمحاولة بطريقة أخرى" : "📖 الذهاب إلى صفحة الختمة");
+                web.loadUrl("about:blank");
+                web.postDelayed(() -> web.loadUrl(t), 200);
+                goRow.removeCallbacks(goHide);
+                goRow.postDelayed(goHide, 3000); // يختفي بعد 3 ثوانٍ من الضغط
+            });
+            goRow = new LinearLayout(this);
+            goRow.setOrientation(LinearLayout.HORIZONTAL);
+            goRow.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            goRow.setBackgroundColor(0xFFD9B85C);
+            goRow.setGravity(Gravity.CENTER_VERTICAL);
+            TextView gx = new TextView(this);
+            gx.setText("✕");
+            gx.setTextSize(20);
+            gx.setTextColor(0xFF04170F);
+            gx.setPadding(pad * 2, pad, pad * 2, pad);
+            gx.setOnClickListener(v -> { goRow.removeCallbacks(goHide); goRow.setVisibility(View.GONE); });
+            goRow.addView(gx, new LinearLayout.LayoutParams(-2, -2));
+            goRow.addView(goBtn, new LinearLayout.LayoutParams(0, -2, 1));
+            webBox.addView(goRow, new LinearLayout.LayoutParams(-1, -2));
             web = new WebView(this);
             web.setBackgroundColor(0xFF04170F);
             WebSettings ws = web.getSettings();
@@ -241,7 +268,11 @@ public class MainActivity extends Activity {
         webBox.setVisibility(View.VISIBLE);
         // مصحف واحد: يرجع دائماً لآخر صفحة كنت عليها. زر «الذهاب إلى صفحة الختمة» (للختمة فقط) ينقلك للصفحة التالية للمقروء
         gotoUrl = trackWeb ? u : "";
-        goBtn.setVisibility(trackWeb ? View.VISIBLE : View.GONE);
+        goTry = 0;
+        goBtn.setText("📖 الذهاب إلى صفحة الختمة");
+        goRow.removeCallbacks(goHide);
+        goRow.setVisibility(trackWeb ? View.VISIBLE : View.GONE);
+        if (trackWeb) goRow.postDelayed(goHide, 7000); // يختفي لحاله بعد 7 ثوانٍ إن لم تضغط عليه
         clearHist = true;
         String cur = web.getUrl();
         if (cur == null || !cur.startsWith("http"))
