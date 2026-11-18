@@ -171,13 +171,15 @@ public class MainActivity extends Activity {
 
     private FrameLayout root;
     private LinearLayout webBox;
-    private boolean trackWeb, clearHist, webOut;
+    private boolean trackWeb, clearHist;
+    private String gotoUrl = "";
+    private TextView goBtn;
     private WebView web;
 
     /** يفتح موقع القرآن داخل التطبيق فوق الواجهة (بدون متصفح خارجي) */
     @SuppressWarnings("SetJavaScriptEnabled")
     private void openWebUi(String u) {
-        if (u == null || !u.startsWith("https://")) return;
+        if (u == null || !u.startsWith("https://")) u = "https://tanzil.net/";
         if (webBox == null) {
             webBox = new LinearLayout(this);
             webBox.setOrientation(LinearLayout.VERTICAL);
@@ -204,6 +206,15 @@ public class MainActivity extends Activity {
             View sp = new View(this);
             bar.addView(sp, new LinearLayout.LayoutParams(close.getPaddingLeft() * 2 + (int) (22 * getResources().getDisplayMetrics().density), 1));
             webBox.addView(bar, new LinearLayout.LayoutParams(-1, -2));
+            goBtn = new TextView(this);
+            goBtn.setText("📖 الذهاب إلى صفحة الختمة");
+            goBtn.setTextSize(16);
+            goBtn.setTextColor(0xFF04170F);
+            goBtn.setBackgroundColor(0xFFD9B85C);
+            goBtn.setGravity(Gravity.CENTER);
+            goBtn.setPadding(pad, pad, pad, pad);
+            goBtn.setOnClickListener(v -> { if (web != null && gotoUrl.startsWith("https://")) web.loadUrl(gotoUrl); });
+            webBox.addView(goBtn, new LinearLayout.LayoutParams(-1, -2));
             web = new WebView(this);
             web.setBackgroundColor(0xFF04170F);
             WebSettings ws = web.getSettings();
@@ -228,30 +239,22 @@ public class MainActivity extends Activity {
             root.addView(webBox, new FrameLayout.LayoutParams(-1, -1));
         }
         webBox.setVisibility(View.VISIBLE);
-        final boolean khatma = trackWeb;
-        String t0 = u;
-        if (!khatma) {
-            // القرآن من الخارج: يرجع لآخر موضع محفوظ (أو للموقع نفسه الذي يتذكر آخر آية)
-            String cur = web.getUrl();
-            if (webOut && cur != null && cur.startsWith("http")) return; // ما زال مفتوحاً على موضعه
-            t0 = getSharedPreferences("quran", 0).getString("out", "https://tanzil.net/");
-        }
-        final String target = t0;
-        webOut = !khatma;
+        // مصحف واحد: يرجع دائماً لآخر صفحة كنت عليها. زر «الذهاب إلى صفحة الختمة» (للختمة فقط) ينقلك للصفحة التالية للمقروء
+        gotoUrl = trackWeb ? u : "";
+        goBtn.setVisibility(trackWeb ? View.VISIBLE : View.GONE);
         clearHist = true;
-        if (web.getUrl() == null) web.loadUrl(target);
-        else { web.loadUrl("about:blank"); web.postDelayed(() -> web.loadUrl(target), 150); }
+        String cur = web.getUrl();
+        if (cur == null || !cur.startsWith("http"))
+            web.loadUrl(getSharedPreferences("quran", 0).getString("out", "https://tanzil.net/"));
     }
 
     private void closeWeb() {
         if (webBox == null) return;
         String cur = web != null ? web.getUrl() : null;
-        if (cur != null && !cur.startsWith("http")) cur = null;
+        if (cur != null && cur.startsWith("http")) getSharedPreferences("quran", 0).edit().putString("out", cur).apply();
         if (trackWeb && web != null) {
             trackWeb = false;
-            w.evaluateJavascript("window.quranDone&&window.quranDone(" + org.json.JSONObject.quote(cur == null ? "" : cur) + ")", null);
-        } else if (cur != null) {
-            getSharedPreferences("quran", 0).edit().putString("out", cur).apply();
+            w.evaluateJavascript("window.quranDone&&window.quranDone()", null);
         }
         webBox.setVisibility(View.GONE);
     }
