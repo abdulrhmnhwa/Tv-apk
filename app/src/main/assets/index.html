@@ -283,7 +283,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.0.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -578,10 +578,13 @@ function qPage(s,a){var st=SP[s-1],en=s<114?SP[s]:604;return Math.max(1,Math.min
 function qHash(p){p=Math.max(1,Math.min(604,p));var s=1;for(var i=0;i<114;i++)if(SP[i]<=p)s=i+1;var st=SP[s-1],en=s<114?SP[s]:604,sp=Math.max(1,en-st);return s+":"+Math.max(1,Math.min(AC[s-1],1+Math.round((p-st)/sp*AC[s-1])))}
 var kq=null;
 function khRead(kh){var st=kh.rp!=null?kh.rp:kh.pages;kq={i:KHS.sel,st:st};
- var u="https://tanzil.net/#"+(kh.rh||(st>0?qHash(st+1):"1:1"));
+ var u="https://tanzil.net/#"+(kh.rp!=null?"page-"+Math.min(604,Math.max(1,kh.rp)):st>0?"page-"+Math.min(604,st+1):"1:1");
  try{if(window.App&&App.openQuran)App.openQuran(u);else if(window.App&&App.openWeb)App.openWeb(u);else alert("افتح التطبيق بآخر نسخة لتفعيل القراءة")}catch(e){}}
-window.quranDone=function(str){if(!kq)return;var o={};try{o=JSON.parse(str)}catch(e){}var pg=0,ex=false,m=/#(\d+):(\d+)/.exec(o.h||"");
+window.quranDone=function(str){if(!kq)return;var o={};try{o=JSON.parse(str)}catch(e){}var pg=0,ex=false,hs="",hm=/#page-(\d+)/.exec(o.h||""),m=/#(\d+):(\d+)/.exec(o.h||"");
  (o.s||[]).forEach(function(s){if(s[0]>=604&&s[0]<=606){var v=+s[2];pg=v>=1&&v<=604?v:s[1]+1;ex=true}});
+ if(!pg&&hm&&+hm[1]>=1&&+hm[1]<=604){pg=+hm[1];ex=true}
+ if(!pg&&o.v&&o.v.length){var f=o.v[0];if(f[0]==="p"&&f[1]>=1&&f[1]<=604){pg=f[1];ex=true}else if(f[1]>=1&&f[1]<=114){m=[0,f[1],Math.max(1,f[2])]}}
+ if(!pg&&!m&&!hm){(o.k||[]).forEach(function(kv){if(m)return;var t=kv[1],x=/^"?#?(\d{1,3}):(\d{1,3})"?$/.exec(t);if(x&&+x[1]>=1&&+x[1]<=114)m=[0,x[1],x[2]]})}
  if(!pg&&m&&+m[1]>=1&&+m[1]<=114)pg=qPage(+m[1],Math.max(1,+m[2]));
  kqShow(pg,ex,m?m[1]+":"+m[2]:"")};
 function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem";document.body.appendChild(d)}
@@ -658,7 +661,13 @@ function adDraw(){var q=adInfo();$("adt").textContent=q.t;
  $("adi").innerHTML='<div class="card"><div class="atm">'+q.d+'<br>اضغط زر العدّ أسفل كل ذكر بعد قراءته</div></div>'+adL.map(adCard).join("")+'<div class="note" style="text-align:center;margin-top:1rem">المصدر: «حصن المسلم من أذكار الكتاب والسنة» للشيخ سعيد بن علي بن وهف القحطاني</div>';adProg()}
 var TENX={i:9001,t:"ذكر ما بعد الفجر والمغرب",n:10,a:"لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",s:"كتب الله له بهن عشر حسنات، ومحا بهن عشر سيئات، ورفع له بهن عشر درجات، وكُنَّ له عِدل عتاقة أربع رقاب، وكُنَّ له حرساً حتى يمسي. ومن قالهن إذا صلى المغرب دبر صلاته فمثل ذلك حتى يصبح."};
 function tenxOn(){var n=new Date(Date.now()+TZ*36e5),t=PT(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),h=n.getUTCHours()+n.getUTCMinutes()/60;return(h>=t[0]&&h<t[2])||(h>=t[4]&&h<t[5])}
-function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;if(m==="salah"&&tenxOn())adL=[TENX].concat(adL);adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
+/* الإخلاص والفلق والناس: كل سورة في بطاقة مستقلة بعددها؛ وبعد الصلاة العدد 3 للفجر والمغرب و1 لغيرهما */
+function adPostCnt(){var n=new Date(Date.now()+TZ*36e5),T=PT(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),h=n.getUTCHours()+n.getUTCMinutes()/60+n.getUTCSeconds()/3600,lp=5;[0,2,3,4,5].forEach(function(i){if(T[i]<=h)lp=i});return lp===0||lp===4?3:1}
+function adSplit(L,cnt){var o=[];L.forEach(function(x){var ps=x.a.split(/\n\s*\n/).map(function(z){return z.trim()}).filter(Boolean);
+ if(ps.length===3&&ps.every(function(z){return z.indexOf("بِسْمِ اللَّهِ الرَّحْمَٰنِ")===0})){var nm=["سورة الإخلاص","سورة الفلق","سورة الناس"];
+  ps.forEach(function(z,k){var y={};for(var q in x)y[q]=x[q];y.a=z;y.e=undefined;y.t=nm[k];y.t2=undefined;y.i=x.i*10+k+100000;if(cnt)y.n=cnt;y.c=y.n===3?"ثلاث مرات":y.n===1?"مرة واحدة":undefined;o.push(y)})}
+ else o.push(x)});return o}
+function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;adL=adSplit(adL,m==="salah"?adPostCnt():0);if(m==="salah"&&tenxOn())adL=[TENX].concat(adL);adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
 $("tadk").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
 $("adx").onclick=function(){$("adk").className=""};
 $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};

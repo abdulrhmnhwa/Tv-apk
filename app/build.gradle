@@ -8,11 +8,20 @@ android {
         applicationId "sy.homs.mobile"
         minSdk 21
         targetSdk 34
-        versionCode 36
-        versionName "2.0.0"
+        versionCode 37
+        versionName "2.1.0"
+    }
+    signingConfigs {
+        homs {
+            storeFile file('homs.keystore')
+            storePassword 'homs1234'
+            keyAlias 'homs'
+            keyPassword 'homs1234'
+        }
     }
     buildTypes {
-        release { minifyEnabled false }
+        debug { signingConfig signingConfigs.homs }
+        release { minifyEnabled false; signingConfig signingConfigs.homs }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
