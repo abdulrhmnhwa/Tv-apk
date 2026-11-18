@@ -182,7 +182,6 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="dt" id="dates"></div>
     <div class="ring"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="90"/><circle class="pg" id="pg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="565.5"/></svg>
       <div class="rc"><div class="l" id="rl">الصلاة القادمة</div><div class="n" id="rn">--</div><div class="c" id="rcnt">--:--:--</div><div class="t" id="rt"></div></div></div>
-    <div class="rnote" id="rnote">تكره صلاة النوافل في هذا الوقت</div>
     <div class="chips"><div class="chip">الساعة<b id="clk">--</b></div><div class="chip">القبلة<b id="qbc">--°</b></div><div class="chip">القمر<b id="mn">--</b></div></div>
   </div>
   <div class="card bm"><div class="h"><span>مواقيت الصلاة</span><small>اضغط 🔔 لتفعيل التنبيه</small></div><div id="pl"></div></div>
@@ -263,8 +262,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="note">اضغط + أو − لتكبير الخط أو تصغيره (من 70% إلى 150%). يتغيّر الودجت فوراً.</div></div>
   <div class="card"><div class="h"><span>التنبيهات</span></div>
     <div class="sr"><span>تنبيه عند دخول الصلاة<small>عند كل صلاة مفعّلة (صوت «الله أكبر»)</small></span><select id="en"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
-    <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة<small>الصوت: pre_adhan.mp3</small></span><select id="pre"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
-    <div class="sr"><span>تذكير عند الإقامة<small>الصوت: iqama.mp3</small></span><select id="iqr"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
+    <div class="sr"><span>تذكير قبل الأذان بـ 15 دقيقة</span><select id="pre"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
+    <div class="sr"><span>تذكير عند الإقامة</span><select id="iqr"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
     <div class="sr"><span>تذكير أذكار الصباح<small>إشعار بعد الفجر بنصف ساعة</small></span><label class="sw"><input type="checkbox" id="rm"><i></i></label></div>
     <div class="sr"><span>تذكير صلاة الضحى<small>إشعار عند دخول وقت الضحى</small></span><label class="sw"><input type="checkbox" id="rd"><i></i></label></div>
     <div class="sr"><span>تذكير أذكار المساء<small>إشعار بعد العصر بعشرين دقيقة</small></span><label class="sw"><input type="checkbox" id="re"><i></i></label></div>
@@ -360,7 +359,7 @@ function daily(n){
  $("qtx").textContent=qb+"° من الشمال";
  events(n);sunmoon(n);draw();
 }
-var fxi=0,lastV=-1,MK=20,DH=25;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
+var fxi=0,lastV=-1,MK=20,DH=20;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
 function renderList(T,ni){
  var s="";for(var i=0;i<6;i++){var a=cfg.adj[i],sm=(isRam&&i===0)?"الإمساك":(isRam&&i===4)?"الإفطار":"";
   s+='<div class="p'+(i===ni?' on':'')+(i===sel?' sel':'')+'" data-i="'+i+'"><span class="nm">'+nm(i)+(sm?'<small>'+sm+'</small>':'')+(a?'<em>'+(a>0?"+":"")+a+'<b>د</b></em>':'')+'</span><span class="rt"><span class="tm">'+f(T[i])+'</span>'+
@@ -376,15 +375,15 @@ function tick(){
  var lp=-1;for(i=5;i>=0;i--){if(i!==1&&T[i]<=nh){lp=i;break}}
  var since=lp>=0?Math.round((nh-T[lp])*60):999;
  var iqm=lp>=0?(cfg.iq[lp]||0):0,inIq=lp>=0&&iqm>0&&nh<T[lp]+iqm/60;
- var sr=T[1],mkE=sr+MK/60,dhE=T[2]-DH/60,dm=inIq?0:(nh>=sr&&nh<mkE)?1:(nh>=mkE&&nh<dhE)?2:0;
+ var sr=T[1],mkE=sr+MK/60,dhE=T[2]-DH/60,dm=inIq?0:(nh>=sr&&nh<mkE)?1:(nh>=mkE&&nh<dhE)?2:(nh>=dhE&&nh<T[2])?3:0;
  if(inIq){tt=T[lp]+iqm/60;pv=T[lp];var rq=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الإقامة بعد";$("rn").textContent=nm(lp);$("rcnt").textContent=z(Math.floor(rq/60))+":"+z(rq%60);$("rt").textContent="الإقامة عند "+f2(tt)}
- else if(dm){var de=dm===1?mkE:dhE;pv=dm===1?sr:mkE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===1?"من أوقات النهي":"وقت صلاة الضحى";$("rn").textContent=dm===1?"وقت الكراهة":"صلاة الضحى";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent="ينتهي عند "+f2(de)}
+ else if(dm){var de=dm===1?mkE:dm===2?dhE:T[2];pv=dm===1?sr:dm===2?mkE:dhE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===2?"وقت صلاة الضحى":"من أوقات النهي";$("rn").textContent=dm===2?"صلاة الضحى":"وقت الكراهة";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent="ينتهي عند "+f2(de)}
  else if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
 
  else{var rem=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الصلاة القادمة";$("rn").textContent=nm(ni,1);
   $("rcnt").textContent=z(Math.floor(rem/3600))+":"+z(Math.floor(rem%3600/60))+":"+z(rem%60);$("rt").textContent="عند "+f2(tt)}
  if(sel>=0){var st=T[sel]>nh?T[sel]:PT(Y,M,Dd+1)[sel]+24,rs=Math.max(0,Math.round((st-nh)*3600));tt=st;pv=st-24;$("rl").textContent="باقي على";$("rn").textContent=nm(sel,1);$("rcnt").textContent=z(Math.floor(rs/3600))+":"+z(Math.floor(rs%3600/60))+":"+z(rs%60);$("rt").textContent="عند "+f2(st)}
- $("rnote").style.display=dm===1?"block":"none";$("pg").style.stroke=dm===1?"#ce1126":"";
+ $("pg").style.stroke=(dm===1||dm===3)?"#ce1126":"";
  var fr=Math.min(1,Math.max(0,(nh-pv)/(tt-pv)));$("pg").setAttribute("stroke-dashoffset",(565.5*(1-fr)).toFixed(1));
  var key=sel+"|"+ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+cfg.iq.join()+"|"+dk;
  if(key!==lastKey){lastKey=key;renderList(T,ni);renderAdj(T);renderIq()}
@@ -625,7 +624,7 @@ function sqDraw(){var o="",R=sqDays();
  $("sqb").onclick=function(e){var b=e.target.closest("[data-sq]");if(!b)return;sq.n=Math.max(0,sq.n-1);sq.done=(sq.done||0)+1;sqSave();sqDraw()};
  var z=$("sqz"),arm=0;z.onclick=function(){if(!arm){arm=1;z.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;z.textContent="تصفير"},3000);return}sq={n:0,done:0,mode:sq.mode};sqSave();sqDraw()}}
 $("qdb").onclick=function(e){var b=e.target.closest("[data-q]");if(!b)return;var a=b.dataset.q.split(","),k=a[0];qd[k]=Math.max(0,(qd[k]||0)+ +a[1]);ls("qd",qd);qdDraw()};
-window.goBack=function(){if(window.selReset())return true;if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+window.goBack=function(){if(window.selReset())return true;if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";adClean();return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
 var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
@@ -636,7 +635,9 @@ function adEpoch(k){var n=new Date(Date.now()+TZ*36e5),now=Date.now(),best=0;
  for(var d=-1;d<=0;d++){var q=new Date(Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()+d)),T=PT(q.getUTCFullYear(),q.getUTCMonth(),q.getUTCDate()),b=q.getTime()-TZ*36e5,ev=k==="m"?[T[1]+20/60]:k==="e"?[T[4]]:T;
   ev.forEach(function(h){var ts=b+h*36e5;if(ts<=now&&ts>best)best=ts})}
  return best}
-function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};
+function adKeep(o){for(var q in o)if(q!=="d"&&q!=="m"&&q!=="e"&&q!=="salah")delete o[q];return o}
+function adClean(){adO=adKeep(adO||{d:new Date().toDateString()});ls("adk",adO)}
+function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};adKeep(o);
  ["m","e","salah"].forEach(function(k){if(!o[k])return;if(!o[k].ts)o[k].ts=Date.now();else if(o[k].ts<adEpoch(k))delete o[k]});adO=o}
 setInterval(function(){if($("adk").className!=="on"||["m","e","salah"].indexOf(adm)<0)return;var b=JSON.stringify(adO[adm]||null);adLoad();if(JSON.stringify(adO[adm]||null)!==b){ls("adk",adO);adDraw()}},20000);
 function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
@@ -659,18 +660,18 @@ function adSplit(L,cnt){var o=[];L.forEach(function(x){var ps=x.a.split(/\n\s*\n
  else o.push(x)});return o}
 function adOpen(m){adm=m;adLoad();adL=m==="m"||m==="e"?AD.filter(function(x){return!x.w||x.w===m}):(CATS.filter(function(c){return c.k===m})[0]||{items:[]}).items;adL=adSplit(adL,m==="salah"?adPostCnt():0);if(m==="salah"&&tenxOn())adL=[TENX].concat(adL);adDraw();var v=$("adk");v.className="on";v.scrollTop=0}
 $("tadk").onclick=function(e){var b=e.target.closest("[data-m]");if(b)adOpen(b.dataset.m)};
-$("adx").onclick=function(){$("adk").className=""};
+$("adx").onclick=function(){$("adk").className="";adClean()};
 $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
 $("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;adO[adm].ts=Date.now();ls("adk",adO);
  var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
 /* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
-window.openAdhkar=function(k){show(2);$("adk").className="";if(k&&k!=="tab")adOpen(k)};
+window.openAdhkar=function(k){show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
 $("sup").onclick=function(){$("spm").className="on"};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
-saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
+adLoad();ls("adk",adO);saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
 })();
 </script>
 </body>

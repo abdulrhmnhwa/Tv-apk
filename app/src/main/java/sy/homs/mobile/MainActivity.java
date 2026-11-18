@@ -220,11 +220,11 @@ public class MainActivity extends Activity {
                 String[] g = gotoUrl.split(" ");
                 if (g.length == 0 || !g[0].startsWith("https://")) return;
                 // تحميل جديد كامل بالرابط (الموقع يقرأ الموضع عند التحميل). الضغطة الثانية تجرّب صيغة سورة:آية
-                final String t = g[goTry % g.length];
+                final String tgt = g[goTry % g.length];
                 goTry++;
                 goBtn.setText(g.length > 1 ? "📖 لم تصل للصفحة؟ اضغط للمحاولة بطريقة أخرى" : "📖 الذهاب إلى صفحة الختمة");
                 web.loadUrl("about:blank");
-                web.postDelayed(() -> web.loadUrl(t), 200);
+                web.postDelayed(() -> web.loadUrl(tgt), 200);
                 goRow.removeCallbacks(goHide);
                 goRow.postDelayed(goHide, 3000); // يختفي بعد 3 ثوانٍ من الضغط
             });

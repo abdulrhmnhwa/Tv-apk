@@ -10,7 +10,7 @@ public class WidgetTip {
     static final long MIN = 60000L;
     static final int MK = 20;          // دقائق وقت الكراهة بعد الشروق
     static final int DH_LEN = 600;     // يبقى تذكير الضحى طوال وقتها (حتى قبل الظهر بـ DH_GAP دقيقة)
-    static final int DH_GAP = 25;      // الضحى ينتهي قبل الظهر بهذه الدقائق
+    static final int DH_GAP = 20;      // الضحى ينتهي قبل الظهر بهذه الدقائق
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
     static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
     static final int POST_LEN = 15;    // مدة إظهار «أذكار بعد الصلاة» (ربع ساعة)
