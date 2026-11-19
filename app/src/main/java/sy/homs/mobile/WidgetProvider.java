@@ -126,6 +126,7 @@ public class WidgetProvider extends AppWidgetProvider {
             int[] iqs = new int[6];
             for (int i = 0; i < 6; i++) iqs[i] = Scheduler.iq(o, i);
             int[] wx = Weather.cur(c);
+            WidgetTip.fastTomorrow = Scheduler.fastNext(o, cal);
             String[] tip = WidgetTip.pick(now, days[1], iqs, cal.get(Calendar.DAY_OF_WEEK),
                     wx == null ? -1 : wx[0], wx == null ? 20 : wx[1]);
             rv.setTextViewText(R.id.wtl, tip[0]);

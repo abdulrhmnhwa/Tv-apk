@@ -12,6 +12,7 @@ public class WidgetTip {
     static final int DH_LEN = 600;     // يبقى تذكير الضحى طوال وقتها (حتى قبل الظهر بـ DH_GAP دقيقة)
     static final int DH_GAP = 20;      // الضحى ينتهي قبل الظهر بهذه الدقائق
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
+    static boolean fastTomorrow = false; // الغد من أيام قضاء الصيام المختارة (تضبطه الودجت قبل الاختيار)
     static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
     static final int POST_LEN = 15;    // مدة إظهار «أذكار بعد الصلاة» (ربع ساعة)
     static final int POST_GAP = 2;     // تبدأ بعد انتهاء مدة الإقامة بدقيقتين
@@ -53,6 +54,8 @@ public class WidgetTip {
 
     static long dhStart(long[] r) { return r[1] + MK * MIN; }
     static long dhEnd(long[] r) { return Math.min(dhStart(r) + DH_LEN * MIN, r[2] - DH_GAP * MIN); }
+    /** وقت تذكير صيام الغد: بعد إقامة العشاء، وقبل أذكار النوم بخمس دقائق على الأقل */
+    static long fastAt(long[] r, int[] iq) { return Math.min(r[5] + Math.max(0, iq[5]) * MIN, r[5] + (SLEEP_AFTER - 5) * MIN); }
     static long postStart(long[] r, int[] iq, int i) { return r[i] + ((iq[i] > 0 ? iq[i] : 10) + POST_GAP) * MIN; }
 
     static final String[] NM = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
@@ -69,6 +72,10 @@ public class WidgetTip {
      */
     static String[] pick(long now, long[] r, int[] iq, int dow, int code, int temp) {
         int slot = (int) ((now / (30 * MIN)) % 100000);
+
+        // تذكير صيام الغد: من بعد إقامة العشاء حتى يحين وقت أذكار النوم
+        if (fastTomorrow && now >= fastAt(r, iq) && now < r[5] + SLEEP_AFTER * MIN)
+            return t("🌙 صيام غداً", "غداً يجب عليك صيام يوم (قضاء) — انوِ الصيام من الليل", "sq");
 
         // 0) أذكار بعد الصلاة: لها الأولوية على أذكار الصباح والمساء، وبعد انتهائها يعود البرنامج لمجراه
         for (int i : POST_P) {
@@ -115,7 +122,7 @@ public class WidgetTip {
         for (long[] r : days) {
             if (r == null) continue;
             long[] b = {
-                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN,
+                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, fastAt(r, iq),
                 postStart(r, iq, 0), postStart(r, iq, 0) + POST_LEN * MIN,
                 postStart(r, iq, 2), postStart(r, iq, 2) + POST_LEN * MIN,
                 postStart(r, iq, 3), postStart(r, iq, 3) + POST_LEN * MIN,

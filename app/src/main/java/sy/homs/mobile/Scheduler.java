@@ -70,6 +70,24 @@ public class Scheduler {
         return a != null ? a.optInt(i, IQ_DEF[i]) : IQ_DEF[i];
     }
 
+    static int[] iqs(JSONObject o) {
+        int[] r = new int[6];
+        for (int i = 0; i < 6; i++) r[i] = iq(o, i);
+        return r;
+    }
+
+    /** هل اليوم التالي لـ day من أيام قضاء الصيام التي اختارها المستخدم (cfg.sqd بصيغة yyyy-MM-dd) */
+    static boolean fastNext(JSONObject o, Calendar day) {
+        JSONArray a = o.optJSONArray("sqd");
+        if (a == null || a.length() == 0) return false;
+        Calendar t = (Calendar) day.clone();
+        t.add(Calendar.DAY_OF_MONTH, 1);
+        int mo = t.get(Calendar.MONTH) + 1, d = t.get(Calendar.DAY_OF_MONTH);
+        String k = t.get(Calendar.YEAR) + "-" + (mo < 10 ? "0" : "") + mo + "-" + (d < 10 ? "0" : "") + d;
+        for (int i = 0; i < a.length(); i++) if (k.equals(a.optString(i))) return true;
+        return false;
+    }
+
     static String fmt(long ms) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         c.setTimeInMillis(ms + TZ * 3600000L);
@@ -104,10 +122,12 @@ public class Scheduler {
             Calendar pd = (Calendar) day.clone();
             pd.add(Calendar.DAY_OF_MONTH, -1);
             long[] pr = dayMs(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH));
-            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.thirdAt(pr[4], r[0], o.optInt("lb", 0))};
-            int[] ek = {3, 4, 5, 6};
-            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1};
-            for (int k = 0; k < 4; k++) {
+            // 7 = تذكير صيام الغد (قضاء) بعد إقامة العشاء إن كان الغد من الأيام التي اختارها المستخدم
+            long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.thirdAt(pr[4], r[0], o.optInt("lb", 0)),
+                    fastNext(o, day) ? WidgetTip.fastAt(r, iqs(o)) : -1};
+            int[] ek = {3, 4, 5, 6, 7};
+            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1, true};
+            for (int k = 0; k < 5; k++) {
                 if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = 0; evKind = ek[k]; }
             }
         }
