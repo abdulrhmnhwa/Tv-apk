@@ -76,12 +76,14 @@ public class Scheduler {
         return r;
     }
 
-    /** هل اليوم التالي لـ day من أيام قضاء الصيام التي اختارها المستخدم (cfg.sqd بصيغة yyyy-MM-dd) */
-    static boolean fastNext(JSONObject o, Calendar day) {
+    static boolean fastNext(JSONObject o, Calendar day) { return fastSqd(o, day, 1); }
+
+    /** هل اليوم (day + off) من أيام قضاء الصيام المختارة أو المقترحة (cfg.sqd بصيغة yyyy-MM-dd) */
+    static boolean fastSqd(JSONObject o, Calendar day, int off) {
         JSONArray a = o.optJSONArray("sqd");
         if (a == null || a.length() == 0) return false;
         Calendar t = (Calendar) day.clone();
-        t.add(Calendar.DAY_OF_MONTH, 1);
+        t.add(Calendar.DAY_OF_MONTH, off);
         int mo = t.get(Calendar.MONTH) + 1, d = t.get(Calendar.DAY_OF_MONTH);
         String k = t.get(Calendar.YEAR) + "-" + (mo < 10 ? "0" : "") + mo + "-" + (d < 10 ? "0" : "") + d;
         for (int i = 0; i < a.length(); i++) if (k.equals(a.optString(i))) return true;

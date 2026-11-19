@@ -50,10 +50,10 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     /** أحجام الخطوط الأساسية (sp) كما في widget.xml؛ تُضرب بنسبة الإعداد (70–150%) */
-    private static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt, R.id.wtl, R.id.wtx,
+    private static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt,
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4};
-    private static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22, 13, 13,
-            12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
+    private static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22,
+            12, 12, 12, 12, 12, 13, 13, 13, 13, 13};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
         if (pct == 100) return; // الأحجام الافتراضية من ملف التخطيط
@@ -126,14 +126,35 @@ public class WidgetProvider extends AppWidgetProvider {
             int[] iqs = new int[6];
             for (int i = 0; i < 6; i++) iqs[i] = Scheduler.iq(o, i);
             int[] wx = Weather.cur(c);
-            WidgetTip.fastTomorrow = Scheduler.fastNext(o, cal);
             String[] tip = WidgetTip.pick(now, days[1], iqs, cal.get(Calendar.DAY_OF_WEEK),
                     wx == null ? -1 : wx[0], wx == null ? 20 : wx[1]);
-            rv.setTextViewText(R.id.wtl, tip[0]);
-            rv.setTextViewText(R.id.wtx, tip[1]);
-            Intent ti = new Intent(c, MainActivity.class);
-            if (!tip[2].isEmpty()) ti.putExtra("open", tip[2]);
-            rv.setOnClickPendingIntent(R.id.wtip, PendingIntent.getActivity(c, 11, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT));
+            // الشريط يتبادل كل 10 ثوانٍ (ViewFlipper) بين: التنبيه الذي يحين وقته، وتنبيه الصيام، وتنبيه «ما زال بإمكانك قراءة أذكار الصباح/المساء»
+            java.util.ArrayList<String[]> tl = new java.util.ArrayList<>();
+            tl.add(tip);
+            String[] ft = WidgetTip.fastTip(now, days[1], iqs, Scheduler.fastSqd(o, cal, 1), Scheduler.fastSqd(o, cal, 0));
+            if (ft != null) tl.add(ft);
+            String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
+            if (ak != null) tl.add(ak);
+            rv.removeAllViews(R.id.wflip);
+            int fsp = o.optInt("wfs", 100);
+            float fk = Math.max(70, Math.min(150, fsp)) / 100f;
+            for (int j = 0; j < tl.size(); j++) {
+                String[] x = tl.get(j);
+                RemoteViews cv = new RemoteViews(c.getPackageName(), R.layout.widget_tip);
+                cv.setTextViewText(R.id.wtl, x[0]);
+                cv.setTextViewText(R.id.wtx, x[1]);
+                if (fsp != 100) {
+                    cv.setTextViewTextSize(R.id.wtl, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);
+                    cv.setTextViewTextSize(R.id.wtx, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);
+                }
+                Intent ti = new Intent(c, MainActivity.class);
+                if (!x[2].isEmpty()) ti.putExtra("open", x[2]);
+                PendingIntent pi = PendingIntent.getActivity(c, 31 + j, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+                cv.setOnClickPendingIntent(R.id.wtp, pi);
+                rv.addView(R.id.wflip, cv);
+                if (j == 0) rv.setOnClickPendingIntent(R.id.wtip, pi);
+            }
+            rv.setDisplayedChild(R.id.wflip, 0);
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             applyFontScale(rv, o.optInt("wfs", 100));
             wm.updateAppWidget(ids, rv);
@@ -143,7 +164,8 @@ public class WidgetProvider extends AppWidgetProvider {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             // أقرب تحديث لازم: الصلاة القادمة، أو تغيّر نافذة الأذكار، أو تدوير الذكر (كل نصف ساعة)
             long slot = (now / 1800000L + 1) * 1800000L;
-            long at = Math.min(target, Math.min(slot, WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs))) + 1000;
+            long tzMs = Scheduler.TZ * 3600000L, midnight = ((now + tzMs) / 86400000L + 1) * 86400000L - tzMs; // لتبديل "غداً" إلى "اليوم" عند منتصف الليل
+            long at = Math.min(Math.min(target, midnight), Math.min(slot, WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs))) + 1000;
             try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
             catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
             Weather.ensure(c);

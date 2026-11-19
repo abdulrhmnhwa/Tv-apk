@@ -146,25 +146,12 @@
         android:paddingTop="3dp"
         android:paddingBottom="3dp"
         android:background="@drawable/tip_bg">
-        <TextView
-            android:id="@+id/wtl"
-            android:layout_width="wrap_content"
+        <ViewFlipper
+            android:id="@+id/wflip"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#D6B25E"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:singleLine="true" />
-        <TextView
-            android:id="@+id/wtx"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:textColor="#F4F1E8"
-            android:textSize="13sp"
-            android:lineSpacingMultiplier="0.9"
-            android:maxLines="2"
-            android:ellipsize="end" />
+            android:flipInterval="10000"
+            android:autoStart="true" />
     </LinearLayout>
 
     <!-- الصف السفلي: أوقات الصلوات الخمس -->

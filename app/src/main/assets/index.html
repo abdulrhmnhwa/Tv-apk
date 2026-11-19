@@ -175,13 +175,15 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 .hcg .d.sl b,.hcg .d.sl.t b{color:var(--w)}.hcg .d.sl small,.hcg .d.sl.t small{color:var(--gold)}
 .hcg .d.sl::before{content:"✓";position:absolute;top:1px;right:3px;font-size:.6rem;color:var(--gold)}
 .hcg .d.off{opacity:.3}
-.hcg .d.r:not(.t){background:rgba(139,111,214,.2);box-shadow:inset 0 0 0 1px rgba(167,139,250,.32)}
-.hcg .d.r2:not(.t){background:rgba(139,111,214,.34);box-shadow:inset 0 0 0 1px rgba(190,165,255,.55)}
-.hcg .d.r:not(.t) b{color:#e4d9ff}.hcg .d.r:not(.t) small{color:#b9a6ee}
+.hcg .d.r:not(.t){background:rgba(52,211,153,.17);box-shadow:inset 0 0 0 1px rgba(110,231,183,.4)}
+.hcg .d.r2:not(.t){background:rgba(214,178,94,.2);box-shadow:inset 0 0 0 1px rgba(214,178,94,.6)}
+.hcg .d.r:not(.t) b{color:#c9f5de}.hcg .d.r:not(.t) small{color:#8fd8b3}
+.hcg .d.r2:not(.t) b{color:#f1dd9f}.hcg .d.r2:not(.t) small{color:#cfb069}
 .hcg .d.r.v:not(.t) b{color:var(--gold)}
-:root[data-th="light"] .hcg .d.r:not(.t){background:rgba(109,76,191,.12);box-shadow:inset 0 0 0 1px rgba(109,76,191,.3)}
-:root[data-th="light"] .hcg .d.r2:not(.t){background:rgba(109,76,191,.22);box-shadow:inset 0 0 0 1px rgba(109,76,191,.5)}
-:root[data-th="light"] .hcg .d.r:not(.t) b{color:#43288a}:root[data-th="light"] .hcg .d.r:not(.t) small{color:#6b52a8}
+:root[data-th="light"] .hcg .d.r:not(.t){background:rgba(16,150,100,.14);box-shadow:inset 0 0 0 1px rgba(16,150,100,.38)}
+:root[data-th="light"] .hcg .d.r2:not(.t){background:rgba(164,106,0,.15);box-shadow:inset 0 0 0 1px rgba(164,106,0,.5)}
+:root[data-th="light"] .hcg .d.r:not(.t) b{color:#0b5a3b}:root[data-th="light"] .hcg .d.r:not(.t) small{color:#2a7d5b}
+:root[data-th="light"] .hcg .d.r2:not(.t) b{color:#6b4500}:root[data-th="light"] .hcg .d.r2:not(.t) small{color:#946500}
 </style>
 </head>
 <body>
@@ -292,7 +294,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>وقت العصر</span><div class="seg" id="asr"><button data-v="1">الجمهور</button><button data-v="2">الحنفي</button></div></div>
     <div class="note">توقيت سوريا ثابت GMT+3. بعد تغيير الطريقة يمكنك ضبط الفروق بالدقائق من الأعلى لتطابق تقويم الأوقاف.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.1.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.2.2<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span></div>
 </section>
 
 </div>
@@ -610,19 +612,20 @@ $("hjs").onclick=function(e){var b=e.target.closest("button");if(!b)return;hjK=b
 /* ---------- قضاء الصيام ---------- */
 var sq=ls("sq")||{n:0,done:0,mode:0},sqN=1,sqC={o:0,y:0,m:0};
 if(!sq.days)sq.days=[];
-function sqSave(){ls("sq",sq)}
+function sqSave(){ls("sq",sq);try{cfg.sqd=sqRem();saveCfg()}catch(e){}}
 function sqKey(g){return g.getUTCFullYear()+"-"+z(g.getUTCMonth()+1)+"-"+z(g.getUTCDate())}
 function sqBad(g){var h=hj(g);return !!h&&(h.month===9||(h.month===10&&h.day===1)||(h.month===12&&h.day>=10&&h.day<=13))}
 function sqFut(){var t=sqKey(new Date(nowU()));return sq.days.filter(function(k){return k>=t})}
-cfg.sqd=sqFut();
-function sqSync(){sq.days.sort();sqSave();cfg.sqd=sqFut();saveCfg()}
+function sqSync(){sq.days.sort();sqSave()}
 function sqRam(){var t=nowU();for(var i=1;i<=420;i++){var h=hj(new Date(t+i*864e5));if(h&&h.month===9)return i}return 0}
-function sqDays(){var t=nowU(),lim=sqRam()||400,out=[],ch=sq.days,need=Math.max(0,sq.n-ch.length),want=Math.min(need,12);
+function sqDays(cap){var t=nowU(),lim=sqRam()||400,out=[],ch=sq.days,need=Math.max(0,sq.n-ch.length),want=Math.min(need,cap||12);
  function ok(g,h){var dw=g.getUTCDay();if(h.month===9||(h.month===10&&h.day===1)||(h.month===12&&h.day>=10&&h.day<=13)||(dw===5&&!sq.fri))return 0;
   if(ch.indexOf(sqKey(g))>=0)return 0;if(sq.mode&&!(dw===1||dw===4||(h.day>=13&&h.day<=15)))return 0;return 1}
  for(var i=1;i<lim&&out.length<want;i++){var g=new Date(t+i*864e5),h=hj(g);if(!h)continue;if(ok(g,h))out.push({g:g,h:h})}
  var all=0;for(var j=1;j<lim;j++){var g2=new Date(t+j*864e5),h2=hj(g2);if(!h2)continue;if(ok(g2,h2))all++}
  return {list:out,avail:all,lim:lim,need:need}}
+/* أيام التذكير (تُرسل للتطبيق): المختارة القادمة + المقترحة، لتنبيه ما بعد العشاء وتنبيه الودجت */
+function sqRem(){var a=sqFut();sqDays(60).list.forEach(function(x){var k=sqKey(x.g);if(a.indexOf(k)<0)a.push(k)});a.sort();return a}
 function sqCal(){var y=sqC.y,m=sqC.m,first=new Date(Date.UTC(y,m,1)),dim=new Date(Date.UTC(y,m+1,0)).getUTCDate(),today=nowU(),tk=sqKey(new Date(today)),sel=sq.days;
  var o='<div class="row" style="justify-content:space-between;align-items:center;margin-top:.5rem"><button class="btn" id="sqcn">›</button><b style="color:var(--gold)">'+GM[m]+' '+y+'</b><button class="btn" id="sqcp">‹</button></div>';
  o+='<div class="hcg" style="margin-top:.5rem">'+["أحد","اثنين","ثلاثاء","أربعاء","خميس","جمعة","سبت"].map(function(x){return"<span>"+x+"</span>"}).join("")+'</div><div class="hcg" style="margin-top:.25rem">';
@@ -711,7 +714,7 @@ $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
-adLoad();ls("adk",adO);saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
+adLoad();ls("adk",adO);try{cfg.sqd=sqRem()}catch(e){}saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
 })();
 </script>
 </body>
