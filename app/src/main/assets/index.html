@@ -158,7 +158,6 @@ select{background:var(--selbg);border:1px solid rgba(var(--gr),.5);border-radius
 .ad .h{margin-bottom:.5rem}
 .at{font-size:1.2rem;line-height:2.15;text-align:center;white-space:pre-line}
 .at.q{color:var(--gold)}
-.ay{display:inline-block;box-sizing:border-box;min-width:1.9em;height:1.9em;padding:0 .25em;line-height:1.75em;border:1.5px solid currentColor;border-radius:50%;font-size:.62em;text-align:center;vertical-align:middle;margin:0 .25em;white-space:nowrap}
 .af{font-size:.82rem;color:var(--mut);line-height:1.8;text-align:center;margin-top:.7rem}
 .as{font-size:.74rem;color:rgba(var(--mr),.75);text-align:center;margin-top:.2rem;line-height:1.6}
 .ac{display:flex;align-items:center;justify-content:center;gap:.6rem;margin:.9rem auto 0;min-width:11rem;padding:.5rem 1.2rem;border-radius:2rem;border:1px solid var(--gold);background:rgba(var(--gr),.16);color:var(--gold);font-size:.9rem}
@@ -686,7 +685,7 @@ setInterval(function(){if($("adk").className!=="on"||["m","e","salah"].indexOf(a
 function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
-function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;a=a.replace(/\u06DD([\u0660-\u0669]+)/g,'<span class="ay">$1</span>');
+function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
  return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
 function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
 function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"أفضل وقت لها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"أفضل وقت لها من بعد صلاة العصر حتى غروب الشمس"};
