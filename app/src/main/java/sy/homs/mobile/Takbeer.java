@@ -27,6 +27,14 @@ public class Takbeer {
     /** إجراء إيقاف الصوت الجاري حالياً (null إن لم يكن هناك صوت) */
     private static volatile Runnable current = null;
 
+    /** الجوال على الوضع الصامت أو الاهتزاز: لا يُشغَّل أي صوت للتطبيق (أذان/تكبير/تذكير/إقامة) */
+    public static boolean silent(Context c) {
+        try {
+            AudioManager am = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
+            return am.getRingerMode() != AudioManager.RINGER_MODE_NORMAL;
+        } catch (Throwable e) { return false; }
+    }
+
     public static boolean isPlaying() { return current != null; }
 
     /** يوقف صوت الأذان/التكبير الجاري فوراً */
@@ -139,6 +147,7 @@ public class Takbeer {
         final Guard[] g = {null};
         final Runnable fullEnd = () -> { if (g[0] != null) g[0].disarm(); end.run(); };
         h.postDelayed(end, 20000);
+        if (silent(c)) { fullEnd.run(); return; }
         try {
             AssetFileDescriptor afd = c.getAssets().openFd(name);
             final MediaPlayer mp = new MediaPlayer();
@@ -167,6 +176,7 @@ public class Takbeer {
         final Guard[] g = {null};
         final Runnable fullEnd = () -> { if (g[0] != null) g[0].disarm(); end.run(); };
         h.postDelayed(end, 15000);
+        if (silent(c)) { fullEnd.run(); return; }
         final AudioAttributes at = new AudioAttributes.Builder()
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build();

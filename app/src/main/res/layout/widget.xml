@@ -168,6 +168,11 @@
             android:inAnimation="@anim/widget_fade_in"
             android:outAnimation="@anim/widget_fade_out"
             android:autoStart="true" />
+        <FrameLayout
+            android:id="@+id/wone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
     </LinearLayout>
 
     <!-- الصف السفلي: أوقات الصلوات الخمس -->

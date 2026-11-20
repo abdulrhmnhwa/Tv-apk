@@ -24,7 +24,7 @@ public class AdhanReceiver extends BroadcastReceiver {
             int kind = i.getIntExtra("k", 0);
             String city = o.optString("cn", "حمص"), name = Scheduler.NAMES[k];
             if (kind == 0 && o.optInt("en", 1) == 1) {
-                if (o.optInt("snd", 1) == 1) {
+                if (o.optInt("snd", 1) == 1 && !Takbeer.silent(c)) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
                         pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "homs:adhan").acquire(20000);
@@ -34,7 +34,7 @@ public class AdhanReceiver extends BroadcastReceiver {
                 }
                 notifyNow(c, 100 + k, "adhan", "حان الآن موعد " + name, city);
             } else if (kind == 1) {
-                boolean snd = o.optInt("pres", 1) == 1 && Takbeer.has(c, "pre_adhan.mp3");
+                boolean snd = o.optInt("pres", 1) == 1 && !Takbeer.silent(c) && Takbeer.has(c, "pre_adhan.mp3");
                 if (snd) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -45,7 +45,7 @@ public class AdhanReceiver extends BroadcastReceiver {
                 }
                 notifyNow(c, 200 + k, snd ? "adhan" : "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
             } else if (kind == 2) {
-                boolean snd = o.optInt("iqs", 0) == 1 && Takbeer.has(c, "iqama.mp3");
+                boolean snd = o.optInt("iqs", 0) == 1 && !Takbeer.silent(c) && Takbeer.has(c, "iqama.mp3");
                 if (snd) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -127,7 +127,8 @@ public class AdhanReceiver extends BroadcastReceiver {
             } else {
                 b = new Notification.Builder(c);
                 if (channel.equals("remind")) {
-                    if (tone.isEmpty()) b.setDefaults(Notification.DEFAULT_SOUND);
+                    if (Takbeer.silent(c)) { /* صامت */ }
+                    else if (tone.isEmpty()) b.setDefaults(Notification.DEFAULT_SOUND);
                     else if (!tone.equals("silent")) b.setSound(Uri.parse(tone));
                 }
             }

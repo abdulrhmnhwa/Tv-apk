@@ -143,6 +143,11 @@ public class WidgetProvider extends AppWidgetProvider {
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
             if (ak != null) tl.add(ak);
             rv.removeAllViews(R.id.wflip);
+            rv.removeAllViews(R.id.wone);
+            // تنبيه واحد فقط: يُعرض ثابتاً بلا تبديل (ViewFlipper مع عنصر واحد كان يومض)
+            boolean one = tl.size() == 1;
+            rv.setViewVisibility(R.id.wflip, one ? android.view.View.GONE : android.view.View.VISIBLE);
+            rv.setViewVisibility(R.id.wone, one ? android.view.View.VISIBLE : android.view.View.GONE);
             int fsp = o.optInt("wfs", 100);
             float fk = Math.max(70, Math.min(150, fsp)) / 100f;
             for (int j = 0; j < tl.size(); j++) {
@@ -158,10 +163,10 @@ public class WidgetProvider extends AppWidgetProvider {
                 if (!x[2].isEmpty()) ti.putExtra("open", x[2]);
                 PendingIntent pi = PendingIntent.getActivity(c, 31 + j, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 cv.setOnClickPendingIntent(R.id.wtp, pi);
-                rv.addView(R.id.wflip, cv);
+                rv.addView(one ? R.id.wone : R.id.wflip, cv);
                 if (j == 0) rv.setOnClickPendingIntent(R.id.wtip, pi);
             }
-            rv.setDisplayedChild(R.id.wflip, 0);
+            if (!one) rv.setDisplayedChild(R.id.wflip, 0);
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             applyFontScale(rv, o.optInt("wfs", 100));
             wm.updateAppWidget(ids, rv);
