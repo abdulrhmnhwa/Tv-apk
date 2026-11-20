@@ -27,7 +27,7 @@ import java.util.Locale;
  */
 public class UpdateCheck {
     /** غيّر OWNER/REPO إلى رابط ملف update.json الخاص بك (مثال: https://raw.githubusercontent.com/اسمك/مستودعك/main/update.json) */
-    public static final String URL = "https://raw.githubusercontent.com/abdulrhmnhwa/Tv-apk/update.json";
+    public static final String URL = "https://raw.githubusercontent.com/abdulrhmnhwa/Tv-apk/main/update.json";
     static final String CH = "update";
     static final int NID = 9001;
     private static volatile boolean busy = false;
