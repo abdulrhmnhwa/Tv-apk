@@ -78,6 +78,18 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
+        /** يفتح صفحة محددة من موقع تنزيل (تفسير/ترجمة) داخل التطبيق؛ يقتصر على tanzil.net */
+        @JavascriptInterface public void openSite(String u) {
+            final String url = (u != null && u.startsWith("https://tanzil.net/")) ? u : "https://tanzil.net/";
+            runOnUiThread(() -> {
+                trackWeb = false;
+                openWebUi(url);
+                if (web != null) {
+                    web.loadUrl("about:blank");
+                    web.postDelayed(() -> web.loadUrl(url), 200);
+                }
+            });
+        }
         @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> { trackWeb = false; openWebUi(u); }); }
         /** فتح القرآن مع تتبّع الموضع: عند الإغلاق تُرسل الصفحة/الموضع للواجهة لإضافتها على الختمة */
         @JavascriptInterface public void openQuran(String u) { runOnUiThread(() -> { trackWeb = true; openWebUi(u); }); }

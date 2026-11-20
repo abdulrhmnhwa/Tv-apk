@@ -1,0 +1,72 @@
+/* قارئ المصحف (أوفلاين) — يستخدم متغيرات ألوان التطبيق */
+@font-face{font-family:"QuranFont";src:url("../fonts/QuranFont.ttf") format("truetype");font-display:swap}
+#qr{position:fixed;inset:0;z-index:45;display:none;flex-direction:column;background:var(--bg0) var(--bgi) fixed;color:var(--w)}
+#qr.on{display:flex;animation:qrin .22s ease-out}
+@keyframes qrin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+#qr button{font:inherit;color:inherit;background:none;border:0}
+#qr .qh{flex:none;background:var(--bar);border-bottom:1px solid rgba(var(--gr),.35)}
+#qr .qhr{display:flex;align-items:center;gap:.15rem;height:3.2rem;max-width:34rem;margin:0 auto;padding:0 .4rem}
+#qr .qhr .qt{flex:1;min-width:0;text-align:center;line-height:1.25}
+#qr .qt b{display:block;color:var(--gold);font-size:1.05rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#qr .qt small{color:var(--mut);font-size:.72rem}
+#qr .qi{width:2.3rem;height:2.3rem;border-radius:.7rem;font-size:1.2rem;line-height:1;color:var(--gold)!important;flex:none}
+#qr .qi:active{background:rgba(var(--gr),.3)}
+#qr .qk{flex:none;display:none;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .85rem;background:rgba(var(--gr),.18);border-bottom:1px solid rgba(var(--gr),.35);font-size:.85rem}
+#qr .qk.on{display:flex}
+#qr .qk .btn{padding:.25rem .8rem;font-size:.82rem}
+#qr .qb{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#qr .qpg{max-width:34rem;margin:0 auto;padding:.8rem 1rem 1.2rem;font-family:"QuranFont","Amiri Quran","Amiri","Scheherazade New","Noto Naskh Arabic","Noto Sans Arabic",serif;font-size:calc(1.5rem*var(--qfs,1));line-height:2.25;text-align:justify;text-align-last:center;text-justify:inter-word;word-spacing:.04em;-webkit-user-select:none;user-select:none}
+#qr .qsh{display:block;margin:.9rem 0 .5rem;padding:.35rem .5rem;border:1px solid var(--gold);border-radius:.8rem;text-align:center;color:var(--gold);font-weight:700;font-size:1.15em;line-height:1.9;background:linear-gradient(160deg,rgba(var(--gr),.22),rgba(var(--gr),.06));box-shadow:inset 0 0 0 3px rgba(var(--ov),.04)}
+#qr .qsh small{display:block;font-size:.5em;font-weight:400;color:var(--mut);line-height:1.5}
+#qr .qbs{display:block;text-align:center;color:var(--gold);font-size:1em;margin:.2rem 0 .3rem;line-height:2}
+#qr .qv{border-radius:.4rem;-webkit-box-decoration-break:clone;box-decoration-break:clone;transition:background .25s}
+#qr .qv.sel{background:rgba(var(--gr),.28)}
+#qr .qv.pl{background:rgba(52,211,153,.22)}
+#qr .qv.bm .qn{background:var(--gold);color:var(--ong)}
+#qr .qn{display:inline-flex;align-items:center;justify-content:center;min-width:1.7em;height:1.7em;padding:0 .2em;margin:0 .2em;border:1px solid var(--gold);border-radius:50%;font-size:.5em;line-height:1;color:var(--gold);font-family:"GoogleSans",sans-serif;vertical-align:middle;position:relative;top:-.1em}
+#qr .qq{color:var(--gold);font-size:.8em;margin-inline-start:.15em}
+#qr .qsj{color:var(--gold);font-size:.9em}
+#qr .qf{flex:none;display:flex;align-items:center;justify-content:space-between;gap:.4rem;padding:.35rem .6rem;background:var(--bar);border-top:1px solid rgba(var(--gr),.35)}
+#qr .qf .qnb{flex:none;min-width:5.2rem;padding:.55rem .6rem;border:1px solid rgba(var(--gr),.5);border-radius:.8rem;background:rgba(var(--gr),.14);color:var(--gold)!important;font-size:.9rem}
+#qr .qf .qnb:active{background:rgba(var(--gr),.38)}
+#qr .qf .qnb:disabled{opacity:.3}
+#qr .qpn{display:flex;align-items:center;gap:.3rem;color:var(--mut);font-size:.85rem}
+#qr .qpn input{width:4.2rem;text-align:center;background:rgba(var(--ov),.07);border:1px solid rgba(var(--gr),.5);border-radius:.6rem;padding:.35rem;color:var(--w);font:inherit;font-size:1rem}
+#qr .qpl{flex:none;display:none;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .85rem;background:rgba(52,211,153,.16);border-top:1px solid rgba(52,211,153,.4);font-size:.85rem}
+#qr .qpl.on{display:flex}
+#qr .qpl button{padding:.25rem .8rem;border:1px solid var(--gold);border-radius:.7rem;color:var(--gold)!important}
+/* قائمة الآية */
+#qr .qsd{position:absolute;inset:0;z-index:5;display:none;background:rgba(0,0,0,.45)}
+#qr .qsd.on{display:block}
+#qr .qsx{position:absolute;left:0;right:0;bottom:0;max-width:34rem;margin:0 auto;background:var(--selbg);border:1px solid var(--gold);border-bottom:0;border-radius:1.2rem 1.2rem 0 0;padding:.9rem 1rem 1.1rem;animation:qsup .2s ease-out}
+@keyframes qsup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+#qr .qsx h3{text-align:center;color:var(--gold);font-size:1.05rem;margin-bottom:.15rem}
+#qr .qsx .qvt{text-align:center;color:var(--mut);font-size:.8rem;margin-bottom:.7rem;max-height:3.2rem;overflow:hidden;line-height:1.6;font-family:"QuranFont","Amiri Quran","Amiri","Noto Naskh Arabic",serif}
+#qr .qsg{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+#qr .qsg button{padding:.7rem .3rem;border:1px solid rgba(var(--gr),.5);border-radius:.9rem;background:rgba(var(--gr),.14);color:var(--gold)!important;font-size:.95rem}
+#qr .qsg button:active{background:rgba(var(--gr),.38)}
+#qr .qsg small{display:block;color:var(--mut);font-size:.68rem;margin-top:.1rem}
+/* لوحة الفهرس والبحث */
+#qr .qpa{position:absolute;inset:0;z-index:4;display:none;flex-direction:column;background:var(--bg0) var(--bgi) fixed}
+#qr .qpa.on{display:flex}
+#qr .qtabs{flex:none;display:flex;gap:.3rem;padding:.5rem .6rem;background:var(--bar);border-bottom:1px solid rgba(var(--gr),.35)}
+#qr .qtabs button{flex:1;padding:.45rem .2rem;border-radius:.7rem;border:1px solid rgba(var(--gr),.4);color:var(--mut)!important;font-size:.88rem}
+#qr .qtabs button.on{background:var(--gold);color:var(--ong)!important;font-weight:700}
+#qr .qtabs .qx{flex:none;width:2.4rem;font-size:1.4rem;color:var(--gold)!important;border:0}
+#qr .qpc{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:.4rem .6rem 1.5rem;max-width:34rem;width:100%;margin:0 auto}
+#qr .qin{width:100%;background:rgba(var(--ov),.07);border:1px solid rgba(var(--gr),.5);border-radius:.8rem;padding:.6rem .8rem;color:var(--w);font:inherit;font-size:1rem;margin:.3rem 0 .4rem;-webkit-user-select:text;user-select:text}
+#qr .qrw{display:flex;align-items:center;gap:.6rem;width:100%;text-align:start;padding:.55rem .4rem;border-bottom:1px solid rgba(var(--gr),.15)}
+#qr .qrw:active{background:rgba(var(--gr),.18)}
+#qr .qrw .nb{flex:none;width:2rem;height:2rem;border:1px solid rgba(var(--gr),.5);border-radius:50%;text-align:center;line-height:1.9rem;font-size:.78rem;color:var(--gold)}
+#qr .qrw .nm{flex:1;min-width:0;font-size:1.05rem}
+#qr .qrw .nm small{display:block;color:var(--mut);font-size:.72rem}
+#qr .qrw .pg{flex:none;color:var(--mut);font-size:.8rem}
+#qr .qrw .sn{font-family:"QuranFont","Amiri Quran","Amiri","Noto Naskh Arabic",serif;font-size:1.05rem;line-height:1.9;color:var(--w)}
+#qr .qrw mark{background:rgba(var(--gr),.4);color:inherit;border-radius:.25rem}
+#qr .qem{text-align:center;color:var(--mut);padding:1.5rem 1rem;font-size:.9rem;line-height:1.8}
+#qr .qcr{max-width:34rem;margin:.8rem auto 0;text-align:center;color:var(--mut);font-size:.72rem;line-height:1.7}
+#qr .qcr a,#qr .qcr button{color:var(--gold)!important;text-decoration:underline}
+#qr .qtoast{position:absolute;left:50%;bottom:5.2rem;transform:translateX(-50%);z-index:8;background:var(--selbg);border:1px solid var(--gold);color:var(--w);border-radius:2rem;padding:.4rem 1rem;font-size:.85rem;display:none;max-width:90%;text-align:center}
+#qr .qtoast.on{display:block}
+#qr .qld{padding:3rem 1rem;text-align:center;color:var(--mut)}
+@media (prefers-reduced-motion:reduce){#qr.on,#qr .qsx{animation:none}}

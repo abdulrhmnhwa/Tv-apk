@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ظهور التنبيه التالي بعد أن يتلاشى السابق (startOffset = مدة التلاشي) -->
+<alpha xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fromAlpha="0.0"
+    android:toAlpha="1.0"
+    android:startOffset="380"
+    android:duration="480" />
