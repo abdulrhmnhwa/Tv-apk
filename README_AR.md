@@ -249,3 +249,6 @@
 
 ## 2.6.3 (versionCode 57)
 - تذكير «أذكار الأذان» في الودجت يظهر من وقت الأذان حتى ثلاث دقائق فقط.
+
+## 2.6.4 (versionCode 58)
+- فحص التحديث يجرّب عدة مصادر (raw.githubusercontent ثم مرايا jsDelivr ثم GitHub API) ليعمل في البلدان التي تحجب raw.githubusercontent دون VPN.

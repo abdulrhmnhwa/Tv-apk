@@ -28,7 +28,27 @@ import java.util.Locale;
 public class UpdateCheck {
     /** غيّر OWNER/REPO إلى مستودعك (يُجرَّب الفرعان main ثم master تلقائياً) */
     public static final String URL = "https://raw.githubusercontent.com/abdulrhmnhwa/Tv-apk/main/update.json";
-    static final String[] URLS = {URL, URL.replace("/main/", "/master/")};
+    /** عدة مصادر: raw.githubusercontent محجوب عند بعض مزوّدي الإنترنت (يفتح github.com ولا يفتح raw)، فنجرّب مرايا أخرى ثم واجهة GitHub API */
+    static final String[] URLS = {
+        URL,
+        "https://cdn.jsdelivr.net/gh/abdulrhmnhwa/Tv-apk@main/update.json",
+        "https://fastly.jsdelivr.net/gh/abdulrhmnhwa/Tv-apk@main/update.json",
+        "https://gcore.jsdelivr.net/gh/abdulrhmnhwa/Tv-apk@main/update.json",
+        URL.replace("/main/", "/master/"),
+        "https://api.github.com/repos/abdulrhmnhwa/Tv-apk/releases/latest"
+    };
+
+    /** مقارنة أرقام النسخ (2.6.3 مقابل 2.6.10) */
+    static boolean newerName(String a, String b) {
+        String[] x = a.replaceAll("[^0-9.]", "").split("\\."), y = b.replaceAll("[^0-9.]", "").split("\\.");
+        for (int i = 0; i < Math.max(x.length, y.length); i++) {
+            int p = 0, q = 0;
+            try { p = i < x.length ? Integer.parseInt(x[i]) : 0; } catch (Exception e) {}
+            try { q = i < y.length ? Integer.parseInt(y[i]) : 0; } catch (Exception e) {}
+            if (p != q) return p > q;
+        }
+        return false;
+    }
     static final String CH = "update";
     static final int NID = 9001;
     private static volatile boolean busy = false;
@@ -57,9 +77,10 @@ public class UpdateCheck {
             String err = "net";
             for (String u : URLS) {
                 try {
-                    HttpURLConnection h = (HttpURLConnection) new java.net.URL(u + "?t=" + System.currentTimeMillis()).openConnection();
-                    h.setConnectTimeout(8000);
-                    h.setReadTimeout(8000);
+                    HttpURLConnection h = (HttpURLConnection) new java.net.URL(u.contains("api.github.com") ? u : u + "?t=" + System.currentTimeMillis()).openConnection();
+                    h.setConnectTimeout(6000);
+                    h.setReadTimeout(6000);
+                    h.setRequestProperty("User-Agent", "HomsPrayerApp");
                     h.setUseCaches(false);
                     int code = h.getResponseCode();
                     if (code != 200) { err = "http:" + code; continue; }
@@ -70,6 +91,17 @@ public class UpdateCheck {
                     while ((n = in.read(buf)) > 0 && tot < 65536) { bo.write(buf, 0, n); tot += n; }
                     in.close();
                     JSONObject j = new JSONObject(bo.toString("UTF-8"));
+                    if (u.contains("api.github.com")) { // إصدار GitHub: الرقم من اسم الوسم (v2.6.3)
+                        String vn = j.optString("tag_name", "");
+                        if (vn.isEmpty()) { err = "json"; continue; }
+                        r.put("ok", true);
+                        r.put("vc", 0);
+                        r.put("vn", vn.replaceAll("[^0-9.]", ""));
+                        r.put("url", j.optString("html_url", ""));
+                        r.put("notes", "");
+                        r.put("newer", newerName(vn, currentName(c)));
+                        return r.toString();
+                    }
                     int vc = j.optInt("versionCode", 0);
                     if (vc <= 0) { err = "json"; break; }
                     r.put("ok", true);
@@ -79,7 +111,7 @@ public class UpdateCheck {
                     r.put("notes", j.optString("notes", ""));
                     r.put("newer", vc > cur);
                     return r.toString();
-                } catch (org.json.JSONException e) { err = "json"; break; }
+                } catch (org.json.JSONException e) { err = "json"; }
                 catch (Exception e) { err = "net"; }
             }
             r.put("ok", false);
@@ -104,9 +136,12 @@ public class UpdateCheck {
                 if (!r.optBoolean("ok")) return; // فشل الاتصال: نعيد المحاولة عند أول فرصة
                 sp.edit().putString("checked", today).apply();
                 int vc = r.optInt("vc", 0);
-                if (r.optBoolean("newer") && vc > sp.getInt("notified_vc", 0)) {
-                    notifyNew(c, r.optString("vn"), r.optString("url"), r.optString("notes"));
-                    sp.edit().putInt("notified_vc", vc).apply();
+                String vn = r.optString("vn");
+                // تنبيه مرة واحدة لكل نسخة: بالرقم إن وُجد، وإلا (مصدر GitHub API) باسم النسخة
+                boolean fresh = vc > 0 ? vc > sp.getInt("notified_vc", 0) : !vn.equals(sp.getString("notified_vn", ""));
+                if (r.optBoolean("newer") && fresh) {
+                    notifyNew(c, vn, r.optString("url"), r.optString("notes"));
+                    sp.edit().putInt("notified_vc", vc).putString("notified_vn", vn).apply();
                 }
             } catch (Exception ignored) {
             } finally { busy = false; }
