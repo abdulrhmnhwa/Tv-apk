@@ -26,8 +26,9 @@ import java.util.Locale;
  * التنبيه التلقائي: مرة واحدة فقط لكل نسخة جديدة (يُفحص الرابط مرة باليوم كحدٍّ أقصى).
  */
 public class UpdateCheck {
-    /** غيّر OWNER/REPO إلى رابط ملف update.json الخاص بك (مثال: https://raw.githubusercontent.com/اسمك/مستودعك/main/update.json) */
+    /** غيّر OWNER/REPO إلى مستودعك (يُجرَّب الفرعان main ثم master تلقائياً) */
     public static final String URL = "https://raw.githubusercontent.com/abdulrhmnhwa/Tv-apk/main/update.json";
+    static final String[] URLS = {URL, URL.replace("/main/", "/master/")};
     static final String CH = "update";
     static final int NID = 9001;
     private static volatile boolean busy = false;
@@ -45,32 +46,44 @@ public class UpdateCheck {
         try { return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionName; } catch (Exception e) { return ""; }
     }
 
-    /** يجلب update.json (يُستدعى من خيط خلفي) ويعيد كائن JSON نصياً: ok, newer, vc, vn, url, notes, err */
+    /** يجلب update.json (يُستدعى من خيط خلفي) ويعيد كائن JSON نصياً: ok, newer, vc, vn, url, notes, err
+     *  err: cfg (الرابط غير مضبوط) | http:CODE (الملف غير موجود/محجوب) | json (ملف غير صالح) | net (لا اتصال) */
     static String fetch(Context c) {
         JSONObject r = new JSONObject();
         try {
             int cur = current(c);
             r.put("cur", cur);
             if (!configured()) { r.put("ok", false); r.put("err", "cfg"); return r.toString(); }
-            HttpURLConnection h = (HttpURLConnection) new java.net.URL(URL + "?t=" + System.currentTimeMillis()).openConnection();
-            h.setConnectTimeout(8000);
-            h.setReadTimeout(8000);
-            h.setUseCaches(false);
-            if (h.getResponseCode() != 200) throw new Exception("http " + h.getResponseCode());
-            InputStream in = h.getInputStream();
-            ByteArrayOutputStream bo = new ByteArrayOutputStream();
-            byte[] buf = new byte[4096];
-            int n, tot = 0;
-            while ((n = in.read(buf)) > 0 && tot < 65536) { bo.write(buf, 0, n); tot += n; }
-            in.close();
-            JSONObject j = new JSONObject(bo.toString("UTF-8"));
-            int vc = j.optInt("versionCode", 0);
-            r.put("ok", vc > 0);
-            r.put("vc", vc);
-            r.put("vn", j.optString("versionName", ""));
-            r.put("url", j.optString("url", ""));
-            r.put("notes", j.optString("notes", ""));
-            r.put("newer", vc > cur);
+            String err = "net";
+            for (String u : URLS) {
+                try {
+                    HttpURLConnection h = (HttpURLConnection) new java.net.URL(u + "?t=" + System.currentTimeMillis()).openConnection();
+                    h.setConnectTimeout(8000);
+                    h.setReadTimeout(8000);
+                    h.setUseCaches(false);
+                    int code = h.getResponseCode();
+                    if (code != 200) { err = "http:" + code; continue; }
+                    InputStream in = h.getInputStream();
+                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                    byte[] buf = new byte[4096];
+                    int n, tot = 0;
+                    while ((n = in.read(buf)) > 0 && tot < 65536) { bo.write(buf, 0, n); tot += n; }
+                    in.close();
+                    JSONObject j = new JSONObject(bo.toString("UTF-8"));
+                    int vc = j.optInt("versionCode", 0);
+                    if (vc <= 0) { err = "json"; break; }
+                    r.put("ok", true);
+                    r.put("vc", vc);
+                    r.put("vn", j.optString("versionName", ""));
+                    r.put("url", j.optString("url", ""));
+                    r.put("notes", j.optString("notes", ""));
+                    r.put("newer", vc > cur);
+                    return r.toString();
+                } catch (org.json.JSONException e) { err = "json"; break; }
+                catch (Exception e) { err = "net"; }
+            }
+            r.put("ok", false);
+            r.put("err", err);
         } catch (Exception e) {
             try { r.put("ok", false); r.put("err", "net"); } catch (Exception ig) {}
         }

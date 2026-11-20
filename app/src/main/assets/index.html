@@ -322,7 +322,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.5.2<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.5.3<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -586,7 +586,12 @@ $("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;va
 var updUrl="";
 function updDraw(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}$("upc").textContent=v||"—";$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
 $("upk").onclick=function(){var m=$("upm");if(!(window.App&&App.checkUpdate)){m.textContent="هذه الميزة تعمل داخل التطبيق فقط";return}m.textContent="جارٍ التحقق…";$("upr").style.display="none";try{App.checkUpdate()}catch(e){m.textContent="تعذّر التحقق"}};
-window.updRes=function(r){var m=$("upm");if(!r||!r.ok){m.textContent=(r&&r.err==="cfg")?"لم يُضبط رابط التحديث بعد (للمطوّر)":"تعذّر الاتصال — تحقق من الإنترنت وحاول لاحقاً";return}
+window.updRes=function(r){var m=$("upm");if(!r||!r.ok){var er=(r&&r.err)||"net",tx;
+  if(er==="cfg")tx="لم يُضبط رابط التحديث بعد (للمطوّر)";
+  else if(er.indexOf("http:")===0)tx="ملف التحديث غير متاح على الخادم ("+er.slice(5)+") — تأكد أن update.json في جذر المستودع وأن المستودع عام";
+  else if(er==="json")tx="ملف update.json غير صالح — تأكد من الصيغة ومن وجود versionCode";
+  else tx="تعذّر الاتصال — تحقق من الإنترنت وحاول لاحقاً";
+  m.textContent=tx;return}
  if(r.newer){updUrl=r.url||"";var e=function(x){return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;")};m.innerHTML="🎉 نسخة جديدة متوفرة: <b style=\"color:var(--gold)\">"+e(r.vn||r.vc)+"</b>"+(r.notes?"<br><small>"+e(r.notes)+"</small>":"");$("upr").style.display=updUrl?"flex":"none"}else m.textContent="✓ أنت على آخر نسخة"};
 $("upd").onclick=function(){try{if(updUrl&&window.App&&App.openUpdate)App.openUpdate(updUrl)}catch(e){}};
 $("tlx").onclick=tlClose;$("stg").onclick=$("tlg").onclick;
