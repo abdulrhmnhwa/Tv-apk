@@ -454,8 +454,8 @@
     ov.className = "on";
     if (!Q) $("qrp").innerHTML = '<div class="qld">جارٍ تحميل المصحف…</div>';
     loadData(function () {
-      var p = opts.page || lsG("qrp", 1);
-      go(p);
+      if (opts.sura) goVerse(gi(opts.sura, 1)); // يفتح على أول آية من السورة مع تمييزها لحظة
+      else go(opts.page || lsG("qrp", 1));
       var k = $("qrk");
       if (opts.khatma) { $("qrkt").textContent = "📖 " + opts.khatma; k.className = "qk on"; } else k.className = "qk";
     });

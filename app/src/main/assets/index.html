@@ -322,7 +322,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.5.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.5.2<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -768,7 +768,7 @@ $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
 $("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;adO[adm].ts=Date.now();ls("adk",adO);
  var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
 /* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
-window.openAdhkar=function(k){if(k==="sq"){if(tlOpen!==null)tlClose();sqDraw();tlShow("c_sq");return}show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
+window.openAdhkar=function(k){if(k==="kahf"){if(tlOpen!==null)tlClose();$("adk").className="";adClean();show(3);if(window.QR)QR.open({sura:18});return}if(k==="sq"){if(tlOpen!==null)tlClose();sqDraw();tlShow("c_sq");return}show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
 $("sup").onclick=function(){$("spm").className="on"};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
