@@ -82,12 +82,23 @@ public class Scheduler {
     static boolean fastSqd(JSONObject o, Calendar day, int off) {
         JSONArray a = o.optJSONArray("sqd");
         if (a == null || a.length() == 0) return false;
+        String k = dkey(day, off);
+        for (int i = 0; i < a.length(); i++) if (k.equals(a.optString(i))) return true;
+        return false;
+    }
+
+    static String dkey(Calendar day, int off) {
         Calendar t = (Calendar) day.clone();
         t.add(Calendar.DAY_OF_MONTH, off);
         int mo = t.get(Calendar.MONTH) + 1, d = t.get(Calendar.DAY_OF_MONTH);
-        String k = t.get(Calendar.YEAR) + "-" + (mo < 10 ? "0" : "") + mo + "-" + (d < 10 ? "0" : "") + d;
-        for (int i = 0; i < a.length(); i++) if (k.equals(a.optString(i))) return true;
-        return false;
+        return t.get(Calendar.YEAR) + "-" + (mo < 10 ? "0" : "") + mo + "-" + (d < 10 ? "0" : "") + d;
+    }
+
+    /** نوع صيام التطوع في اليوم (day + off) إن وُجد (cfg.nfd: تاريخ ← رمز): 1 اثنين، 2 خميس، 3 أيام بيض، 4 عرفة، 5 تاسوعاء، 6 عاشوراء؛ 0 لا شيء */
+    static int nfdCode(JSONObject o, Calendar day, int off) {
+        if (o.optInt("rfs", 0) != 1) return 0;
+        JSONObject m = o.optJSONObject("nfd");
+        return m == null ? 0 : m.optInt(dkey(day, off), 0);
     }
 
     static String fmt(long ms) {
@@ -97,7 +108,7 @@ public class Scheduler {
         return (H % 12 == 0 ? 12 : H % 12) + ":" + (M < 10 ? "0" : "") + M + (H >= 12 ? " م" : " ص");
     }
 
-    static long next(Context c, long now) {
+    static synchronized long next(Context c, long now) {
         JSONObject o = Prefs.obj(c);
         JSONArray on = o.optJSONArray("on");
         boolean en = o.optInt("en", 1) == 1, pre = o.optInt("pre", 0) == 1, iqr = o.optInt("iqr", 0) == 1;
@@ -125,18 +136,27 @@ public class Scheduler {
             pd.add(Calendar.DAY_OF_MONTH, -1);
             long[] pr = dayMs(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH));
             // 7 = تذكير صيام الغد (قضاء) بعد إقامة العشاء إن كان الغد من الأيام التي اختارها المستخدم
+            // 8 = تذكير صيام التطوع غداً (اثنين/خميس/أيام بيض/عرفة/تاسوعاء/عاشوراء) بعد إقامة العشاء
+            // 9 = سورة الكهف يوم الجمعة (وقت الضحى)، 10 = قبل صلاة الجمعة بساعة
+            boolean fri = day.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY;
+            boolean fastQ = fastNext(o, day);
+            int rec = fastQ ? 0 : nfdCode(o, day, 1);
             long[] ex = {WidgetTip.morningAt(r), WidgetTip.eveningAt(r), WidgetTip.dhuhaAt(r), WidgetTip.thirdAt(pr[4], r[0], o.optInt("lb", 0)),
-                    fastNext(o, day) ? WidgetTip.fastAt(r, iqs(o)) : -1};
-            int[] ek = {3, 4, 5, 6, 7};
-            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1, true};
-            for (int k = 0; k < 5; k++) {
-                if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = 0; evKind = ek[k]; }
+                    fastQ ? WidgetTip.fastAt(r, iqs(o)) : -1,
+                    rec > 0 ? WidgetTip.fastAt(r, iqs(o)) : -1,
+                    fri ? WidgetTip.dhuhaAt(r) : -1,
+                    fri ? r[2] - 60 * 60000L : -1};
+            int[] ek = {3, 4, 5, 6, 7, 8, 9, 10};
+            boolean[] eo = {o.optInt("rm", 1) == 1, o.optInt("re", 1) == 1, o.optInt("rd", 1) == 1, o.optInt("rl", 0) == 1, true,
+                    true, o.optInt("rfk", 0) == 1, o.optInt("rfg", 0) == 1};
+            for (int k = 0; k < 8; k++) {
+                if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = ek[k] == 8 ? rec : 0; evKind = ek[k]; }
             }
         }
         return best == Long.MAX_VALUE ? -1 : best;
     }
 
-    public static void schedule(Context c) {
+    public static synchronized void schedule(Context c) {
         AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
         long t = next(c, System.currentTimeMillis());
         Intent i = new Intent(c, AdhanReceiver.class).setAction(ACT);

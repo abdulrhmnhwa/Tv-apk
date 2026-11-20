@@ -58,11 +58,30 @@ public class WidgetTip {
     static long fastAt(long[] r, int[] iq) { return r[5] + Math.max(0, iq[5]) * MIN; }
 
     /** تنبيه الصيام: يظهر من بعد إقامة العشاء ليلة يوم الصيام ويبقى حتى أذان الفجر (وبعد منتصف الليل يصبح "اليوم") */
-    static String[] fastTip(long now, long[] r, int[] iq, boolean tomorrowFast, boolean todayFast) {
+    static String[] fastTip(long now, long[] r, int[] iq, boolean tomorrowFast, boolean todayFast, int tomorrowRec, int todayRec) {
         if (todayFast && now < r[0])
             return t("🌙 صيام اليوم", "اليوم يجب عليك صيام يوم (قضاء) — انوِ الصيام قبل الفجر", "sq");
+        if (todayRec > 0 && now < r[0])
+            return t("🌙 صيام مستحب", "اليوم " + recName(todayRec) + " — يُستحب صيامه، انوِ الصيام قبل الفجر", "");
         if (tomorrowFast && now >= fastAt(r, iq))
             return t("🌙 صيام غداً", "غداً يجب عليك صيام يوم (قضاء) — انوِ الصيام من الليل", "sq");
+        if (tomorrowRec > 0 && now >= fastAt(r, iq))
+            return t("🌙 صيام مستحب", "غداً " + recName(tomorrowRec) + " — يُستحب صيامه", "");
+        return null;
+    }
+
+    static String recName(int c) {
+        String[] n = {"", "يوم الاثنين", "يوم الخميس", "من الأيام البيض", "يوم عرفة", "تاسوعاء", "عاشوراء"};
+        return c >= 1 && c <= 6 ? n[c] : "";
+    }
+
+    /** تنبيه الجمعة في الودجت: قبل الصلاة بساعة (الغسل والتبكير)، وطوال النهار حتى المغرب (سورة الكهف) */
+    static String[] fridayTip(long now, long[] r, int dow, boolean kahf, boolean pre) {
+        if (dow != java.util.Calendar.FRIDAY) return null;
+        if (pre && now >= r[2] - 60 * MIN && now < r[2])
+            return t("🕌 قرب الجمعة", "اغتسل وتطيّب وبكّر إلى المسجد، وأكثر من الصلاة على النبي ﷺ", "");
+        if (kahf && now >= r[0] && now < r[4])
+            return t("📖 يوم الجمعة", "من السنن اليوم: قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ", "");
         return null;
     }
     /** تنبيه «ما زال بإمكانك»: أذكار الصباح بعد الشروق حتى انتهاء الضحى، وأذكار المساء من العصر حتى ساعتين بعد العشاء.
@@ -136,7 +155,7 @@ public class WidgetTip {
         for (long[] r : days) {
             if (r == null) continue;
             long[] b = {
-                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, r[5] + EVE_AFTER * MIN, fastAt(r, iq),
+                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, r[5] + EVE_AFTER * MIN, fastAt(r, iq), r[2] - 60 * MIN,
                 postStart(r, iq, 0), postStart(r, iq, 0) + POST_LEN * MIN,
                 postStart(r, iq, 2), postStart(r, iq, 2) + POST_LEN * MIN,
                 postStart(r, iq, 3), postStart(r, iq, 3) + POST_LEN * MIN,

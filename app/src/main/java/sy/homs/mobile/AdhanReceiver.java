@@ -23,7 +23,6 @@ public class AdhanReceiver extends BroadcastReceiver {
             int kind = i.getIntExtra("k", 0);
             String city = o.optString("cn", "حمص"), name = Scheduler.NAMES[k];
             if (kind == 0 && o.optInt("en", 1) == 1) {
-                notifyNow(c, 100 + k, "adhan", "حان الآن موعد " + name, city);
                 if (o.optInt("snd", 1) == 1) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -32,9 +31,9 @@ public class AdhanReceiver extends BroadcastReceiver {
                     final PendingResult pr = goAsync();
                     Takbeer.play(c.getApplicationContext(), pr::finish);
                 }
+                notifyNow(c, 100 + k, "adhan", "حان الآن موعد " + name, city);
             } else if (kind == 1) {
                 boolean snd = o.optInt("pres", 1) == 1 && Takbeer.has(c, "pre_adhan.mp3");
-                notifyNow(c, 200 + k, snd ? "adhan" : "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
                 if (snd) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -43,9 +42,9 @@ public class AdhanReceiver extends BroadcastReceiver {
                     final PendingResult pr = goAsync();
                     Takbeer.playFile(c.getApplicationContext(), "pre_adhan.mp3", pr::finish);
                 }
+                notifyNow(c, 200 + k, snd ? "adhan" : "remind", "بعد " + Scheduler.PRE + " دقيقة موعد " + name, city);
             } else if (kind == 2) {
                 boolean snd = o.optInt("iqs", 0) == 1 && Takbeer.has(c, "iqama.mp3");
-                notifyNow(c, 300 + k, snd ? "adhan" : "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
                 if (snd) {
                     try {
                         PowerManager pm = (PowerManager) c.getSystemService(Context.POWER_SERVICE);
@@ -54,6 +53,7 @@ public class AdhanReceiver extends BroadcastReceiver {
                     final PendingResult pr = goAsync();
                     Takbeer.playFile(c.getApplicationContext(), "iqama.mp3", pr::finish);
                 }
+                notifyNow(c, 300 + k, snd ? "adhan" : "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
             } else if (kind == 3) {
                 notifyNow(c, 403, "remind", "☀️ حان وقت أذكار الصباح", "ابدأ يومك بذكر الله · اضغط لفتح الأذكار", "m");
             } else if (kind == 4) {
@@ -62,6 +62,18 @@ public class AdhanReceiver extends BroadcastReceiver {
                 notifyNow(c, 405, "remind", "🌤️ حان وقت صلاة الضحى", "ركعتان فأكثر تجزئ عن صدقة كل مفصل في الجسم · " + city, "");
             } else if (kind == 7) {
                 notifyNow(c, 407, "remind", "🌙 تذكير: صيام الغد", "يجب عليك صيام يوم غدٍ (قضاء) — انوِ الصيام من الليل · اضغط لفتح قضاء الصيام", "sq");
+            } else if (kind == 8) {
+                int code = i.getIntExtra("i", 0);
+                String[] nm = {"", "الاثنين", "الخميس", "من الأيام البيض", "يوم عرفة", "تاسوعاء", "عاشوراء"};
+                String[] ds = {"", "صيام الاثنين والخميس سنّة مستحبّة", "صيام الاثنين والخميس سنّة مستحبّة",
+                        "يُستحب صيام الأيام البيض: 13 و14 و15 من الشهر الهجري", "صيامه يكفّر ذنوب السنة الماضية والباقية لغير الحاج",
+                        "يُستحب صيامه مع عاشوراء", "صيامه يكفّر ذنوب السنة الماضية"};
+                if (code >= 1 && code <= 6)
+                    notifyNow(c, 408, "remind", "🌙 غداً " + (code <= 2 ? "يوم " : "") + nm[code] + " — يُستحب صيامه", ds[code] + " · انوِ الصيام من الليل", "");
+            } else if (kind == 9) {
+                notifyNow(c, 409, "remind", "📖 يوم الجمعة — سورة الكهف", "من السنن المستحبّة اليوم قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ", "");
+            } else if (kind == 10) {
+                notifyNow(c, 410, "remind", "🕌 اقترب موعد صلاة الجمعة", "اغتسل وتطيّب وبكّر إلى المسجد، وأكثر من الصلاة على النبي ﷺ · " + city, "");
             } else if (kind == 6) {
                 notifyNow(c, 406, "remind", "🌌 الثلث الأخير من الليل", "وقت الدعاء والاستغفار والقيام · اضغط لفتح الأذكار", "tab");
             }

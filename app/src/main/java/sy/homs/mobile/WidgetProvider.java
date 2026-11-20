@@ -131,8 +131,11 @@ public class WidgetProvider extends AppWidgetProvider {
             // الشريط يتبادل كل 10 ثوانٍ (ViewFlipper) بين: التنبيه الذي يحين وقته، وتنبيه الصيام، وتنبيه «ما زال بإمكانك قراءة أذكار الصباح/المساء»
             java.util.ArrayList<String[]> tl = new java.util.ArrayList<>();
             tl.add(tip);
-            String[] ft = WidgetTip.fastTip(now, days[1], iqs, Scheduler.fastSqd(o, cal, 1), Scheduler.fastSqd(o, cal, 0));
+            String[] ft = WidgetTip.fastTip(now, days[1], iqs, Scheduler.fastSqd(o, cal, 1), Scheduler.fastSqd(o, cal, 0),
+                    Scheduler.nfdCode(o, cal, 1), Scheduler.nfdCode(o, cal, 0));
             if (ft != null) tl.add(ft);
+            String[] fr = WidgetTip.fridayTip(now, days[1], cal.get(Calendar.DAY_OF_WEEK), o.optInt("rfk", 0) == 1, o.optInt("rfg", 0) == 1);
+            if (fr != null) tl.add(fr);
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
             if (ak != null) tl.add(ak);
             rv.removeAllViews(R.id.wflip);

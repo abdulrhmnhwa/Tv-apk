@@ -22,6 +22,8 @@ import android.speech.tts.UtteranceProgressListener;
 import java.util.Locale;
 
 public class Takbeer {
+    /** فترة سماح أول لحظات التشغيل: تُتجاهل فيها إضاءة الشاشة وتغيّر الصوت الناتجان عن وصول الإشعار نفسه (أول مرة بعد التثبيت يتأخران) */
+    static final long GRACE = 1500;
     /** إجراء إيقاف الصوت الجاري حالياً (null إن لم يكن هناك صوت) */
     private static volatile Runnable current = null;
 
@@ -53,7 +55,12 @@ public class Takbeer {
                 try {
                     int[] v = vols();
                     boolean s = interactive();
-                    if (SystemClock.elapsedRealtime() - t0 < 1500) { base = v; scr = s; } // فترة سماح لأول لحظات التشغيل
+                    if (base == null) { base = v; scr = s; } // القراءة الأولية
+                    else if (SystemClock.elapsedRealtime() - t0 < GRACE) {
+                        // فترة سماح: إضاءة الشاشة بسبب الإشعار تُتجاهل، أما إطفاؤها (ضغط زر القفل) فيوقف الصوت فوراً
+                        if (scr && !s) { stop.run(); return; }
+                        base = v; scr = s;
+                    }
                     else if (s != scr || !java.util.Arrays.equals(v, base)) { stop.run(); return; }
                 } catch (Throwable ignored) {}
                 hd.postDelayed(this, 120);
@@ -77,10 +84,11 @@ public class Takbeer {
             current = stop;
             rcv = new BroadcastReceiver() {
                 @Override public void onReceive(Context c, Intent i) {
-                    // تجاهل أول ثانية ونصف حتى لا تُوقفه إضاءة الشاشة التلقائية عند وصول الإشعار
-                    if (SystemClock.elapsedRealtime() - t0 < 1500) return;
+                    // تجاهل فترة السماح حتى لا تُوقفه إضاءة الشاشة التلقائية عند وصول الإشعار
                     String a = i.getAction();
-                    if (Intent.ACTION_SCREEN_OFF.equals(a) || Intent.ACTION_SCREEN_ON.equals(a)) stop.run();
+                    if (Intent.ACTION_SCREEN_OFF.equals(a)) { stop.run(); return; } // ضغط زر القفل والشاشة مضاءة: إيقاف فوري
+                    if (SystemClock.elapsedRealtime() - t0 < GRACE) return;
+                    if (Intent.ACTION_SCREEN_ON.equals(a)) stop.run();
                     else if ("android.media.VOLUME_CHANGED_ACTION".equals(a)
                             && i.getIntExtra("android.media.EXTRA_VOLUME_STREAM_TYPE", -1) == AudioManager.STREAM_ALARM) stop.run();
                 }
