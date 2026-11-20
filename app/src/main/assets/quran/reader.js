@@ -13,7 +13,7 @@
   var st = { pg: 1, fs: 1, sel: -1, tab: "s", opts: null, playing: -1, built: false };
   var bm = {}, au = null, toastT = 0;
   var RC = "Alafasy_128kbps";
-  var SIZES = [0.8, 0.9, 1, 1.15, 1.3, 1.5, 1.75];
+  var SIZES = [0.85, 1, 1.15, 1.3, 1.5, 1.75];
   var AR = "٠١٢٣٤٥٦٧٨٩";
 
   function lsG(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
@@ -89,19 +89,18 @@
       '<button class="qi" id="qrw" aria-label="موقع تنزيل (إنترنت)">🌐</button>' +
       '</div></div>' +
       '<div class="qk" id="qrk"><span id="qrkt"></span><button class="btn" id="qrkd">✓ انتهيت هنا</button></div>' +
-      '<div class="qb" id="qrb"><div class="qpg" id="qrp"></div>' +
+      '<div class="qb" id="qrb"><div class="qfr"><div class="qpg" id="qrp"></div></div>' +
       '<div class="qcr">نص المصحف: <button id="qrcr">مشروع تنزيل Tanzil Project</button> · ترخيص CC BY 3.0<br>الترقيم: مصحف المدينة (٦٠٤ صفحة)</div></div>' +
       '<div class="qpl" id="qrpl"><span id="qrpt"></span><button id="qrps">⏹ إيقاف</button></div>' +
-      '<div class="qf"><button class="qnb" id="qrpv">› السابقة</button>' +
+      '<div class="qf"><button class="qnb" id="qrpv">‹ السابقة</button>' +
       '<div class="qpn"><span>صفحة</span><input id="qrg" type="number" min="1" max="604" inputmode="numeric"><span>/ ٦٠٤</span></div>' +
-      '<button class="qnb" id="qrnx">التالية ‹</button></div>' +
+      '<button class="qnb" id="qrnx">التالية ›</button></div>' +
       '<div class="qpa" id="qra"><div class="qtabs"><button data-t="s">السور</button><button data-t="j">الأجزاء</button><button data-t="f">بحث</button><button data-t="b">العلامات</button><button class="qx" id="qrax" aria-label="إغلاق">✕</button></div><div class="qpc" id="qrpc"></div></div>' +
       '<div class="qsd" id="qrd"><div class="qsx" id="qrx"></div></div>' +
       '<div class="qtoast" id="qrto"></div>';
     D.body.appendChild(r);
     st.fs = lsG("qrfs", 1);
     if (SIZES.indexOf(st.fs) < 0) st.fs = 1;
-    r.style.setProperty("--qfs", st.fs);
 
     $("qrc").onclick = close;
     $("qrkd").onclick = close;
@@ -111,13 +110,13 @@
     $("qrz").onclick = function () {
       var k = (SIZES.indexOf(st.fs) + 1) % SIZES.length;
       st.fs = SIZES[k]; lsS("qrfs", st.fs);
-      $("qr").style.setProperty("--qfs", st.fs);
-      toast("حجم الخط " + Math.round(st.fs * 100) + "%");
+      fit();
+      toast(st.fs === 1 ? "حجم المصحف (١٥ سطراً)" : "حجم الخط " + Math.round(st.fs * 100) + "%");
     };
     $("qrw").onclick = function () { site(PI[st.pg - 1]); };
     $("qrcr").onclick = function () { site(-1); };
-    $("qrpv").onclick = function () { go(st.pg - 1); };
-    $("qrnx").onclick = function () { go(st.pg + 1); };
+    $("qrpv").onclick = function () { go(st.pg - 1, false, -1); };
+    $("qrnx").onclick = function () { go(st.pg + 1, false, 1); };
     $("qrg").onchange = function () { var v = parseInt(this.value, 10); if (v >= 1 && v <= 604) go(v); else this.value = st.pg; };
     $("qrps").onclick = function () { stop(); };
     $("qrp").onclick = function (e) {
@@ -139,7 +138,7 @@
     b.addEventListener("touchend", function (e) {
       var t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
       if (Date.now() - tt > 700 || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
-      go(st.pg + (dx > 0 ? 1 : -1));
+      go(st.pg + (dx > 0 ? 1 : -1), false, dx > 0 ? 1 : -1);
     }, { passive: true });
   }
 
@@ -157,12 +156,12 @@
       var s = FS[i], ay = FA[i];
       if (ay === 1) {
         var m = M.s[s - 1];
-        o += '<span class="qsh">سورة ' + esc(m[0]) + '<small>' + (m[3] === "M" ? "مكية" : "مدنية") + " · " + ar(m[4]) + " آية</small></span>";
+        o += '<span class="qsh"><i>۞</i>سورة ' + esc(m[0]) + "<i>۞</i></span>";
         if (s !== 1 && s !== 9) o += '<span class="qbs">' + esc(BIS) + "</span>";
       }
       if (QTR[i] && i > 0) o += '<span class="qq">۞</span>';
       o += '<span class="qv' + (bm[i] ? " bm" : "") + (st.playing === i ? " pl" : "") + (st.sel === i ? " sel" : "") + '" data-i="' + i + '">' +
-        esc(body(i)) + (SAJ[i] ? ' <span class="qsj">۩</span>' : "") + ' <span class="qn">' + ar(ay) + "</span></span> ";
+        esc(body(i)) + (SAJ[i] ? ' <span class="qsj">۩</span>' : "") + ' <span class="qn">\u06DD' + ar(ay) + "</span></span> ";
     }
     return o;
   }
@@ -177,14 +176,95 @@
     $("qrnx").disabled = st.pg >= 604;
   }
 
-  function go(p, keepScroll) {
+  /* ---------- ضبط الصفحة كالمصحف: ١٥ سطراً مضبوطة الحواف ---------- */
+  var LH = 2, baseCache = {};
+  function rowsAt(el, fs) { el.style.fontSize = fs + "px"; return Math.round(el.offsetHeight / (fs * LH)); }
+  function bestFs(el, target) {
+    var lo = 9, hi = Math.max(14, Math.min(44, el.clientWidth / 7.5)), best = lo;
+    for (var k = 0; k < 13; k++) {
+      var mid = (lo + hi) / 2;
+      if (rowsAt(el, mid) <= target) { best = mid; lo = mid; } else hi = mid;
+    }
+    return best;
+  }
+  function fit() {
+    var el = $("qrp");
+    if (!el || !el.clientWidth || !M) return;
+    var w = el.clientWidth, p = st.pg, fs, target = 15;
+    el.style.paddingTop = el.style.paddingBottom = "0";
+    if (p <= 2) {
+      // الصفحتان الأولى والثانية بخط الصفحات العادية، والنص في وسط الإطار
+      if (!baseCache[w]) {
+        var keep = el.innerHTML;
+        el.innerHTML = pageHTML(3);
+        baseCache[w] = bestFs(el, target);
+        el.innerHTML = keep;
+      }
+      fs = baseCache[w];
+    } else {
+      fs = bestFs(el, target);
+      baseCache[w] = fs;
+    }
+    var n = rowsAt(el, fs);
+    var full = n >= target;
+    el.style.textAlignLast = full ? "justify" : "center";
+    if (p <= 2 && n < target) {
+      var pad = ((target - n) / 2) * fs * LH;
+      el.style.paddingTop = el.style.paddingBottom = pad + "px";
+    }
+    el.style.fontSize = (fs * st.fs) + "px";
+  }
+  function fontsThenFit(pg) {
+    try {
+      if (D.fonts && D.fonts.load) D.fonts.load('20px "QuranFont"', "\u0628\u06DD\u0661").then(function () { if (st.pg === pg) { baseCache = {}; fit(); } }, function () {});
+    } catch (e) {}
+  }
+  var rsT = 0;
+  window.addEventListener("resize", function () {
+    clearTimeout(rsT);
+    rsT = setTimeout(function () { var ov = $("qr"); if (ov && ov.className === "on" && M) { baseCache = {}; fit(); } }, 150);
+  });
+
+  var ghost = null, anims = [];
+  function clearGhost() {
+    anims.forEach(function (x) { try { x.cancel(); } catch (e) {} });
+    anims = [];
+    if (ghost) { ghost.remove(); ghost = null; }
+  }
+  /* انتقال الصفحة بالسحب: dir=1 الصفحة التالية تدخل من اليسار، dir=-1 السابقة تدخل من اليمين */
+  function slide(dir, render) {
+    var fr = $("qrb").querySelector(".qfr");
+    var calm = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!dir || calm || !fr.animate) { render(); return; }
+    clearGhost();
+    var r = fr.getBoundingClientRect(), W = window.innerWidth + 20;
+    ghost = fr.cloneNode(true);
+    var gp = ghost.querySelector("#qrp");
+    if (gp) gp.removeAttribute("id");
+    ghost.className = "qfr qgh";
+    ghost.style.cssText = "position:absolute;margin:0;pointer-events:none;z-index:1;left:" + r.left + "px;top:" + r.top + "px;width:" + r.width + "px";
+    $("qr").appendChild(ghost);
+    render();
+    var o = { duration: 320, easing: "cubic-bezier(.22,.8,.3,1)", fill: "both" }, g = ghost;
+    var a1 = g.animate([{ transform: "translateX(0)" }, { transform: "translateX(" + (dir > 0 ? W : -W) + "px)" }], o);
+    var a2 = fr.animate([{ transform: "translateX(" + (dir > 0 ? -W : W) + "px)" }, { transform: "translateX(0)" }], o);
+    anims = [a1, a2];
+    a1.onfinish = function () { if (ghost === g) { g.remove(); ghost = null; } try { a2.cancel(); } catch (e) {} anims = []; };
+  }
+
+  function go(p, keepScroll, dir) {
     p = Math.max(1, Math.min(604, p | 0));
+    if (p === st.pg && dir) return;
     st.pg = p;
     st.sel = -1;
-    $("qrp").innerHTML = pageHTML(p);
-    if (!keepScroll) $("qrb").scrollTop = 0;
-    setHead();
-    lsS("qrp", p);
+    slide(dir, function () {
+      $("qrp").innerHTML = pageHTML(p);
+      fit();
+      fontsThenFit(p);
+      if (!keepScroll) $("qrb").scrollTop = 0;
+      setHead();
+      lsS("qrp", p);
+    });
   }
 
   function goVerse(i) {
@@ -274,7 +354,7 @@
       au = new Audio(url);
       au.onended = function () {
         var n = i + 1;
-        if (st.playing === i && n < FT.length) { if (pageOf(n) !== st.pg) go(pageOf(n)); play(n); } else stop();
+        if (st.playing === i && n < FT.length) { if (pageOf(n) !== st.pg) go(pageOf(n), false, 1); play(n); } else stop();
       };
       au.onerror = function () { if (st.playing === i) { toast("تعذّر تشغيل الصوت — تحتاج اتصالاً بالإنترنت"); stop(); } };
       var pr = au.play();
@@ -383,7 +463,7 @@
   function close() {
     var ov = $("qr");
     if (!ov || ov.className !== "on") return;
-    stop();
+    stop(); clearGhost();
     closeSheet(); closePanel();
     ov.className = "";
     var o = st.opts; st.opts = null;

@@ -78,6 +78,18 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
+        @JavascriptInterface public String appVer() { return UpdateCheck.currentName(MainActivity.this); }
+        /** تحقق يدوي من التحديث (زر الإعدادات): النتيجة تصل إلى window.updRes */
+        @JavascriptInterface public void checkUpdate() {
+            new Thread(() -> {
+                final String r = UpdateCheck.fetch(MainActivity.this);
+                runOnUiThread(() -> { if (w != null) w.evaluateJavascript("window.updRes&&window.updRes(" + r + ")", null); });
+            }).start();
+        }
+        @JavascriptInterface public void openUpdate(String u) {
+            if (u == null || !u.startsWith("https://")) return;
+            runOnUiThread(() -> { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(u))); } catch (Exception ig) {} });
+        }
         /** يفتح صفحة محددة من موقع تنزيل (تفسير/ترجمة) داخل التطبيق؛ يقتصر على tanzil.net */
         @JavascriptInterface public void openSite(String u) {
             final String url = (u != null && u.startsWith("https://tanzil.net/")) ? u : "https://tanzil.net/";
@@ -401,7 +413,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); UpdateCheck.maybe(this); }
     @Override protected void onPause() { w.removeCallbacks(poll); w.evaluateJavascript("window.selReset&&window.selReset()", null); w.onPause(); if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() { if (web != null) web.destroy(); w.destroy(); super.onDestroy(); }
 }

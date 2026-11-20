@@ -257,7 +257,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div id="dto" style="margin-top:.6rem"></div></div>
   <div class="card"><div class="h"><span>المناسبات القادمة</span><small>تقريبي</small></div><div id="evs"></div></div>
   <div class="card" id="c_hc"><div class="h"><span>التقويم الهجري</span></div>
-    <div class="row" style="justify-content:space-between;align-items:center"><button class="btn" id="hcn">›</button><div style="text-align:center"><b id="hct" style="color:var(--gold);font-size:1.1rem"></b><div class="mut" id="hcg" style="font-size:.78rem"></div></div><button class="btn" id="hcp">‹</button></div>
+    <div class="row" style="justify-content:space-between;align-items:center"><button class="btn" id="hcn">‹</button><div style="text-align:center"><b id="hct" style="color:var(--gold);font-size:1.1rem"></b><div class="mut" id="hcg" style="font-size:.78rem"></div></div><button class="btn" id="hcp">›</button></div>
     <div class="hcg" id="hcw" style="margin-top:.6rem"></div><div class="hcg" id="hcd" style="margin-top:.25rem"></div>
     <div class="row" style="margin-top:.6rem"><button class="btn" id="hcT">الشهر الحالي</button></div>
     <div id="hce" style="margin-top:.6rem"></div><div class="note">حسب تقويم أم القرى؛ قد يختلف يوماً عن رؤية الهلال المحلية.</div></div>
@@ -272,7 +272,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الإعدادات -->
 <section class="tab" id="t3">
   <div class="top"><h1>الإعدادات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
-  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>حجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button></div>
+  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>حجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button><button class="adb" data-tl="c_sup"><b>🔄</b>تحديث التطبيق<small>التحقق من وجود نسخة جديدة</small></button></div>
   <div id="sth" style="display:none">
   <div class="card"><div class="h"><span>تعديل الدقائق</span><button class="btn" id="rs" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button></div>
     <div id="adj"></div>
@@ -315,8 +315,14 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>تذكير سورة الكهف يوم الجمعة<small>إشعار عند دخول وقت الضحى، ويظهر في الودجت طوال يوم الجمعة</small></span><label class="sw"><input type="checkbox" id="rfk"><i></i></label></div>
     <div class="sr"><span>تذكير قبل صلاة الجمعة<small>الغسل والتطيّب والتبكير والصلاة على النبي ﷺ — قبل الظهر بساعة</small></span><label class="sw"><input type="checkbox" id="rfg"><i></i></label></div>
     <div class="note">تُستثنى أيام قضاء الصيام التي حدّدتها (لها تذكيرها الخاص)، ولا تُحسب أيام رمضان والعيدين وأيام التشريق.</div></div>
+  <div class="card" id="c_sup"><div class="h"><span>تحديث التطبيق</span></div>
+    <div class="kst"><div><b id="upc">—</b><small>النسخة الحالية</small></div></div>
+    <div id="upm" class="mut" style="text-align:center;margin:.7rem 0;line-height:1.7">اضغط للتحقق من وجود نسخة جديدة</div>
+    <div class="row"><button class="btn" id="upk" style="flex:1">🔄 تحقق من وجود تحديثات</button></div>
+    <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
+    <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.3.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.5.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -568,7 +574,7 @@ $("wr").onclick=weather;
 /* ---------- التنقل ---------- */
 function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
-var TLN={c_s1:"تعديل الدقائق",c_s2:"مدة الإقامة",c_s3:"المظهر والخط",c_s4:"الشاشة الرئيسية",c_s5:"التنبيهات",c_s6:"الموقع وطريقة الحساب",c_s7:"تذكيرات مستحبة",c_qb:"بوصلة القبلة",c_ts:"المسبحة",c_dt:"الذهاب إلى تاريخ",c_ev:"المناسبات القادمة",c_hc:"التقويم الهجري",c_kh:"ختمة القرآن",c_as:"أسماء الله الحسنى",c_qd:"قضاء الفوائت",c_hj:"الحج والعمرة",c_sq:"قضاء الصيام"},tlOpen=null;
+var TLN={c_s1:"تعديل الدقائق",c_s2:"مدة الإقامة",c_s3:"المظهر والخط",c_s4:"الشاشة الرئيسية",c_s5:"التنبيهات",c_s6:"الموقع وطريقة الحساب",c_s7:"تذكيرات مستحبة",c_sup:"تحديث التطبيق",c_qb:"بوصلة القبلة",c_ts:"المسبحة",c_dt:"الذهاب إلى تاريخ",c_ev:"المناسبات القادمة",c_hc:"التقويم الهجري",c_kh:"ختمة القرآن",c_as:"أسماء الله الحسنى",c_qd:"قضاء الفوائت",c_hj:"الحج والعمرة",c_sq:"قضاء الصيام"},tlOpen=null;
 (function(){var ids=["c_qb","c_ts","c_dt","c_ev"];[].slice.call($("tlh").children).forEach(function(c,i){if(ids[i])c.id=ids[i]})})();
 (function(){["c_s1","c_s2","c_s3","c_s4","c_s5","c_s6","c_s7"].forEach(function(id,i){var c=$("sth").children[i];if(c)c.id=id})})();
 function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;$("tlt").textContent=TLN[id];$("tlb").innerHTML="";
@@ -576,7 +582,13 @@ function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;$("tlt").textContent=TLN[
  if(id==="c_s1"){var d1=document.createElement("div");d1.className="tld";d1.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button>';$("tlb").appendChild(d1);d1.firstChild.onclick=function(){$("rs").click()}}
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
 function tlClose(){if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className=""}
-$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
+$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_sup")updDraw();if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
+var updUrl="";
+function updDraw(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}$("upc").textContent=v||"—";$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
+$("upk").onclick=function(){var m=$("upm");if(!(window.App&&App.checkUpdate)){m.textContent="هذه الميزة تعمل داخل التطبيق فقط";return}m.textContent="جارٍ التحقق…";$("upr").style.display="none";try{App.checkUpdate()}catch(e){m.textContent="تعذّر التحقق"}};
+window.updRes=function(r){var m=$("upm");if(!r||!r.ok){m.textContent=(r&&r.err==="cfg")?"لم يُضبط رابط التحديث بعد (للمطوّر)":"تعذّر الاتصال — تحقق من الإنترنت وحاول لاحقاً";return}
+ if(r.newer){updUrl=r.url||"";var e=function(x){return String(x).replace(/&/g,"&amp;").replace(/</g,"&lt;")};m.innerHTML="🎉 نسخة جديدة متوفرة: <b style=\"color:var(--gold)\">"+e(r.vn||r.vc)+"</b>"+(r.notes?"<br><small>"+e(r.notes)+"</small>":"");$("upr").style.display=updUrl?"flex":"none"}else m.textContent="✓ أنت على آخر نسخة"};
+$("upd").onclick=function(){try{if(updUrl&&window.App&&App.openUpdate)App.openUpdate(updUrl)}catch(e){}};
 $("tlx").onclick=tlClose;$("stg").onclick=$("tlg").onclick;
 /* ---------- التقويم الهجري ---------- */
 var GM=["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"],hcD=null;

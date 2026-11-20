@@ -17,6 +17,7 @@ import org.json.JSONObject;
 public class AdhanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context c, Intent i) {
+        UpdateCheck.maybe(c); // فحص التحديثات: مرة واحدة باليوم كحدٍّ أقصى
         if (Scheduler.ACT.equals(i.getAction())) {
             JSONObject o = Prefs.obj(c);
             int k = Math.max(0, Math.min(5, i.getIntExtra("i", 0)));
