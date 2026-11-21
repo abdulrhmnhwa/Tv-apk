@@ -347,7 +347,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.9.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span><br><button class="btn" id="fbk" style="margin-top:.7rem">💡 أرسل لنا اقتراحاً</button></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.9.2<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span><br><button class="btn" id="fbk" style="margin-top:.7rem">💡 أرسل لنا اقتراحاً</button></div>
 </section>
 
 </div>
@@ -496,7 +496,9 @@ function events(n){var out={},c=0;for(var k=0;k<=400&&c<8;k++){var h=hj(new Date
 var hd=null,raf=0;
 function draw(){raf=0;var h=hd||0;$("dial").style.transform="rotate("+(-h)+"deg)";$("ndl").style.transform="rotate("+(qb-h)+"deg)"}
 function ori(e){var h=null;if(e.webkitCompassHeading!=null)h=e.webkitCompassHeading;else if(e.alpha!=null)h=(360-e.alpha)%360;if(h==null)return;hd=h;$("qn").textContent="السهم يشير إلى القبلة: "+qb+"° — حرّك الجوال أفقياً حتى يتجه السهم للأعلى";if(!raf)raf=requestAnimationFrame(draw)}
-window.addEventListener("deviceorientationabsolute",ori,true);
+/* حساس الاتجاه يعمل فقط أثناء عرض البوصلة (توفير للبطارية) */
+var cpL=0;function cpSync(){var w=tlOpen==="c_qb"&&$("cpv").style.display!=="none"&&!document.hidden;
+ if(w&&!cpL){window.addEventListener("deviceorientationabsolute",ori,true);cpL=1}else if(!w&&cpL){window.removeEventListener("deviceorientationabsolute",ori,true);cpL=0}}
 /* ---------- ميزان الماء الرقمي ---------- */
 var lv={on:0,m:"f",gx:0,gy:0,gz:9.81,got:0,hold:0,was:0,raf:0,t:0,cal:ls("lvcal")||{x:null,y:0,e:null}},LD=180/Math.PI;
 function lvMotion(e){var a=e.accelerationIncludingGravity;if(!a||a.x==null||a.y==null||a.z==null)return;
@@ -524,12 +526,12 @@ function lvMode(m){lv.m=m;lv.was=0;[].forEach.call($("lvm").children,function(b)
  lvCalBtn();if(!lv.raf)lv.raf=requestAnimationFrame(lvDraw)}
 function lvCalBtn(){var on=lv.m==="f"?lv.cal.x!=null:lv.cal.e!=null;$("lvc").textContent=on?"↺ إلغاء المعايرة":"🎯 معايرة (تصفير)"}
 $("cpm").onclick=function(e){var b=e.target.closest("button[data-v]");if(!b)return;var l=b.dataset.v==="l";[].forEach.call($("cpm").children,function(x){x.classList.toggle("on",x===b)});
- $("cpv").style.display=l?"none":"";$("lvv").style.display=l?"":"none";lvOn(l?1:0);if(l)lvMode(lv.m)};
+ $("cpv").style.display=l?"none":"";$("lvv").style.display=l?"":"none";lvOn(l?1:0);if(l)lvMode(lv.m);cpSync()};
 $("lvm").onclick=function(e){var b=e.target.closest("button[data-v]");if(b)lvMode(b.dataset.v)};
 $("lvc").onclick=function(){var r=lvRaw();if(lv.m==="f"){if(lv.cal.x!=null)lv.cal.x=null,lv.cal.y=0;else lv.cal.x=r.x,lv.cal.y=r.y}else{if(lv.cal.e!=null)lv.cal.e=null;else lv.cal.e=r.e}
  ls("lvcal",lv.cal);lvCalBtn();if(!lv.raf)lv.raf=requestAnimationFrame(lvDraw)};
 $("lvk").onclick=function(){lv.hold=!lv.hold;$("lvk").textContent=lv.hold?"▶ متابعة":"⏸ تثبيت القراءة";if(!lv.hold&&!lv.raf)lv.raf=requestAnimationFrame(lvDraw)};
-document.addEventListener("visibilitychange",function(){if(document.hidden&&lv.on){lvOn(0);lv.resume=1}else if(!document.hidden&&lv.resume){lv.resume=0;if($("lvv").style.display!=="none"&&tlOpen==="c_qb")lvOn(1)}});
+document.addEventListener("visibilitychange",function(){cpSync();if(document.hidden&&lv.on){lvOn(0);lv.resume=1}else if(!document.hidden&&lv.resume){lv.resume=0;if($("lvv").style.display!=="none"&&tlOpen==="c_qb")lvOn(1)}});
 /* ---------- المسبحة ---------- */
 var ts=ls("tsb")||{n:0,t:33,k:0,c:0};
 function vib(ms){try{if(window.App)App.vib(ms);else if(navigator.vibrate)navigator.vibrate(ms)}catch(e){}}
@@ -640,11 +642,11 @@ var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.close
 var TLN={c_s1:"تعديل الدقائق",c_s2:"مدة الإقامة",c_s3:"المظهر والخط",c_s4:"الشاشة الرئيسية",c_s5:"التنبيهات",c_s6:"الموقع وطريقة الحساب",c_s7:"تذكيرات مستحبة",c_sup:"تحديث التطبيق",c_qb:"البوصلة والميزان",c_ts:"المسبحة",c_dt:"الذهاب إلى تاريخ",c_ev:"المناسبات القادمة",c_hc:"التقويم الهجري",c_kh:"ختمة القرآن",c_as:"أسماء الله الحسنى",c_qd:"قضاء الفوائت",c_hj:"الحج والعمرة",c_sq:"قضاء الصيام"},tlOpen=null;
 (function(){var ids=["c_qb","c_ts","c_dt","c_ev"];[].slice.call($("tlh").children).forEach(function(c,i){if(ids[i])c.id=ids[i]})})();
 (function(){["c_s1","c_s2","c_s3","c_s4","c_s5","c_s6","c_s7"].forEach(function(id,i){var c=$("sth").children[i];if(c)c.id=id})})();
-function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;$("tlt").textContent=TLN[id];$("tlb").innerHTML="";
+function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;setTimeout(cpSync,0);$("tlt").textContent=TLN[id];$("tlb").innerHTML="";
  if(id==="c_dt"){var d=document.createElement("div");d.className="tld";d.innerHTML='<button class="btn" id="dtd2" style="padding:.25rem .7rem;font-size:.8rem">اليوم</button>';$("tlb").appendChild(d);d.firstChild.onclick=dtToday}
  if(id==="c_s1"){var d1=document.createElement("div");d1.className="tld";d1.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button>';$("tlb").appendChild(d1);d1.firstChild.onclick=function(){$("rs").click()}}
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
-function tlClose(){lvOn(0);if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className=""}
+function tlClose(){lvOn(0);if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className="";cpSync()}
 $("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_sup")updDraw();if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
 var updUrl="";
 function updDraw(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}$("upc").textContent=v||"—";$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
@@ -810,7 +812,7 @@ function adKeep(o){for(var q in o)if(q!=="d"&&q!=="m"&&q!=="e"&&q!=="salah")dele
 function adClean(){adO=adKeep(adO||{d:new Date().toDateString()});ls("adk",adO)}
 function adLoad(){var t=new Date().toDateString(),o=ls("adk");if(!o||o.d!==t)o={d:t};adKeep(o);
  ["m","e","salah"].forEach(function(k){if(!o[k])return;if(!o[k].ts)o[k].ts=Date.now();else if(o[k].ts<adEpoch(k))delete o[k]});adO=o}
-setInterval(function(){if($("adk").className!=="on"||["m","e","salah"].indexOf(adm)<0)return;var b=JSON.stringify(adO[adm]||null);adLoad();if(JSON.stringify(adO[adm]||null)!==b){ls("adk",adO);adDraw()}},20000);
+setInterval(function(){if(document.hidden||$("adk").className!=="on"||["m","e","salah"].indexOf(adm)<0)return;var b=JSON.stringify(adO[adm]||null);adLoad();if(JSON.stringify(adO[adm]||null)!==b){ls("adk",adO);adDraw()}},20000);
 function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
@@ -845,7 +847,7 @@ $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
 window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
-adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);syncSet();tick();setInterval(tick,1000);weather();setInterval(weather,18e5);
+adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);syncSet();tick();setInterval(function(){if(!document.hidden)tick()},1000);document.addEventListener("visibilitychange",function(){if(!document.hidden)tick()});weather();var wxT=Date.now();function wxMaybe(){if(!document.hidden&&Date.now()-wxT>=18e5){wxT=Date.now();weather()}}setInterval(wxMaybe,6e4);document.addEventListener("visibilitychange",wxMaybe);
 })();
 </script>
 </body>

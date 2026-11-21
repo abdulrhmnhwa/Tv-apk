@@ -160,6 +160,9 @@ public class UpdateCheck {
         final SharedPreferences sp = c.getSharedPreferences("upd", 0);
         final String today = new SimpleDateFormat("yyyyMMdd", Locale.US).format(new Date());
         if (today.equals(sp.getString("checked", ""))) return;
+        // عند الفشل لا نعيد المحاولة قبل 3 ساعات (يوفّر البطارية والبيانات)
+        if (System.currentTimeMillis() - sp.getLong("tried", 0) < 3 * 3600000L) return;
+        sp.edit().putLong("tried", System.currentTimeMillis()).apply();
         busy = true;
         new Thread(() -> {
             try {

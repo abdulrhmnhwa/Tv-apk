@@ -1,6 +1,6 @@
 {
-  "versionCode": 67,
-  "versionName": "2.9.1",
+  "versionCode": 68,
+  "versionName": "2.9.2",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "إصلاح فحص التحديث بدون VPN"
+  "notes": "تحسينات توفير البطارية"
 }

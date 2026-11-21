@@ -14,7 +14,7 @@ import java.util.TimeZone;
 
 /** جلب الطقس الحالي للودجت (Open-Meteo) وتخزينه */
 public class Weather {
-    static final long FRESH = 30 * 60000L, RETRY = 5 * 60000L;
+    static final long FRESH = 60 * 60000L, RETRY = 5 * 60000L;
 
     static SharedPreferences sp(Context c) { return c.getSharedPreferences("w", 0); }
 

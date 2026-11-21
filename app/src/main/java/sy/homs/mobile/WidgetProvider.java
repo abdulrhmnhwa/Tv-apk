@@ -182,9 +182,13 @@ public class WidgetProvider extends AppWidgetProvider {
             // أقرب تحديث لازم: الصلاة القادمة، أو تغيّر نافذة الأذكار، أو تدوير الذكر (كل نصف ساعة)
             long slot = (now / 1800000L + 1) * 1800000L;
             long tzMs = Scheduler.TZ * 3600000L, midnight = ((now + tzMs) / 86400000L + 1) * 86400000L - tzMs; // لتبديل "غداً" إلى "اليوم" عند منتصف الليل
-            long at = Math.min(Math.min(target, midnight), Math.min(slot, WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs))) + 1000;
-            try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
-            catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
+            long crit = Math.min(Math.min(target, midnight), WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs));
+            long at = Math.min(crit, slot) + 1000;
+            // التوقيت الدقيق فقط عند حدث حقيقي (صلاة/نافذة ذكر)؛ أما تدوير الذكر كل نصف ساعة فيكفيه منبّه غير دقيق يوفّر البطارية
+            if (crit <= slot) {
+                try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
+                catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
+            } else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p);
             Weather.ensure(c);
         } catch (Exception ignored) {}
     }

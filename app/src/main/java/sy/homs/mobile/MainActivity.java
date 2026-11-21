@@ -360,7 +360,7 @@ public class MainActivity extends Activity {
     }
 
     /** يمرّر عدّ المسبحة العائمة إلى الواجهة عند الرجوع للتطبيق */
-    private final Runnable poll = new Runnable() { @Override public void run() { syncTs(); w.postDelayed(this, 500); } };
+    private final Runnable poll = new Runnable() { @Override public void run() { syncTs(); w.postDelayed(this, 1000); } };
 
     private void syncTs() {
         if (!loaded) return;
