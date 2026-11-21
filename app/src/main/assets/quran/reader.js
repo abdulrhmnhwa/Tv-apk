@@ -85,6 +85,7 @@
       '<div class="qt"><b id="qrt"></b><small id="qrs"></small></div>' +
       '<button class="qi" id="qrq" aria-label="بحث">🔍</button>' +
       '<button class="qi" id="qri" aria-label="الفهرس">☰</button>' +
+      '<button class="qi" id="qrth" aria-label="الوضع الليلي / النهاري"></button>' +
       '<button class="qi" id="qrz" aria-label="حجم الخط" style="font-size:1rem;font-weight:700">Aa</button>' +
       '<button class="qi" id="qrw" aria-label="موقع تنزيل (إنترنت)">🌐</button>' +
       '</div></div>' +
@@ -107,6 +108,13 @@
     $("qrq").onclick = function () { openPanel("f"); };
     $("qri").onclick = function () { openPanel("s"); };
     $("qrax").onclick = closePanel;
+    function applyTheme() {
+      var day = lsG("qrth", "n") === "d", ov = $("qr");
+      ov.classList.toggle("day", day); ov.classList.toggle("night", !day);
+      $("qrth").textContent = day ? "🌙" : "☀️";
+    }
+    applyTheme();
+    $("qrth").onclick = function () { lsS("qrth", lsG("qrth", "n") === "d" ? "n" : "d"); applyTheme(); };
     $("qrz").onclick = function () {
       var nx = SIZES.filter(function (z) { return z > st.fs + 0.001; })[0];
       st.fs = nx || SIZES[0]; lsS("qrfs", st.fs);
@@ -249,7 +257,7 @@
   var rsT = 0;
   window.addEventListener("resize", function () {
     clearTimeout(rsT);
-    rsT = setTimeout(function () { var ov = $("qr"); if (ov && ov.className === "on" && M) { baseCache = {}; fit(); } }, 150);
+    rsT = setTimeout(function () { var ov = $("qr"); if (ov && ov.classList.contains("on") && M) { baseCache = {}; fit(); } }, 150);
   });
 
   var ghost = null, anims = [];
@@ -478,7 +486,7 @@
     st.opts = opts;
     build();
     var ov = $("qr");
-    ov.className = "on";
+    ov.classList.add("on");
     if (!Q) $("qrp").innerHTML = '<div class="qld">جارٍ تحميل المصحف…</div>';
     loadData(function () {
       if (opts.sura) goVerse(gi(opts.sura, 1)); // يفتح على أول آية من السورة مع تمييزها لحظة
@@ -489,16 +497,16 @@
   }
   function close() {
     var ov = $("qr");
-    if (!ov || ov.className !== "on") return;
+    if (!ov || !ov.classList.contains("on")) return;
     stop(); clearGhost();
     closeSheet(); closePanel();
-    ov.className = "";
+    ov.classList.remove("on");
     var o = st.opts; st.opts = null;
     if (o && o.onClose) { try { o.onClose(st.pg); } catch (e) {} }
   }
   function back() {
     var ov = $("qr");
-    if (!ov || ov.className !== "on") return false;
+    if (!ov || !ov.classList.contains("on")) return false;
     if ($("qrd").className === "qsd on") { closeSheet(); return true; }
     if ($("qra").className === "qpa on") { closePanel(); return true; }
     close();

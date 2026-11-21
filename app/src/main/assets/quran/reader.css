@@ -3,6 +3,9 @@
 @font-face{font-family:"QuranFont";font-weight:400;font-display:block;src:url("../fonts/Amiri-Regular.woff2") format("woff2"),url("../fonts/Amiri-Regular.ttf") format("truetype"),url("../fonts/Amiri.ttf") format("truetype"),url("../fonts/QuranFont.ttf") format("truetype")}
 @font-face{font-family:"QuranFont";font-weight:700;font-display:block;src:url("../fonts/Amiri-Bold.woff2") format("woff2"),url("../fonts/Amiri-Bold.ttf") format("truetype")}
 #qr{--qf:"QuranFont",serif}
+/* وضع المصحف: ليلي (الافتراضي) أو نهاري، مستقل عن سمة التطبيق */
+#qr.night{--gold:#d6b25e;--w:#f4f1e8;--mut:#a9c2b4;--gr:214,178,94;--ov:255,255,255;--ong:#04170f;--bg0:#04170f;--bgi:linear-gradient(170deg,#0b3b2b,#04170f 60%);--bar:rgba(4,23,15,.97);--selbg:#0b3b2b}
+#qr.day{--gold:#8a5a00;--w:#2b2416;--mut:#7a6a45;--gr:150,110,30;--ov:0,0,0;--ong:#fffaf0;--bg0:#fbf6e6;--bgi:linear-gradient(170deg,#fffdf5,#f3ead0 60%);--bar:rgba(243,234,208,.98);--selbg:#f3e8c8}
 #qr{position:fixed;inset:0;z-index:45;display:none;flex-direction:column;background:var(--bg0) var(--bgi) fixed;color:var(--w)}
 #qr.on{display:flex;animation:qrin .22s ease-out}
 @keyframes qrin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}

@@ -130,16 +130,33 @@ public class FloatTasbih extends Service {
         if (cycle) { n = 0; c++; }
         sp.edit().putInt("n", n).putInt("c", c).putBoolean("dirty", true).apply();
         draw();
-        buzz(cycle ? 60 : 12);
+        buzz(cycle);
     }
 
+    /** اهتزاز بخصائص منبّه (USAGE_ALARM) حتى لا يمنعه النظام من الخدمة الخلفية؛ رجّة مزدوجة عند اكتمال الدورة */
     @SuppressWarnings("deprecation")
-    private void buzz(int ms) {
+    private void buzz(boolean cycle) {
+        Vibrator vb = null;
         try {
-            Vibrator vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-            if (vb == null || !vb.hasVibrator()) return;
-            if (Build.VERSION.SDK_INT >= 26) vb.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
-            else vb.vibrate(ms);
+            if (Build.VERSION.SDK_INT >= 31) {
+                android.os.VibratorManager vm = (android.os.VibratorManager) getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+                if (vm != null) vb = vm.getDefaultVibrator();
+            }
+            if (vb == null) vb = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        } catch (Throwable ignored) {}
+        if (vb == null || !vb.hasVibrator()) return;
+        long[] pat = cycle ? new long[]{0, 90, 80, 90} : new long[]{0, 14};
+        android.media.AudioAttributes aa = new android.media.AudioAttributes.Builder()
+                .setUsage(android.media.AudioAttributes.USAGE_ALARM)
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION).build();
+        try {
+            if (Build.VERSION.SDK_INT >= 26) vb.vibrate(VibrationEffect.createWaveform(pat, -1), aa);
+            else vb.vibrate(pat, -1, aa);
+            return;
+        } catch (Throwable ignored) {}
+        try {
+            if (Build.VERSION.SDK_INT >= 26) vb.vibrate(VibrationEffect.createWaveform(pat, -1));
+            else vb.vibrate(pat, -1);
         } catch (Throwable ignored) {}
     }
 
