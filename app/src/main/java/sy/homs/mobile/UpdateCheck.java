@@ -66,56 +66,87 @@ public class UpdateCheck {
         try { return c.getPackageManager().getPackageInfo(c.getPackageName(), 0).versionName; } catch (Exception e) { return ""; }
     }
 
-    /** يجلب update.json (يُستدعى من خيط خلفي) ويعيد كائن JSON نصياً: ok, newer, vc, vn, url, notes, err
-     *  err: cfg (الرابط غير مضبوط) | http:CODE (الملف غير موجود/محجوب) | json (ملف غير صالح) | net (لا اتصال) */
+    static final String REL = "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest";
+
+    /** نتيجة مصدر واحد: {versionName, versionCode, url, notes} أو null */
+    private static String[] one(String u) {
+        try {
+            if (u.equals(REL)) { // صفحة github.com نفسها: التحويل إلى /releases/tag/vX.Y.Z يعطي رقم آخر نسخة (أحدث مصدر وغير مخزَّن مؤقتاً)
+                HttpURLConnection h = (HttpURLConnection) new java.net.URL(u).openConnection();
+                h.setInstanceFollowRedirects(false);
+                h.setConnectTimeout(6000);
+                h.setReadTimeout(6000);
+                h.setRequestProperty("User-Agent", "HomsPrayerApp");
+                String loc = h.getHeaderField("Location");
+                h.disconnect();
+                if (loc == null || !loc.contains("/tag/")) return null;
+                String vn = loc.substring(loc.lastIndexOf('/') + 1).replaceAll("[^0-9.]", "");
+                return vn.isEmpty() ? null : new String[]{vn, "0", REL, ""};
+            }
+            boolean api = u.contains("api.github.com");
+            HttpURLConnection h = (HttpURLConnection) new java.net.URL(api ? u : u + "?t=" + System.currentTimeMillis()).openConnection();
+            h.setConnectTimeout(6000);
+            h.setReadTimeout(6000);
+            h.setUseCaches(false);
+            h.setRequestProperty("User-Agent", "HomsPrayerApp");
+            h.setRequestProperty("Cache-Control", "no-cache");
+            if (h.getResponseCode() != 200) return null;
+            InputStream in = h.getInputStream();
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            byte[] buf = new byte[4096];
+            int n, tot = 0;
+            while ((n = in.read(buf)) > 0 && tot < 65536) { bo.write(buf, 0, n); tot += n; }
+            in.close();
+            JSONObject j = new JSONObject(bo.toString("UTF-8"));
+            if (api) {
+                String vn = j.optString("tag_name", "").replaceAll("[^0-9.]", "");
+                return vn.isEmpty() ? null : new String[]{vn, "0", j.optString("html_url", REL), ""};
+            }
+            if (j.optInt("versionCode", 0) <= 0) return null;
+            return new String[]{j.optString("versionName", "").replaceAll("[^0-9.]", ""), String.valueOf(j.optInt("versionCode")),
+                    j.optString("url", ""), j.optString("notes", "")};
+        } catch (Throwable e) { return null; }
+    }
+
+    /** يجلب أحدث نسخة من كل المصادر بالتوازي ويأخذ الأعلى (مرايا jsDelivr قد تكون قديمة، وraw محجوب عند بعض المزوّدين).
+     *  يعيد JSON نصياً: ok, newer, vc, vn, url, notes, err (cfg | json | net) */
     static String fetch(Context c) {
         JSONObject r = new JSONObject();
         try {
             int cur = current(c);
+            String curName = currentName(c);
             r.put("cur", cur);
             if (!configured()) { r.put("ok", false); r.put("err", "cfg"); return r.toString(); }
-            String err = "net";
-            for (String u : URLS) {
-                try {
-                    HttpURLConnection h = (HttpURLConnection) new java.net.URL(u.contains("api.github.com") ? u : u + "?t=" + System.currentTimeMillis()).openConnection();
-                    h.setConnectTimeout(6000);
-                    h.setReadTimeout(6000);
-                    h.setRequestProperty("User-Agent", "HomsPrayerApp");
-                    h.setUseCaches(false);
-                    int code = h.getResponseCode();
-                    if (code != 200) { err = "http:" + code; continue; }
-                    InputStream in = h.getInputStream();
-                    ByteArrayOutputStream bo = new ByteArrayOutputStream();
-                    byte[] buf = new byte[4096];
-                    int n, tot = 0;
-                    while ((n = in.read(buf)) > 0 && tot < 65536) { bo.write(buf, 0, n); tot += n; }
-                    in.close();
-                    JSONObject j = new JSONObject(bo.toString("UTF-8"));
-                    if (u.contains("api.github.com")) { // إصدار GitHub: الرقم من اسم الوسم (v2.6.3)
-                        String vn = j.optString("tag_name", "");
-                        if (vn.isEmpty()) { err = "json"; continue; }
-                        r.put("ok", true);
-                        r.put("vc", 0);
-                        r.put("vn", vn.replaceAll("[^0-9.]", ""));
-                        r.put("url", j.optString("html_url", ""));
-                        r.put("notes", "");
-                        r.put("newer", newerName(vn, currentName(c)));
-                        return r.toString();
-                    }
-                    int vc = j.optInt("versionCode", 0);
-                    if (vc <= 0) { err = "json"; break; }
-                    r.put("ok", true);
-                    r.put("vc", vc);
-                    r.put("vn", j.optString("versionName", ""));
-                    r.put("url", j.optString("url", ""));
-                    r.put("notes", j.optString("notes", ""));
-                    r.put("newer", vc > cur);
-                    return r.toString();
-                } catch (org.json.JSONException e) { err = "json"; }
-                catch (Exception e) { err = "net"; }
+            final String[] srcs = new String[URLS.length + 1];
+            System.arraycopy(URLS, 0, srcs, 0, URLS.length);
+            srcs[URLS.length] = REL;
+            final String[][] res = new String[srcs.length][];
+            Thread[] th = new Thread[srcs.length];
+            for (int k = 0; k < srcs.length; k++) {
+                final int kk = k;
+                th[k] = new Thread(() -> res[kk] = one(srcs[kk]));
+                th[k].start();
             }
-            r.put("ok", false);
-            r.put("err", err);
+            for (Thread t : th) t.join(9000);
+            String[] best = null;
+            for (String[] x : res) {
+                if (x == null || x[0].isEmpty()) continue;
+                if (best == null || newerName(x[0], best[0])) best = x;
+            }
+            if (best == null) { r.put("ok", false); r.put("err", "net"); return r.toString(); }
+            // بيانات إضافية (ملاحظات/رابط/رقم) من ملف update.json إن كان من النسخة نفسها
+            String url = best[2], notes = best[3];
+            int vc = Integer.parseInt(best[1]);
+            for (String[] x : res) {
+                if (x != null && x[0].equals(best[0]) && Integer.parseInt(x[1]) > 0) { vc = Integer.parseInt(x[1]); url = x[2]; notes = x[3]; break; }
+            }
+            r.put("ok", true);
+            r.put("vc", vc);
+            r.put("vn", best[0]);
+            r.put("url", url);
+            r.put("notes", notes);
+            r.put("newer", vc > 0 ? vc > cur : newerName(best[0], curName));
+            return r.toString();
         } catch (Exception e) {
             try { r.put("ok", false); r.put("err", "net"); } catch (Exception ig) {}
         }
