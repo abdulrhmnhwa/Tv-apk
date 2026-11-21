@@ -1,6 +1,6 @@
 /*
  * قارئ المصحف داخل التطبيق (يعمل بدون إنترنت)
- * النص: مشروع تنزيل Tanzil Project (نسخة Simple 1.1) — ترخيص CC BY 3.0 — tanzil.net
+ * النص: مشروع تنزيل Tanzil Project (النسخة العثمانية Uthmani 1.1) — ترخيص CC BY 3.0 — tanzil.net
  * النص يُعرض كما هو دون أي تعديل في حروفه؛ تُفصل البسملة فقط في رأس السورة عند العرض.
  * الصفحات والأجزاء: ترقيم مصحف المدينة (604 صفحة) من بيانات تنزيل.
  * ما يحتاج إنترنت (اختياري): الاستماع للآية، والتفسير والترجمة على موقع تنزيل.
@@ -324,6 +324,7 @@
       '<button data-a="play">' + (st.playing === i ? "⏹ إيقاف الصوت" : "🔊 استماع") + "<small>يحتاج إنترنت</small></button>" +
       '<button data-a="bm">' + (bm[i] ? "🔖 إزالة العلامة" : "🔖 علامة مرجعية") + "</button>" +
       '<button data-a="copy">📋 نسخ الآية</button>' +
+      '<button data-a="card" style="grid-column:1/-1">🖼️ بطاقة للمشاركة<small>صورة جميلة للآية تُرسل على واتساب وغيره</small></button>' +
       '<button data-a="site">🌐 تفسير وترجمة<small>على موقع تنزيل · إنترنت</small></button>' +
       "</div>";
     $("qrd").className = "qsd on";
@@ -350,6 +351,7 @@
       closeSheet(); return;
     }
     if (k === "site") { closeSheet(); site(i); }
+    if (k === "card") { closeSheet(); if (window.ShareCard) ShareCard.verse({ text: body(i), sura: M.s[FS[i] - 1][0], ayah: FA[i], page: pageOf(i) }); }
   }
   function mark() {
     [].forEach.call($("qrp").querySelectorAll(".qv"), function (v) {

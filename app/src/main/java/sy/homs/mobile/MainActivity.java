@@ -3,6 +3,7 @@ package sy.homs.mobile;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import java.io.File;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
@@ -83,6 +84,117 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
         /** هل مُنح التطبيق إذن «عدم الإزعاج» (لازم للصامت التلقائي) */
+        /* ---------- بطاقات المشاركة ---------- */
+        private File cardFile(String b64) throws Exception {
+            File d = new File(getCacheDir(), "share");
+            d.mkdirs();
+            File[] old = d.listFiles();
+            if (old != null) for (File o : old) o.delete();
+            File f = new File(d, "card" + System.currentTimeMillis() + ".png");
+            java.io.FileOutputStream fo = new java.io.FileOutputStream(f);
+            fo.write(android.util.Base64.decode(b64, android.util.Base64.DEFAULT));
+            fo.close();
+            return f;
+        }
+        @JavascriptInterface public String shareImg(String b64, String cap) {
+            try {
+                final File f = cardFile(b64);
+                final Uri u = ShareProvider.uri(f.getName());
+                final String text = cap;
+                runOnUiThread(() -> {
+                    try {
+                        Intent it = new Intent(Intent.ACTION_SEND).setType("image/png");
+                        it.putExtra(Intent.EXTRA_STREAM, u);
+                        it.putExtra(Intent.EXTRA_TEXT, text);
+                        it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(Intent.createChooser(it, "شارك البطاقة"));
+                    } catch (Exception ig) {}
+                });
+                return "ok";
+            } catch (Throwable e) { return "err"; }
+        }
+        /** حفظ في المعرض (أندرويد 10+ بلا أذونات)؛ "na" على الإصدارات الأقدم */
+        @JavascriptInterface public String saveImg(String b64) {
+            if (Build.VERSION.SDK_INT < 29) return "na";
+            try {
+                byte[] by = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                android.content.ContentValues cv = new android.content.ContentValues();
+                cv.put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, "mawaqit_" + System.currentTimeMillis() + ".png");
+                cv.put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png");
+                cv.put(android.provider.MediaStore.Images.Media.RELATIVE_PATH, "Pictures/MawaqitSyria");
+                Uri u = getContentResolver().insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, cv);
+                if (u == null) return "err";
+                java.io.OutputStream os = getContentResolver().openOutputStream(u);
+                os.write(by);
+                os.close();
+                return "ok";
+            } catch (Throwable e) { return "err"; }
+        }
+        /* ---------- ضمان وصول الأذان ---------- */
+        @JavascriptInterface public String relStatus() {
+            try {
+                org.json.JSONObject o = new org.json.JSONObject();
+                android.app.NotificationManager nm = (android.app.NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                boolean n = Build.VERSION.SDK_INT < 24 || nm.areNotificationsEnabled();
+                if (n && Build.VERSION.SDK_INT >= 26) {
+                    android.app.NotificationChannel ch = nm.getNotificationChannel("adhan");
+                    if (ch != null && ch.getImportance() == android.app.NotificationManager.IMPORTANCE_NONE) n = false;
+                }
+                android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                boolean ex = Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms();
+                boolean bt = Build.VERSION.SDK_INT < 23 || ((android.os.PowerManager) getSystemService(Context.POWER_SERVICE)).isIgnoringBatteryOptimizations(getPackageName());
+                o.put("notif", n).put("exact", ex).put("batt", bt).put("sdk", Build.VERSION.SDK_INT)
+                        .put("oem", Build.MANUFACTURER.toLowerCase(java.util.Locale.ROOT)).put("model", Build.MANUFACTURER + " " + Build.MODEL)
+                        .put("lastTest", getSharedPreferences("rel", 0).getLong("test_ok", 0));
+                return o.toString();
+            } catch (Throwable e) { return "{}"; }
+        }
+        @JavascriptInterface public void relOpen(final String what) {
+            runOnUiThread(() -> {
+                String pk = getPackageName();
+                Uri pu = Uri.parse("package:" + pk);
+                Intent it = null;
+                try {
+                    if ("notif".equals(what)) {
+                        if (Build.VERSION.SDK_INT >= 26) it = new Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, pk);
+                    } else if ("exact".equals(what)) {
+                        if (Build.VERSION.SDK_INT >= 31) it = new Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM, pu);
+                    } else if ("batt".equals(what)) {
+                        if (Build.VERSION.SDK_INT >= 23) it = new Intent(android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, pu);
+                    } else if ("auto".equals(what)) {
+                        String[][] c = {
+                            {"com.miui.securitycenter", "com.miui.permcenter.autostart.AutoStartManagementActivity"},
+                            {"com.huawei.systemmanager", "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"},
+                            {"com.huawei.systemmanager", "com.huawei.systemmanager.optimize.process.ProtectActivity"},
+                            {"com.coloros.safecenter", "com.coloros.safecenter.permission.startup.StartupAppListActivity"},
+                            {"com.oppo.safe", "com.oppo.safe.permission.startup.StartupAppListActivity"},
+                            {"com.vivo.permissionmanager", "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"},
+                            {"com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity"},
+                            {"com.asus.mobilemanager", "com.asus.mobilemanager.powersaver.PowerSaverSettings"}};
+                        for (String[] x : c) {
+                            try { startActivity(new Intent().setClassName(x[0], x[1])); return; } catch (Throwable ignored) {}
+                        }
+                    }
+                    if (it != null) { startActivity(it); return; }
+                } catch (Throwable ignored) {}
+                try { startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, pu)); } catch (Throwable ignored) {}
+            });
+        }
+        /** اختبار إشعار الأذان: sec=0 فوراً، وإلا بعد sec ثانية عبر منبّه (ينجح والتطبيق مغلق) */
+        @JavascriptInterface public void relTest(int sec) {
+            try {
+                Intent i = new Intent(MainActivity.this, AdhanReceiver.class).setAction(Scheduler.ACT).putExtra("k", 99).putExtra("i", 0);
+                if (sec <= 0) { sendBroadcast(i); return; }
+                android.app.PendingIntent pi = android.app.PendingIntent.getBroadcast(MainActivity.this, 77, i,
+                        android.app.PendingIntent.FLAG_UPDATE_CURRENT | android.app.PendingIntent.FLAG_IMMUTABLE);
+                android.app.AlarmManager am = (android.app.AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                long at = System.currentTimeMillis() + sec * 1000L;
+                try {
+                    android.app.PendingIntent show = android.app.PendingIntent.getActivity(MainActivity.this, 78, new Intent(MainActivity.this, MainActivity.class), android.app.PendingIntent.FLAG_IMMUTABLE);
+                    am.setAlarmClock(new android.app.AlarmManager.AlarmClockInfo(at, show), pi);
+                } catch (Throwable e) { am.setAndAllowWhileIdle(android.app.AlarmManager.RTC_WAKEUP, at, pi); }
+            } catch (Throwable ignored) {}
+        }
         @JavascriptInterface public boolean silentAccess() { return PrayerSilence.hasAccess(MainActivity.this); }
         @JavascriptInterface public void askSilentAccess() {
             runOnUiThread(() -> { try { startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)); } catch (Exception ig) {} });

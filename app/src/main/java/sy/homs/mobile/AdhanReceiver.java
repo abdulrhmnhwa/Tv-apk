@@ -58,6 +58,10 @@ public class AdhanReceiver extends BroadcastReceiver {
                 }
                 notifyNow(c, 300 + k, snd ? "adhan" : "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
                 if (!snd) PrayerSilence.start(c);
+            } else if (kind == 99) {
+                // اختبار وصول الأذان (من شاشة «تأكد أن الأذان لن يفوتك»)
+                c.getSharedPreferences("rel", 0).edit().putLong("test_ok", System.currentTimeMillis()).apply();
+                notifyNow(c, 499, "adhan", "✅ نجح الاختبار — هكذا سيصلك الأذان", "وصل هذا التنبيه والتطبيق مغلقاً، فالأذان سيصلك في وقته بإذن الله · " + city, "");
             } else if (kind == 12) {
                 PrayerSilence.start(c);
             } else if (kind == 13) {

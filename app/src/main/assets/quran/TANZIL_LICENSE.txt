@@ -1,7 +1,7 @@
 # PLEASE DO NOT REMOVE OR CHANGE THIS COPYRIGHT BLOCK
 #====================================================================
 #
-#  Tanzil Quran Text (Simple, Version 1.1)
+#  Tanzil Quran Text (Uthmani, Version 1.1)
 #  Copyright (C) 2007-2026 Tanzil Project
 #  License: Creative Commons Attribution 3.0
 #

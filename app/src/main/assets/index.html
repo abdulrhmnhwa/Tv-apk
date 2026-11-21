@@ -204,13 +204,14 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الرئيسية -->
 <section class="tab on" id="t0">
   <div class="top"><h1 id="cty"><span>حمص</span><small>عاصمة الثورة</small></h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell">🔔</span><svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg></div></div>
+  <div class="card" id="rlb" style="display:none;cursor:pointer;border-color:#e0a030;background:rgba(224,160,48,.12)"><div class="h"><span>⚠️ قد لا يصلك الأذان في وقته</span><small id="rlx" style="font-size:1.2rem">✕</small></div><div class="note" id="rlbt" style="margin:0">اضغط لفحص الإعدادات وإصلاحها بخطوات بسيطة</div></div>
   <div class="card bt">
     <div class="dt" id="dates"></div>
     <div class="ring"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="90"/><circle class="pg" id="pg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="565.5"/></svg>
       <div class="rc"><div class="l" id="rl">الصلاة القادمة</div><div class="n" id="rn">--</div><div class="c" id="rcnt">--:--:--</div><div class="t" id="rt"></div></div></div>
     <div class="chips"><div class="chip">الساعة<b id="clk">--</b></div><div class="chip">القبلة<b id="qbc">--°</b></div><div class="chip">القمر<b id="mn">--</b></div></div>
   </div>
-  <div class="card bm"><div class="h"><span>مواقيت الصلاة</span><small>اضغط 🔔 لتفعيل التنبيه</small></div><div id="pl"></div></div>
+  <div class="card bm"><div class="h"><span>مواقيت الصلاة <button class="shb" id="shT" aria-label="مشاركة المواقيت كصورة">🖼️</button></span><small>اضغط 🔔 لتفعيل التنبيه</small></div><div id="pl"></div></div>
   <div class="card"><div class="h"><span>آية وذكر</span></div><div class="vs" id="vs"></div></div>
   <div class="card" id="fxc"><div class="h"><span>من تاريخ حمص</span><small>اضغط للتالي</small></div><div class="fx" id="fx"></div></div>
 </section>
@@ -294,7 +295,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الإعدادات -->
 <section class="tab" id="t3">
   <div class="top"><h1>الإعدادات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
-  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>حجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button><button class="adb" data-tl="c_sup"><b>🔄</b>تحديث التطبيق<small>التحقق من وجود نسخة جديدة</small></button></div>
+  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>حجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button><button class="adb" data-tl="c_srel"><b>🛡️</b>ضمان وصول الأذان<small>فحص الإشعارات والبطارية</small></button><button class="adb" data-tl="c_sup"><b>🔄</b>تحديث التطبيق<small>التحقق من وجود نسخة جديدة</small></button><button class="adb" id="fbk"><b>💡</b>أرسل لنا اقتراحاً<small>ملاحظاتك تهمنا</small></button></div>
   <div id="sth" style="display:none">
   <div class="card"><div class="h"><span>تعديل الدقائق</span><button class="btn" id="rs" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button></div>
     <div id="adj"></div>
@@ -340,6 +341,13 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>تذكير سورة الكهف يوم الجمعة<small>إشعار عند دخول وقت الضحى، ويظهر في الودجت طوال يوم الجمعة</small></span><label class="sw"><input type="checkbox" id="rfk"><i></i></label></div>
     <div class="sr"><span>تذكير قبل صلاة الجمعة<small>الغسل والتطيّب والتبكير والصلاة على النبي ﷺ — قبل الظهر بساعة</small></span><label class="sw"><input type="checkbox" id="rfg"><i></i></label></div>
     <div class="note">تُستثنى أيام قضاء الصيام التي حدّدتها (لها تذكيرها الخاص)، ولا تُحسب أيام رمضان والعيدين وأيام التشريق.</div></div>
+  <div class="card" id="c_srel"><div class="h"><span>تأكد أن الأذان لن يفوتك</span></div>
+    <div id="rlsum" style="text-align:center;margin:.3rem 0 .6rem;line-height:1.7"></div>
+    <div id="rll"></div>
+    <div class="h" style="margin-top:.9rem"><span>اختبر وصول الأذان</span></div>
+    <div class="row"><button class="btn" id="rlt0" style="flex:1">🔔 اختبار فوري</button><button class="btn" id="rlt1" style="flex:1">⏱️ بعد دقيقة</button></div>
+    <div class="note" id="rltm">«بعد دقيقة»: اضغطه ثم أغلق التطبيق تماماً (اسحبه من التطبيقات الأخيرة) وأطفئ الشاشة. إن وصلك الإشعار فالأذان سيصلك بإذن الله.</div>
+    <div id="rlo"></div></div>
   <div class="card" id="c_sup"><div class="h"><span>تحديث التطبيق</span></div>
     <div class="kst"><div><b id="upc">—</b><small>النسخة الحالية</small></div></div>
     <div id="upm" class="mut" style="text-align:center;margin:.7rem 0;line-height:1.7">اضغط للتحقق من وجود نسخة جديدة</div>
@@ -347,7 +355,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.<br>⚠️ ربما تحتاج تشغيل VPN لتنزيل النسخة الجديدة.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.9.5<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span><br><button class="btn" id="fbk" style="margin-top:.7rem">💡 أرسل لنا اقتراحاً</button></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.9.7<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -367,6 +375,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <script src="names.js"></script>
 <script src="hajj.js"></script>
 <script src="quran/reader.js"></script>
+<script src="share.js"></script>
 <script>
 (function(){
 var TZ=3,R=Math.PI/180,$=function(i){return document.getElementById(i)};
@@ -427,6 +436,43 @@ function daily(n){
  $("qtx").textContent=qb+"° من الشمال";
  events(n);sunmoon(n);draw();
 }
+
+/* ---------- بطاقات المشاركة ---------- */
+function txt(h){return String(h==null?"":h).replace(/<br\s*\/?>/g," ").replace(/<[^>]*>/g,"").replace(/\s+/g," ").trim()}
+$("shT").onclick=function(e){e.stopPropagation();var n=new Date(Date.now()+TZ*36e5),T=PT(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate()),h=hj(n),hh=n.getUTCHours()+n.getUTCMinutes()/60,rows=[],nx=0,found=false;
+ for(var i=0;i<6;i++){rows.push([nm(i),f(T[i]).replace(/<b>/," ").replace(/<[^>]*>/g,"")]);if(!found&&T[i]>hh){nx=i;found=true}}
+ if(window.ShareCard)ShareCard.times({city:$("cty").firstChild.textContent,d1:DAY[n.getUTCDay()]+" "+n.getUTCDate()+" "+MON[n.getUTCMonth()]+" "+n.getUTCFullYear(),d2:h?h.day+" "+HM[h.month-1]+" "+h.year+" هـ":"",rows:rows,next:found?nx:0})};
+$("adi").addEventListener("click",function(e){var b=e.target.closest(".shb");if(!b)return;e.stopPropagation();var id=+b.dataset.sh,x=adL.filter(function(y){return y.i===id})[0];if(!x||!window.ShareCard)return;var ev=adm==="e";
+ ShareCard.dhikr({t:txt(ev&&x.t2?x.t2:x.t),a:txt(ev&&x.e?x.e:x.a),s:txt(x.s),c:x.c?txt(x.c):""})},true);
+/* ---------- ضمان وصول الأذان ---------- */
+var RLN={xiaomi:"شاومي / ريدمي / بوكو",redmi:"شاومي / ريدمي / بوكو",poco:"شاومي / ريدمي / بوكو",huawei:"هواوي",honor:"هونر",samsung:"سامسونج",oppo:"أوبو",realme:"ريلمي",oneplus:"ون بلس",vivo:"فيفو",iqoo:"فيفو",tecno:"تكنو",infinix:"إنفينيكس",itel:"إيتل",asus:"أسوس"},
+RLS={xiaomi:"الأمان ← التشغيل التلقائي (Autostart) ← فعّل «مواقيت الصلاة سوريا».<br>ثم: الإعدادات ← التطبيقات ← إدارة التطبيقات ← التطبيق ← توفير البطارية ← «بلا قيود».<br>وفي شاشة التطبيقات الأخيرة اضغط مطولاً على التطبيق واختر القفل 🔒 لئلا يُغلق.",
+huawei:"إدارة الهاتف ← إطلاق التطبيقات ← «مواقيت الصلاة سوريا» ← إدارة يدوية ← فعّل: التشغيل التلقائي + التشغيل الثانوي + التشغيل في الخلفية.",
+samsung:"الإعدادات ← البطارية ← حدود استخدام الخلفية ← التطبيقات النائمة: أزل التطبيق منها، وأضفه إلى «التطبيقات التي لا تنام أبداً».",
+oppo:"الإعدادات ← التطبيقات ← إدارة التطبيقات ← التطبيق ← استخدام البطارية ← السماح بالنشاط في الخلفية، وفعّل «التشغيل التلقائي».",
+vivo:"i Manager ← التطبيقات ← تشغيل التطبيقات تلقائياً ← فعّل التطبيق. ثم البطارية ← استهلاك البطارية بالخلفية ← السماح.",
+def:"الإعدادات ← التطبيقات ← مواقيت الصلاة سوريا ← البطارية ← «بلا قيود»، وتأكد أن التطبيق غير مقيَّد في الخلفية."},
+RLK={honor:"huawei",redmi:"xiaomi",poco:"xiaomi",realme:"oppo",oneplus:"oppo",iqoo:"vivo"},RLA=["xiaomi","redmi","poco","huawei","honor","oppo","realme","oneplus","vivo","iqoo","samsung","tecno","infinix","itel"],rls=null;
+function relGet(){var o=null;try{if(window.App&&App.relStatus)o=JSON.parse(App.relStatus())}catch(e){}rls=o;return o}
+function relRow(ok,t,h,btn,w){return'<div class="p" style="align-items:center;gap:.5rem;margin-bottom:.4rem"><span class="nm" style="flex:1;font-size:.95rem;line-height:1.5">'+(ok===1?"✅":ok===0?"⚠️":"🔶")+" "+t+'<small style="display:block;font-size:.75rem;font-weight:400">'+h+"</small></span>"+(btn?'<button class="btn" data-rl="'+w+'" style="padding:.35rem .8rem;font-size:.85rem">'+btn+"</button>":"")+"</div>"}
+function relDraw(){var o=relGet();if(!o){$("rll").innerHTML='<div class="note" style="text-align:center">هذه الأداة تعمل داخل التطبيق على الجوال فقط.</div>';$("rlsum").textContent="";$("rlo").innerHTML="";return}
+ var bad=(o.notif?0:1)+(o.exact?0:1)+(o.batt?0:1),k=RLK[o.oem]||o.oem,nmz=RLN[o.oem]||o.model||"جهازك";
+ $("rlsum").innerHTML=bad?'<b style="color:#e0a030">⚠️ '+bad+(bad===1?" إعداد يحتاج":" إعدادات تحتاج")+" إصلاحاً حتى لا يفوتك الأذان</b>":'<b style="color:#34d399">✅ الإعدادات الأساسية سليمة</b>';
+ $("rll").innerHTML=relRow(o.notif?1:0,"الإشعارات",o.notif?"مفعّلة":"مغلقة — لن يظهر الأذان",o.notif?"":"تفعيل","notif")+
+  relRow(o.exact?1:0,"المنبّه الدقيق",o.exact?"مسموح":"غير مسموح — قد يتأخر الأذان",o.exact?"":"السماح","exact")+
+  relRow(o.batt?1:0,"استثناء من توفير الطاقة",o.batt?"مفعّل":"يمنع النظام من إيقاف التطبيق في الخلفية",o.batt?"":"استثناء","batt")+
+  relRow(2,"التشغيل التلقائي والخلفية","لا يمكن فحصه تلقائياً — يُنصح به في "+nmz,"فتح الإعدادات","auto");
+ $("rlo").innerHTML='<div class="note" style="margin-top:.8rem"><b>خطوات جهاز '+nmz+':</b><br>'+(RLS[k]||RLS.def)+"</div>";
+ var lt=+o.lastTest||0;$("rltm").innerHTML="«بعد دقيقة»: اضغطه ثم أغلق التطبيق تماماً (اسحبه من التطبيقات الأخيرة) وأطفئ الشاشة. إن وصلك الإشعار فالأذان سيصلك بإذن الله."+(lt?"<br>آخر اختبار وصل: "+new Date(lt).toLocaleString("ar-SY",{hour:"numeric",minute:"2-digit",day:"numeric",month:"numeric"}):"")}
+function relBanner(){var o=relGet(),hard=o&&(!o.notif||!o.exact),soft=o&&!o.batt&&RLA.indexOf(o.oem)>=0,off=+ls("rlbx")||0,show=hard||(soft&&Date.now()-off>6048e5);
+ if(hard&&o.notif&&!o.exact)$("rlbt").textContent="المنبّه الدقيق غير مسموح — اضغط للإصلاح";else if(hard)$("rlbt").textContent="الإشعارات مغلقة — اضغط للإصلاح";else $("rlbt").textContent="جهازك يوقف التطبيقات في الخلفية — اضغط لضبط الإعدادات";
+ $("rlb").style.display=show?"":"none"}
+$("rlb").onclick=function(){show(4);var b=document.querySelector('[data-tl="c_srel"]');if(b)b.click()};
+$("rlx").onclick=function(e){e.stopPropagation();ls("rlbx",Date.now());$("rlb").style.display="none"};
+$("rll").onclick=function(e){var b=e.target.closest("[data-rl]");if(!b)return;try{App.relOpen(b.dataset.rl)}catch(x){}};
+$("rlt0").onclick=function(){try{App.relTest(0)}catch(e){}};
+$("rlt1").onclick=function(){var b=this;try{App.relTest(60)}catch(e){}b.textContent="✅ جُدول بعد دقيقة — أغلق التطبيق الآن";setTimeout(function(){b.textContent="⏱️ بعد دقيقة"},6000)};
+document.addEventListener("visibilitychange",function(){if(!document.hidden){relBanner();if(tlOpen==="c_srel")relDraw()}});setTimeout(relBanner,1500);
 var fxi=0,lastV=-1,MK=20,DH=20;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
 function renderList(T,ni){
  var s="";for(var i=0;i<6;i++){var a=cfg.adj[i],sm=(isRam&&i===0)?"الإمساك":(isRam&&i===4)?"الإفطار":"";
@@ -639,7 +685,7 @@ $("wr").onclick=weather;
 /* ---------- التنقل ---------- */
 function show(t){[].forEach.call(document.querySelectorAll(".tab"),function(s,i){s.className="tab"+(i===t?" on":"")});[].forEach.call(document.querySelectorAll("nav button"),function(b,i){b.className=i===t?"on":""});window.scrollTo(0,0);cur=t}
 var cur=0;document.querySelector("nav").onclick=function(e){var b=e.target.closest("button");if(b)show(+b.dataset.t)};
-var TLN={c_s1:"تعديل الدقائق",c_s2:"مدة الإقامة",c_s3:"المظهر والخط",c_s4:"الشاشة الرئيسية",c_s5:"التنبيهات",c_s6:"الموقع وطريقة الحساب",c_s7:"تذكيرات مستحبة",c_sup:"تحديث التطبيق",c_qb:"البوصلة والميزان",c_ts:"المسبحة",c_dt:"الذهاب إلى تاريخ",c_ev:"المناسبات القادمة",c_hc:"التقويم الهجري",c_kh:"ختمة القرآن",c_as:"أسماء الله الحسنى",c_qd:"قضاء الفوائت",c_hj:"الحج والعمرة",c_sq:"قضاء الصيام"},tlOpen=null;
+var TLN={c_s1:"تعديل الدقائق",c_s2:"مدة الإقامة",c_s3:"المظهر والخط",c_s4:"الشاشة الرئيسية",c_s5:"التنبيهات",c_s6:"الموقع وطريقة الحساب",c_s7:"تذكيرات مستحبة",c_srel:"ضمان وصول الأذان",c_sup:"تحديث التطبيق",c_qb:"البوصلة والميزان",c_ts:"المسبحة",c_dt:"الذهاب إلى تاريخ",c_ev:"المناسبات القادمة",c_hc:"التقويم الهجري",c_kh:"ختمة القرآن",c_as:"أسماء الله الحسنى",c_qd:"قضاء الفوائت",c_hj:"الحج والعمرة",c_sq:"قضاء الصيام"},tlOpen=null;
 (function(){var ids=["c_qb","c_ts","c_dt","c_ev"];[].slice.call($("tlh").children).forEach(function(c,i){if(ids[i])c.id=ids[i]})})();
 (function(){["c_s1","c_s2","c_s3","c_s4","c_s5","c_s6","c_s7"].forEach(function(id,i){var c=$("sth").children[i];if(c)c.id=id})})();
 function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;setTimeout(cpSync,0);$("tlt").textContent=TLN[id];$("tlb").innerHTML="";
@@ -647,7 +693,7 @@ function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;setTimeout(cpSync,0);$("t
  if(id==="c_s1"){var d1=document.createElement("div");d1.className="tld";d1.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button>';$("tlb").appendChild(d1);d1.firstChild.onclick=function(){$("rs").click()}}
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
 function tlClose(){lvOn(0);if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className="";cpSync()}
-$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_sup")updDraw();if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
+$("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_sup")updDraw();if(k==="c_srel")relDraw();if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
 var updUrl="";
 function updDraw(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}$("upc").textContent=v||"—";$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
 $("upk").onclick=function(){var m=$("upm");if(!(window.App&&App.checkUpdate)){m.textContent="هذه الميزة تعمل داخل التطبيق فقط";return}m.textContent="جارٍ التحقق…";$("upr").style.display="none";try{App.checkUpdate()}catch(e){m.textContent="تعذّر التحقق"}};
@@ -797,7 +843,7 @@ function sqDraw(){var o="",R=sqDays(),ch=sq.days,tk=sqKey(new Date(nowU()));
   b=e.target.closest("[data-ck]");if(b){var k3=b.dataset.ck,ix=sq.days.indexOf(k3);if(ix>=0)sq.days.splice(ix,1);else sq.days.push(k3);sqSync();sqDraw()}};
  var zb=$("sqz"),arm=0;zb.onclick=function(){if(!arm){arm=1;zb.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;zb.textContent="تصفير"},3000);return}sq={n:0,done:0,mode:sq.mode,fri:sq.fri,days:[]};sqSync();sqDraw()}}
 $("qdb").onclick=function(e){var b=e.target.closest("[data-q]");if(!b)return;var a=b.dataset.q.split(","),k=a[0];qd[k]=Math.max(0,(qd[k]||0)+ +a[1]);ls("qd",qd);qdDraw()};
-window.goBack=function(){if(window.QR&&QR.back())return true;if(window.selReset())return true;if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";adClean();return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+window.goBack=function(){if(window.ShareCard&&ShareCard.isOpen()){ShareCard.close();return true}if(window.QR&&QR.back())return true;if(window.selReset())return true;if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";adClean();return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
 var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
@@ -817,7 +863,7 @@ function adLeft(x){var v=(adO[adm]||{})[x.i];return v===undefined?x.n:v}
 function adCnt(x){if(x.c)return x.c;var n=x.n;return n===1?"مرة واحدة":n===2?"مرتان":n<=10?n+" مرات":n+" مرة"}
 function adBtn(x){var l=adLeft(x);return l>0?"<b>"+l+"</b><span>"+"</span>":"✓ تم"}
 function adCard(x,k){var l=adLeft(x),e=adm==="e",t=e&&x.t2?x.t2:x.t,a=e&&x.e?x.e:x.a;
- return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+"</span><small>"+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
+ return'<div class="card ad'+(l<=0?" done":"")+'" id="ad'+x.i+'"><div class="h"><span>'+(k+1)+". "+t+' <button class="shb" data-sh="'+x.i+'" aria-label="مشاركة كصورة">🖼️</button></span><small>'+adCnt(x)+'</small></div><div class="at'+(x.q?" q":"")+'">'+a+"</div>"+(x.f?'<div class="af">'+x.f+"</div>":"")+'<div class="as">'+x.s+'</div><button class="ac" data-i="'+x.i+'">'+adBtn(x)+"</button></div>"}
 function adProg(){var d=0;adL.forEach(function(x){if(adLeft(x)<=0)d++});$("adp").textContent=d+"/"+adL.length;$("apg").style.width=(adL.length?d*100/adL.length:0)+"%"}
 function adInfo(){if(adm==="m")return{t:"أذكار الصباح",d:"أفضل وقت لها من بعد صلاة الفجر حتى طلوع الشمس"};if(adm==="e")return{t:"أذكار المساء",d:"أفضل وقت لها من بعد صلاة العصر حتى غروب الشمس"};
  for(var i=0;i<CATS.length;i++)if(CATS[i].k===adm)return{t:CATS[i].t,d:CATS[i].d};return{t:"",d:""}}
@@ -842,7 +888,7 @@ window.openAdhkar=function(k){if(k==="kahf"){if(tlOpen!==null)tlClose();$("adk")
 $("sup").onclick=function(){$("spm").className="on"};
 $("fbk").onclick=function(){var b=this,r="";try{r=window.App&&App.sendFeedback?App.sendFeedback():"web"}catch(e){r="web"}
  if(r==="web"){window.open("https://docs.google.com/forms/d/e/1FAIpQLScBsV-XxyjmC0A4sDF-ETBu5Zngn62MPRFDw59tKChjr_NO0A/viewform","_blank");return}
- if(r!=="ok"){var o=b.textContent;b.textContent="ميزة الاقتراحات غير مفعّلة بعد";setTimeout(function(){b.textContent=o},2500)}};
+ if(r!=="ok"){var sm=b.querySelector("small"),o=sm.textContent;sm.textContent="الميزة غير مفعّلة بعد";setTimeout(function(){sm.textContent=o},2500)}};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
