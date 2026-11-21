@@ -17,8 +17,9 @@
 #qr .qk{flex:none;display:none;align-items:center;justify-content:space-between;gap:.5rem;padding:.35rem .85rem;background:rgba(var(--gr),.18);border-bottom:1px solid rgba(var(--gr),.35);font-size:.85rem}
 #qr .qk.on{display:flex}
 #qr .qk .btn{padding:.25rem .8rem;font-size:.82rem}
-#qr .qb{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+#qr .qb{touch-action:pan-x pan-y;flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
 #qr .qfr{max-width:34rem;margin:.7rem auto .4rem;padding:.55rem .55rem;border:3px double var(--gold);border-radius:.7rem;background:rgba(var(--ov),.035);box-sizing:border-box;width:calc(100% - 1.4rem)}
+#qr.qz .qfr{padding:.35rem .4rem;width:calc(100% - .7rem);margin-top:.4rem}
 #qr .qpg{position:relative;z-index:0;font-family:var(--qf);font-size:1.3rem;line-height:2;text-align:justify;text-align-last:justify;text-justify:inter-word;font-kerning:normal;word-spacing:0;-webkit-user-select:none;user-select:none}
 #qr .qsh{display:flex;align-items:center;justify-content:center;gap:.6em;height:2em;margin:0;padding:0;color:var(--gold);font-weight:700;line-height:1;position:relative;text-align-last:center}
 #qr .qsh::before{content:"";position:absolute;left:0;right:0;top:.12em;bottom:.12em;border:1px solid var(--gold);border-radius:.45em;background:linear-gradient(160deg,rgba(var(--gr),.3),rgba(var(--gr),.08));z-index:-1;box-shadow:inset 0 0 0 2px rgba(var(--ov),.05)}

@@ -16,6 +16,7 @@ public class Scheduler {
     static final double R = Math.PI / 180;
     static final int TZ = 3;
     static final double DDH = 1, DMG = 2; // احتياط الظهر +1 د والمغرب +2 د (معايرة وزارة الأوقاف)
+    static final int WX_PRE = 10; // تنبيه الطقس قبل الأذان بهذه الدقائق
     static final int PRE = 15; // دقائق التذكير قبل الأذان
     public static final String[] NAMES = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
     static final int[] IQ_DEF = {15, 0, 15, 15, 5, 15};
@@ -111,7 +112,7 @@ public class Scheduler {
     static synchronized long next(Context c, long now) {
         JSONObject o = Prefs.obj(c);
         JSONArray on = o.optJSONArray("on");
-        boolean en = o.optInt("en", 1) == 1, pre = o.optInt("pre", 0) == 1, iqr = o.optInt("iqr", 0) == 1;
+        boolean slt = o.optInt("slt", 0) == 1, wxo = o.optInt("rwx", 1) == 1, en = o.optInt("en", 1) == 1, pre = o.optInt("pre", 0) == 1, iqr = o.optInt("iqr", 0) == 1;
         Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         cal.setTimeInMillis(now + TZ * 3600000L);
         long best = Long.MAX_VALUE;
@@ -124,9 +125,13 @@ public class Scheduler {
                 long[] cand = {
                         pre ? r[i] - PRE * 60000L : -1,
                         en ? r[i] : -1,
-                        iqr && iq(o, i) > 0 ? r[i] + iq(o, i) * 60000L : -1};
-                int[] kind = {1, 0, 2};
-                for (int k = 0; k < 3; k++) {
+                        iqr && iq(o, i) > 0 ? r[i] + iq(o, i) * 60000L : -1,
+                        wxo ? r[i] - WX_PRE * 60000L : -1,
+                        // الصامت أثناء الصلاة: يبدأ عند الإقامة (إن كان تذكير الإقامة مفعّلاً فهو يبدأه بنفسه) وينتهي بعد 5 دقائق
+                        slt && !(iqr && iq(o, i) > 0) ? r[i] + (iq(o, i) > 0 ? iq(o, i) : 10) * 60000L : -1,
+                        slt ? r[i] + (iq(o, i) > 0 ? iq(o, i) : 10) * 60000L + PrayerSilence.LEN * 60000L : -1};
+                int[] kind = {1, 0, 2, 11, 12, 13};
+                for (int k = 0; k < 6; k++) {
                     if (cand[k] > now + 20000 && cand[k] < best) { best = cand[k]; evIdx = i; evKind = kind[k]; }
                 }
             }

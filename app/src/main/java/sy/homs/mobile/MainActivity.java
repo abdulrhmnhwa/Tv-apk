@@ -31,6 +31,10 @@ import android.widget.Toast;
 import org.json.JSONObject;
 
 public class MainActivity extends Activity {
+    /** وسيلة استقبال الاقتراحات (اختر واحدة): رابط نموذج Google Forms (يُفضَّل، بلا بريد ولا حساب للمستخدم) أو بريدك الإلكتروني */
+    static final String FEEDBACK_FORM = "https://docs.google.com/forms/d/e/1FAIpQLScBsV-XxyjmC0A4sDF-ETBu5Zngn62MPRFDw59tKChjr_NO0A/viewform";
+    static final String FEEDBACK_EMAIL = ""; // مثال: "name@gmail.com"
+
     private WebView w;
     private boolean loaded = false;
     private String pendingOpen = null;
@@ -78,6 +82,11 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void wx(int t, int code) { Weather.store(MainActivity.this, t, code); WidgetProvider.refresh(MainActivity.this); }
         @JavascriptInterface public void pickTone(String cur) { runOnUiThread(() -> pickToneUi(cur)); }
         @JavascriptInterface public void testTone(String u) { runOnUiThread(() -> testToneUi(u)); }
+        /** هل مُنح التطبيق إذن «عدم الإزعاج» (لازم للصامت التلقائي) */
+        @JavascriptInterface public boolean silentAccess() { return PrayerSilence.hasAccess(MainActivity.this); }
+        @JavascriptInterface public void askSilentAccess() {
+            runOnUiThread(() -> { try { startActivity(new Intent(android.provider.Settings.ACTION_NOTIFICATION_POLICY_ACCESS_SETTINGS)); } catch (Exception ig) {} });
+        }
         @JavascriptInterface public String appVer() { return UpdateCheck.currentName(MainActivity.this); }
         /** تحقق يدوي من التحديث (زر الإعدادات): النتيجة تصل إلى window.updRes */
         @JavascriptInterface public void checkUpdate() {
@@ -85,6 +94,32 @@ public class MainActivity extends Activity {
                 final String r = UpdateCheck.fetch(MainActivity.this);
                 runOnUiThread(() -> { if (w != null) w.evaluateJavascript("window.updRes&&window.updRes(" + r + ")", null); });
             }).start();
+        }
+        /** إرسال اقتراح: نموذج Google Forms إن وُضع رابطه، وإلا رسالة بريد جاهزة (مجاني). يعيد "cfg" إن لم يُضبط أي منهما. */
+        @JavascriptInterface public String sendFeedback() {
+            if (!FEEDBACK_FORM.isEmpty()) {
+                runOnUiThread(() -> { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(FEEDBACK_FORM))); } catch (Exception ig) {} });
+                return "ok";
+            }
+            if (FEEDBACK_EMAIL.isEmpty()) return "cfg";
+            final String body = "\n\n— — —\nالنسخة: " + UpdateCheck.currentName(MainActivity.this) + "\nأندرويد: " + Build.VERSION.RELEASE
+                    + " · " + Build.MANUFACTURER + " " + Build.MODEL;
+            runOnUiThread(() -> {
+                try {
+                    Intent it = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto:"));
+                    it.putExtra(Intent.EXTRA_EMAIL, new String[]{FEEDBACK_EMAIL});
+                    it.putExtra(Intent.EXTRA_SUBJECT, "اقتراح — مواقيت الصلاة سوريا");
+                    it.putExtra(Intent.EXTRA_TEXT, body);
+                    startActivity(it);
+                } catch (Exception e) {
+                    try {
+                        Intent it = new Intent(Intent.ACTION_SEND).setType("text/plain");
+                        it.putExtra(Intent.EXTRA_TEXT, "اقتراح لتطبيق مواقيت الصلاة سوريا:" + body);
+                        startActivity(Intent.createChooser(it, "أرسل اقتراحك"));
+                    } catch (Exception ig) {}
+                }
+            });
+            return "ok";
         }
         @JavascriptInterface public void openUpdate(String u) {
             if (u == null || !u.startsWith("https://")) return;
@@ -413,7 +448,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); UpdateCheck.maybe(this); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); UpdateCheck.maybe(this); PrayerSilence.check(this); }
     @Override protected void onPause() { w.removeCallbacks(poll); w.evaluateJavascript("window.selReset&&window.selReset()", null); w.onPause(); if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() { if (web != null) web.destroy(); w.destroy(); super.onDestroy(); }
 }

@@ -140,6 +140,11 @@ public class WidgetProvider extends AppWidgetProvider {
             if (ft != null) tl.add(ft);
             String[] fr = WidgetTip.fridayTip(now, days[1], cal.get(Calendar.DAY_OF_WEEK), o.optInt("rfk", 0) == 1, o.optInt("rfg", 0) == 1);
             if (fr != null) tl.add(fr);
+            int mi = wx == null ? -1 : WidgetTip.mosqueIdx(now, days[1], iqs);
+            if (mi >= 0) { // مطر أو برد شديد أو رياح قوية: من 5 دقائق قبل الأذان حتى الإقامة
+                String[] al = Weather.mosqueAlert(wx[0], wx[1], wx.length > 2 ? wx[2] : 0, WidgetTip.NM[mi]);
+                if (al != null) tl.add(new String[]{al[0], al[1], ""});
+            }
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
             if (ak != null) tl.add(ak);
             rv.removeAllViews(R.id.wflip);

@@ -13,7 +13,7 @@
   var st = { pg: 1, fs: 1, sel: -1, tab: "s", opts: null, playing: -1, built: false };
   var bm = {}, au = null, toastT = 0;
   var RC = "Alafasy_128kbps";
-  var SIZES = [0.85, 1, 1.15, 1.3, 1.5, 1.75];
+  var SIZES = [0.85, 1, 1.15, 1.3, 1.5, 1.75, 2, 2.5, 3], FMIN = 0.7, FMAX = 3.5;
   var AR = "٠١٢٣٤٥٦٧٨٩";
 
   function lsG(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
@@ -100,7 +100,7 @@
       '<div class="qtoast" id="qrto"></div>';
     D.body.appendChild(r);
     st.fs = lsG("qrfs", 1);
-    if (SIZES.indexOf(st.fs) < 0) st.fs = 1;
+    if (typeof st.fs !== "number" || st.fs < FMIN || st.fs > FMAX) st.fs = 1;
 
     $("qrc").onclick = close;
     $("qrkd").onclick = close;
@@ -108,10 +108,10 @@
     $("qri").onclick = function () { openPanel("s"); };
     $("qrax").onclick = closePanel;
     $("qrz").onclick = function () {
-      var k = (SIZES.indexOf(st.fs) + 1) % SIZES.length;
-      st.fs = SIZES[k]; lsS("qrfs", st.fs);
+      var nx = SIZES.filter(function (z) { return z > st.fs + 0.001; })[0];
+      st.fs = nx || SIZES[0]; lsS("qrfs", st.fs);
       fit();
-      toast(st.fs === 1 ? "حجم المصحف (١٥ سطراً)" : "حجم الخط " + Math.round(st.fs * 100) + "%");
+      toast(st.fs === 1 ? "حجم المصحف (١٥ سطراً)" : "التكبير " + ar(Math.round(st.fs * 100)) + "٪ — اقرص بإصبعين للتحكم الدقيق");
     };
     $("qrw").onclick = function () { site(PI[st.pg - 1]); };
     $("qrcr").onclick = function () { site(-1); };
@@ -132,10 +132,35 @@
     $("qrpc").onclick = onPanel;
     $("qrpc").oninput = onPanelInput;
     // السحب بين الصفحات: السحب لليمين = الصفحة التالية (كالمصحف)
-    var tx = 0, ty = 0, tt = 0;
+    var tx = 0, ty = 0, tt = 0, multi = false, pz = null;
     var b = $("qrb");
-    b.addEventListener("touchstart", function (e) { var t = e.touches[0]; tx = t.clientX; ty = t.clientY; tt = Date.now(); }, { passive: true });
+    function dist(e) { var a = e.touches[0], c = e.touches[1]; return Math.hypot(a.clientX - c.clientX, a.clientY - c.clientY) || 1; }
+    b.addEventListener("touchstart", function (e) {
+      if (e.touches.length >= 2) { multi = true; pz = { d: dist(e), f: st.fs, y: b.scrollTop / Math.max(1, b.scrollHeight) }; return; }
+      var t = e.touches[0]; tx = t.clientX; ty = t.clientY; tt = Date.now(); multi = false;
+    }, { passive: true });
+    // التكبير بالقرص بإصبعين (من ٧٠٪ إلى ٣٥٠٪) مع حفظ المستوى
+    b.addEventListener("touchmove", function (e) {
+      if (!pz || e.touches.length < 2) return;
+      e.preventDefault();
+      st.fs = Math.max(FMIN, Math.min(FMAX, pz.f * dist(e) / pz.d));
+      var el = $("qrp"); if (el && st.base) el.style.fontSize = (st.base * st.fs) + "px";
+    }, { passive: false });
     b.addEventListener("touchend", function (e) {
+      if (multi) {
+        if (e.touches.length === 0) {
+          multi = false;
+          if (pz) {
+            st.fs = Math.round(st.fs * 100) / 100;
+            if (Math.abs(st.fs - 1) < 0.04) st.fs = 1;
+            lsS("qrfs", st.fs); fit();
+            b.scrollTop = pz.y * b.scrollHeight;
+            toast(st.fs === 1 ? "حجم المصحف (١٥ سطراً)" : "التكبير " + ar(Math.round(st.fs * 100)) + "٪");
+            pz = null;
+          }
+        }
+        return;
+      }
       var t = e.changedTouches[0], dx = t.clientX - tx, dy = t.clientY - ty;
       if (Date.now() - tt > 700 || Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8) return;
       go(st.pg + (dx > 0 ? 1 : -1), false, dx > 0 ? 1 : -1);
@@ -207,7 +232,9 @@
     }
     var n = rowsAt(el, fs);
     var full = n >= target;
-    el.style.textAlignLast = full ? "justify" : "center";
+    el.style.textAlignLast = full && st.fs === 1 ? "justify" : "center";
+    var ov = $("qr"); if (ov) ov.classList.toggle("qz", st.fs >= 1.5);
+    st.base = fs;
     if (p <= 2 && n < target) {
       var pad = ((target - n) / 2) * fs * LH;
       el.style.paddingTop = el.style.paddingBottom = pad + "px";

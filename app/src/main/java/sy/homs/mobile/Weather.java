@@ -33,7 +33,7 @@ public class Weather {
         try {
             JSONObject o = Prefs.obj(c);
             URL u = new URL("https://api.open-meteo.com/v1/forecast?latitude=" + o.optDouble("lat", 34.7324)
-                    + "&longitude=" + o.optDouble("lng", 36.7137) + "&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=2&timezone=auto");
+                    + "&longitude=" + o.optDouble("lng", 36.7137) + "&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&forecast_days=2&timezone=auto");
             h = (HttpURLConnection) u.openConnection();
             h.setConnectTimeout(8000);
             h.setReadTimeout(8000);
@@ -45,6 +45,7 @@ public class Weather {
             JSONObject all = new JSONObject(sb.toString());
             JSONObject cur = all.getJSONObject("current");
             store(c, (int) Math.round(cur.getDouble("temperature_2m")), cur.getInt("weather_code"));
+            sp(c).edit().putInt("wind", (int) Math.round(cur.optDouble("wind_speed_10m", 0))).apply();
             try {
                 JSONObject d = all.getJSONObject("daily");
                 storeTomorrow(c, d.getJSONArray("weather_code").getInt(1),
@@ -102,7 +103,31 @@ public class Weather {
         long at = p.getLong("at", 0);
         if (at == 0 || System.currentTimeMillis() - at > 4 * 3600000L) return null;
         if (!Prefs.obj(c).optString("cn", "حمص").equals(p.getString("cn", ""))) return null;
-        return new int[]{p.getInt("code", 0), p.getInt("t", 0)};
+        return new int[]{p.getInt("code", 0), p.getInt("t", 0), p.getInt("wind", 0)};
+    }
+
+    /** عمر آخر بيانات طقس بالميلي ثانية (Long.MAX_VALUE إن لم توجد أو كانت لمدينة أخرى) */
+    static long age(Context c) {
+        SharedPreferences p = sp(c);
+        long at = p.getLong("at", 0);
+        if (at == 0 || !Prefs.obj(c).optString("cn", "حمص").equals(p.getString("cn", ""))) return Long.MAX_VALUE;
+        return System.currentTimeMillis() - at;
+    }
+
+    static boolean isRain(int code) { return (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95; }
+
+    /** نص تنبيه الذهاب إلى المسجد بحسب الطقس (مطر / برد شديد / رياح قوية)، أو null إن كان الجو مناسباً. {العنوان، النص} */
+    static String[] mosqueAlert(int code, int temp, int wind, String prayer) {
+        boolean rain = isRain(code), cold = temp <= 5, windy = wind >= 40;
+        if (!rain && !cold && !windy) return null;
+        java.util.ArrayList<String> adj = new java.util.ArrayList<>(), need = new java.util.ArrayList<>();
+        if (cold) { adj.add("بارد"); need.add("معطفك"); }
+        if (rain) { adj.add("ماطر"); need.add("مظلتك"); }
+        if (windy) adj.add("عاصف");
+        String advice = need.isEmpty() ? "ارتدِ ما يناسب" : "خذ " + String.join(" و", need);
+        if (windy && !need.isEmpty()) advice += " واحذر الرياح القوية";
+        String text = "الجو " + String.join(" و", adj) + " الآن، " + advice + " قبل الخروج لصلاة " + prayer;
+        return new String[]{(rain ? "🌧️" : cold ? "🥶" : "💨") + " تنبيه قبل الذهاب للمسجد", text};
     }
 
     static boolean isNight(Context c) {

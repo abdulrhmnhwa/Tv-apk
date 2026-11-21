@@ -18,6 +18,7 @@ public class AdhanReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context c, Intent i) {
         UpdateCheck.maybe(c); // فحص التحديثات: مرة واحدة باليوم كحدٍّ أقصى
+        PrayerSilence.check(c);
         if (Scheduler.ACT.equals(i.getAction())) {
             JSONObject o = Prefs.obj(c);
             int k = Math.max(0, Math.min(5, i.getIntExtra("i", 0)));
@@ -52,9 +53,15 @@ public class AdhanReceiver extends BroadcastReceiver {
                         pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "homs:iq").acquire(40000);
                     } catch (Exception ignored) {}
                     final PendingResult pr = goAsync();
-                    Takbeer.playFile(c.getApplicationContext(), "iqama.mp3", pr::finish);
+                    final Context app = c.getApplicationContext();
+                    Takbeer.playFile(app, "iqama.mp3", () -> { PrayerSilence.start(app); pr.finish(); }); // الصامت يبدأ بعد انتهاء صوت الإقامة
                 }
                 notifyNow(c, 300 + k, snd ? "adhan" : "remind", "حانت إقامة صلاة " + name, "استعدوا للصلاة · " + city);
+                if (!snd) PrayerSilence.start(c);
+            } else if (kind == 12) {
+                PrayerSilence.start(c);
+            } else if (kind == 13) {
+                PrayerSilence.end(c);
             } else if (kind == 3) {
                 notifyNow(c, 403, "remind", "☀️ حان وقت أذكار الصباح", "ابدأ يومك بذكر الله · اضغط لفتح الأذكار", "m");
             } else if (kind == 4) {
@@ -75,6 +82,27 @@ public class AdhanReceiver extends BroadcastReceiver {
                 notifyNow(c, 409, "remind", "📖 يوم الجمعة — سورة الكهف", "من السنن المستحبّة اليوم قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ", "kahf");
             } else if (kind == 10) {
                 notifyNow(c, 410, "remind", "🕌 اقترب موعد صلاة الجمعة", "اغتسل وتطيّب وبكّر إلى المسجد، وأكثر من الصلاة على النبي ﷺ · " + city, "");
+            } else if (kind == 11) {
+                // تنبيه الطقس قبل الذهاب للمسجد: يجلب الطقس الحالي (خلفية) ثم يقرّر
+                final Context app = c.getApplicationContext();
+                final int pk = k;
+                final PendingResult pr2 = goAsync();
+                new Thread(() -> {
+                    try {
+                        if (Weather.age(app) > 15 * 60000L) Weather.fetch(app);
+                        if (Weather.age(app) <= 3 * 3600000L) {
+                            int[] w = Weather.cur(app);
+                            if (w != null) {
+                                String[] al = Weather.mosqueAlert(w[0], w[1], w[2], Scheduler.NAMES[pk]);
+                                if (al != null) notifyNow(app, 411, "remind", al[0], al[1], "");
+                            }
+                        }
+                    } catch (Throwable ignored) {
+                    } finally {
+                        try { WidgetProvider.refresh(app); } catch (Throwable ignored) {}
+                        pr2.finish();
+                    }
+                }).start();
             } else if (kind == 6) {
                 notifyNow(c, 406, "remind", "🌌 الثلث الأخير من الليل", "وقت الدعاء والاستغفار والقيام · اضغط لفتح الأذكار", "tab");
             }

@@ -15,6 +15,7 @@ public class WidgetTip {
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
     static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
     static final int ADHAN_LEN = 3;    // مدة إظهار «أذكار الأذان» بعد دخول الوقت (دقائق)
+    static final int RAIN_BEFORE = 5;  // تنبيه الطقس (مطر/برد/رياح) على الودجت قبل الأذان بخمس دقائق وحتى الإقامة
     static final int POST_LEN = 15;    // مدة إظهار «أذكار بعد الصلاة» (ربع ساعة)
     static final int POST_GAP = 2;     // تبدأ بعد انتهاء مدة الإقامة بدقيقتين
     static final int[] POST_P = {0, 2, 3, 4, 5}; // الفجر والظهر والعصر والمغرب والعشاء
@@ -98,6 +99,15 @@ public class WidgetTip {
 
     static final String[] NM = {"الفجر", "الشروق", "الظهر", "العصر", "المغرب", "العشاء"};
 
+    /** فهرس الصلاة التي نحن في نافذة الذهاب إليها (من 5 دقائق قبل الأذان حتى الإقامة)، أو -1 */
+    static int mosqueIdx(long now, long[] r, int[] iq) {
+        for (int i : POST_P) {
+            long e = r[i] + (iq[i] > 0 ? iq[i] : 10) * MIN;
+            if (now >= r[i] - RAIN_BEFORE * MIN && now < e) return i;
+        }
+        return -1;
+    }
+
     static String[] t(String a, String b, String c) { return new String[]{a, b, c}; }
 
     /**
@@ -164,6 +174,9 @@ public class WidgetTip {
             long[] b = {
                 r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, r[5] + EVE_AFTER * MIN, fastAt(r, iq), r[2] - 60 * MIN,
                 r[0], r[2], r[3], r[4], r[5],
+                r[0] - RAIN_BEFORE * MIN, r[2] - RAIN_BEFORE * MIN, r[3] - RAIN_BEFORE * MIN, r[4] - RAIN_BEFORE * MIN, r[5] - RAIN_BEFORE * MIN,
+                r[0] + (iq[0] > 0 ? iq[0] : 10) * MIN, r[2] + (iq[2] > 0 ? iq[2] : 10) * MIN, r[3] + (iq[3] > 0 ? iq[3] : 10) * MIN,
+                r[4] + (iq[4] > 0 ? iq[4] : 10) * MIN, r[5] + (iq[5] > 0 ? iq[5] : 10) * MIN,
                 r[0] + ADHAN_LEN * MIN, r[2] + ADHAN_LEN * MIN, r[3] + ADHAN_LEN * MIN, r[4] + ADHAN_LEN * MIN, r[5] + ADHAN_LEN * MIN,
                 postStart(r, iq, 0), postStart(r, iq, 0) + POST_LEN * MIN,
                 postStart(r, iq, 2), postStart(r, iq, 2) + POST_LEN * MIN,

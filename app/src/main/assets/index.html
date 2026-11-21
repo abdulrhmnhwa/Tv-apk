@@ -313,6 +313,9 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>تذكير عند الإقامة</span><select id="iqr"><option value="0">إيقاف</option><option value="1">إشعار</option><option value="2">صوت وإشعار</option></select></div>
     <div class="sr"><span>تذكير أذكار الصباح<small>إشعار بعد الفجر بنصف ساعة</small></span><label class="sw"><input type="checkbox" id="rm"><i></i></label></div>
     <div class="sr"><span>تذكير صلاة الضحى<small>إشعار عند دخول وقت الضحى</small></span><label class="sw"><input type="checkbox" id="rd"><i></i></label></div>
+    <div class="sr"><span>وضع الجهاز صامت عند الصلاة<small>يُفعَّل الصامت عند الإقامة ولمدة 5 دقائق، ثم يعود الجوال لحالته السابقة. يحتاج إذن «عدم الإزعاج»</small></span><label class="sw"><input type="checkbox" id="slt"><i></i></label></div>
+    <div class="note" id="sltw" style="display:none;text-align:center;color:var(--gold)">⚠️ لم يُمنح إذن «عدم الإزعاج» بعد — <span class="lnk" id="sltg">منح الإذن</span></div>
+    <div class="sr"><span>تنبيه الطقس قبل الصلاة<small>قبل الأذان بـ10 دقائق ينبّهك إن كان الجو ماطراً أو شديد البرد أو عاصفاً</small></span><label class="sw"><input type="checkbox" id="rwx"><i></i></label></div>
     <div class="sr"><span>تذكير أذكار المساء<small>إشعار بعد العصر بعشرين دقيقة</small></span><label class="sw"><input type="checkbox" id="re"><i></i></label></div>
     <div class="sr"><span>تنبيه الثلث الأخير من الليل<small>إشعار عند بداية الثلث الأخير (وقت القيام والدعاء) — مُعطّل افتراضياً</small></span><label class="sw"><input type="checkbox" id="rln"><i></i></label></div>
     <div class="sr"><span>بداية الثلث الأخير<small>قبل الفجر بـ (٠ = تلقائي: ثلث الليل الحقيقي)</small></span><div class="sp"><button id="lbm">−</button><span id="lbv"></span><button id="lbp">+</button></div></div>
@@ -344,7 +347,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.6.4<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 2.9.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span><br><button class="btn" id="fbk" style="margin-top:.7rem">💡 أرسل لنا اقتراحاً</button></div>
 </section>
 
 </div>
@@ -380,7 +383,7 @@ var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,iqs:1,ln:1,rm:1,re:1,rd:1,rl:0,lb:0,tone:"",toneName:"",wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص",sqd:[],nfd:{},rfs:0,rf1:1,rf2:1,rf3:1,rf4:1,rfk:0,rfg:0}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,iqs:1,ln:1,rm:1,re:1,rd:1,rwx:1,slt:0,rl:0,lb:0,tone:"",toneName:"",wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص",sqd:[],nfd:{},rfs:0,rf1:1,rf2:1,rf3:1,rf4:1,rfk:0,rfg:0}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -581,7 +584,7 @@ document.addEventListener("click",function(e){var b=e.target.closest("[data-bell
 $("rs").onclick=function(){cfg.adj=[0,0,0,0,0,0];saveCfg();lastKey="";tick()};
 $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]+'</option>'}).join("");
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
-function syncSet(){$("fxc").style.display=cfg.cn==="حمص"?"":"none";var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").value=cfg.en?(cfg.snd?2:1):0;$("pre").value=cfg.pre?(cfg.pres?2:1):0;$("iqr").value=cfg.iqr?(cfg.iqs?2:1):0;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rln").checked=!!cfg.rl;lbDraw();$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;["rfs","rf1","rf2","rf3","rf4","rfk","rfg"].forEach(function(k){$(k).checked=!!cfg[k]});rfUI();
+function syncSet(){$("fxc").style.display=cfg.cn==="حمص"?"":"none";var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").value=cfg.en?(cfg.snd?2:1):0;$("pre").value=cfg.pre?(cfg.pres?2:1):0;$("iqr").value=cfg.iqr?(cfg.iqs?2:1):0;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rwx").checked=cfg.rwx!==0;$("slt").checked=!!cfg.slt;sltChk();$("rln").checked=!!cfg.rl;lbDraw();$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;["rfs","rf1","rf2","rf3","rf4","rfk","rfg"].forEach(function(k){$(k).checked=!!cfg[k]});rfUI();
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
  var sl=SLOG[cfg.city]||"",tg=sl.indexOf(cfg.cn)===0?sl.slice(cfg.cn.length).replace(/^[\s,،]+/,""):"";$("cty").innerHTML="";var cs=document.createElement("span");cs.textContent=cfg.cn;$("cty").appendChild(cs);if(tg){var sm=document.createElement("small");sm.textContent=tg;$("cty").appendChild(sm)};$("bell").textContent=cfg.en?"🔔":"🔕"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
@@ -612,6 +615,11 @@ $("tts").onclick=function(){if(window.App&&App.testTone)App.testTone(cfg.tone||"
 $("tdf").onclick=function(){window.toneSet("","الافتراضية")};
 window.toneSet=function(u,n){cfg.tone=u||"";cfg.toneName=n||"";saveCfg();syncSet()};
 $("rd").onchange=function(){cfg.rd=this.checked?1:0;saveCfg()};
+$("rwx").onchange=function(){cfg.rwx=this.checked?1:0;saveCfg()};
+function sltChk(){var need=false;try{need=!!cfg.slt&&!!window.App&&App.silentAccess&&!App.silentAccess()}catch(e){}$("sltw").style.display=need?"":"none"}
+$("slt").onchange=function(){cfg.slt=this.checked?1:0;saveCfg();if(cfg.slt){try{if(window.App&&App.silentAccess&&!App.silentAccess())App.askSilentAccess()}catch(e){}}sltChk()};
+$("sltg").onclick=function(){try{App.askSilentAccess()}catch(e){}};
+document.addEventListener("visibilitychange",function(){if(!document.hidden)sltChk()});
 $("re").onchange=function(){cfg.re=this.checked?1:0;saveCfg()};
 /* ---------- تذكيرات مستحبة: صيام التطوع + الجمعة ---------- */
 function rfUI(){$("rfsub").style.opacity=cfg.rfs?1:.45}
@@ -830,6 +838,9 @@ $("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=ad
 /* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
 window.openAdhkar=function(k){if(k==="kahf"){if(tlOpen!==null)tlClose();$("adk").className="";adClean();show(3);if(window.QR)QR.open({sura:18});return}if(k==="sq"){if(tlOpen!==null)tlClose();sqDraw();tlShow("c_sq");return}show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
 $("sup").onclick=function(){$("spm").className="on"};
+$("fbk").onclick=function(){var b=this,r="";try{r=window.App&&App.sendFeedback?App.sendFeedback():"web"}catch(e){r="web"}
+ if(r==="web"){window.open("https://docs.google.com/forms/d/e/1FAIpQLScBsV-XxyjmC0A4sDF-ETBu5Zngn62MPRFDw59tKChjr_NO0A/viewform","_blank");return}
+ if(r!=="ok"){var o=b.textContent;b.textContent="ميزة الاقتراحات غير مفعّلة بعد";setTimeout(function(){b.textContent=o},2500)}};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
 function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
