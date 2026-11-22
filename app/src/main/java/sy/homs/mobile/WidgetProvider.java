@@ -78,7 +78,7 @@ public class WidgetProvider extends AppWidgetProvider {
         float verticalScale = h / 96f;
         canvas.translate((w - 48f * scale * 2f) / 2f, 0f);
         canvas.scale(scale * 2f, verticalScale);
-        canvas.drawBitmap(source, 0f, 0f, new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG | android.graphics.Paint.FILTER_BITMAP_FLAG));
+        canvas.drawBitmap(source, null, new android.graphics.RectF(0f, 0f, 48f, 96f), new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG | android.graphics.Paint.FILTER_BITMAP_FLAG));
         source.recycle();
         return result;
     }
