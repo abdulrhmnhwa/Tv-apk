@@ -116,15 +116,16 @@
         </LinearLayout>
         <ImageView
             android:id="@+id/wsky"
-            android:layout_width="24dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_width="32dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
             android:scaleType="fitCenter"
             android:importantForAccessibility="yes"
             android:contentDescription="تقدّم النهار والليل" />
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="end">
