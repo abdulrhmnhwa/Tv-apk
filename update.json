@@ -1,6 +1,6 @@
 {
-  "versionCode": 79,
-  "versionName": "3.1.1",
+  "versionCode": 80,
+  "versionName": "3.1.2",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "إضافة الوضع الليلي والنهاري للودجت من الإعدادات > الشاشة الرئيسية، بألوان النهاري نفسها في التطبيق مع بقاء الوضع الليلي كما هو"
+  "notes": "تصحيح رقم النسخة في الإعدادات وربطه برقم التطبيق المثبت، مع الإبقاء على خياري الودجت الليلي والنهاري"
 }
