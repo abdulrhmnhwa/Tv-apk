@@ -6,7 +6,7 @@ plugins {
 subprojects {
     afterEvaluate { p ->
         if (p.plugins.hasPlugin('com.android.application')) {
-            p.android.defaultConfig.versionCode = 81
+            p.android.defaultConfig.versionCode = 82
             p.android.defaultConfig.versionName = '3.1.3'
         }
     }
