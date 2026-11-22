@@ -63,23 +63,20 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
     }
 
-    // Double the visible width from the code82 trial, without taking space from text.
-    // Scale both dimensions with the existing widget text setting.
+    // Render vector geometry at the display's own pixel size, never enlarge a small bitmap.
+    // The icon keeps natural circular proportions while following the widget text setting.
     static android.graphics.Bitmap scaledIndicator(SunMoonIndicator.State state, int gold,
             int pct, android.util.DisplayMetrics metrics) {
         float k = Math.max(70, Math.min(150, pct)) / 100f;
         int w = Math.max(1, Math.round(32f * k * metrics.density));
         int h = Math.max(1, Math.round(60f * k * metrics.density));
-        android.graphics.Bitmap source = SunMoonIndicator.draw(state, gold);
         android.graphics.Bitmap result = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888);
         result.setDensity(metrics.densityDpi);
         android.graphics.Canvas canvas = new android.graphics.Canvas(result);
-        float scale = w / 32f * (56f / 96f);
-        float verticalScale = h / 96f;
-        canvas.translate((w - 48f * scale * 2f) / 2f, 0f);
-        canvas.scale(scale * 2f, verticalScale);
-        canvas.drawBitmap(source, null, new android.graphics.RectF(0f, 0f, 48f, 96f), new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG | android.graphics.Paint.FILTER_BITMAP_FLAG));
-        source.recycle();
+        float scale = h / 96f;
+        canvas.translate((w - 48f * scale) / 2f, 0f);
+        canvas.scale(scale, scale);
+        SunMoonIndicator.drawOn(canvas, state, gold);
         return result;
     }
 
@@ -284,6 +281,11 @@ final class SunMoonIndicator {
     static android.graphics.Bitmap draw(State s, int gold) {
         android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(48, 96, android.graphics.Bitmap.Config.ARGB_8888);
         android.graphics.Canvas c = new android.graphics.Canvas(b);
+        drawOn(c, s, gold);
+        return b;
+    }
+
+    static void drawOn(android.graphics.Canvas c, State s, int gold) {
         android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
         p.setColor(gold); p.setStrokeWidth(3f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
         float x = 24f, top = 12f, bottom = 84f, y = top + (bottom - top) * s.progress;
@@ -292,21 +294,20 @@ final class SunMoonIndicator {
         p.setAlpha(30); c.drawCircle(x, y, 12f, p);
         p.setAlpha(255);
         if (s.day) {
-            c.drawCircle(x, y, 5.3f, p);
-            p.setStrokeWidth(1.4f);
+            c.drawCircle(x, y, 6.625f, p);
+            p.setStrokeWidth(1.6f);
             for (int i = 0; i < 8; i++) {
                 double a = i * Math.PI / 4;
-                c.drawLine(x + (float)Math.cos(a)*7.4f, y + (float)Math.sin(a)*7.4f,
-                        x + (float)Math.cos(a)*9.2f, y + (float)Math.sin(a)*9.2f, p);
+                c.drawLine(x + (float)Math.cos(a)*9.25f, y + (float)Math.sin(a)*9.25f,
+                        x + (float)Math.cos(a)*11.5f, y + (float)Math.sin(a)*11.5f, p);
             }
         } else {
             // Transparent crescent, so both original widget gradients show through.
             int save = c.saveLayer(12, y-12, 36, y+12, null);
-            c.drawCircle(x, y, 8f, p);
+            c.drawCircle(x, y, 10f, p);
             p.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
-            c.drawCircle(x+4f, y-3f, 7.4f, p);
+            c.drawCircle(x+5f, y-3.75f, 9.25f, p);
             p.setXfermode(null); c.restoreToCount(save);
         }
-        return b;
     }
 }
