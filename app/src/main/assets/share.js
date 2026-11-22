@@ -167,7 +167,7 @@
     css();
     var r = D.createElement("div"); r.id = "shr";
     r.innerHTML = '<img id="shi" alt=""><div class="shb2"><button data-th="n">🌙 ليلي</button><button data-th="d">☀️ نهاري</button></div>' +
-      '<div class="shb2"><button data-a="share">📤 مشاركة</button><button data-a="save">💾 حفظ في المعرض</button><button data-a="close">✕ إغلاق</button></div><div class="shm" id="shm"></div>';
+      '<div class="shb2"><button data-a="share"><svg viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-.2em"><circle cx="18" cy="5.5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="18.5" r="2.8"/><path d="M8.5 10.7l7-4M8.5 13.3l7 4"/></svg> مشاركة</button><button data-a="save">💾 حفظ في المعرض</button><button data-a="close">✕ إغلاق</button></div><div class="shm" id="shm"></div>';
     D.body.appendChild(r);
     r.addEventListener("click", function (e) {
       var b = e.target.closest("button"); if (e.target === r) return hide();

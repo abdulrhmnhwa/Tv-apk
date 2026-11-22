@@ -324,11 +324,12 @@
       '<button data-a="play">' + (st.playing === i ? "⏹ إيقاف الصوت" : "🔊 استماع") + "<small>يحتاج إنترنت</small></button>" +
       '<button data-a="bm">' + (bm[i] ? "🔖 إزالة العلامة" : "🔖 علامة مرجعية") + "</button>" +
       '<button data-a="copy">📋 نسخ الآية</button>' +
-      '<button data-a="card" style="grid-column:1/-1">🖼️ بطاقة للمشاركة<small>صورة جميلة للآية تُرسل على واتساب وغيره</small></button>' +
       '<button data-a="site">🌐 تفسير وترجمة<small>على موقع تنزيل · إنترنت</small></button>' +
+      '<button data-a="card" style="grid-column:1/-1">'+SHI+' بطاقة للمشاركة<small>صورة جميلة للآية تُرسل على واتساب وغيره</small></button>' +
       "</div>";
     $("qrd").className = "qsd on";
   }
+  var SHI = '<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-.2em"><circle cx="18" cy="5.5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="18.5" r="2.8"/><path d="M8.5 10.7l7-4M8.5 13.3l7 4"/></svg>';
   function closeSheet() {
     $("qrd").className = "qsd";
     st.sel = -1;

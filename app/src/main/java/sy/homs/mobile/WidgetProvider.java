@@ -64,7 +64,18 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
     }
 
+    /** أيام العيد (1–3 شوال، 10–13 ذو الحجة): يدفعها التطبيق في الإعداد ed كأزواج [بداية، نهاية-حصرية] بأيام يونكس */
+    static boolean isEid(JSONObject o, long day) { return inWin(o, "ed", day); }
+
+    static boolean inWin(JSONObject o, String key, long day) {
+        org.json.JSONArray a = o.optJSONArray(key);
+        if (a == null) return false;
+        for (int i = 0; i + 1 < a.length(); i += 2) if (day >= a.optLong(i) && day < a.optLong(i + 1)) return true;
+        return false;
+    }
+
     public static void refresh(Context c) {
+        try { RamadanWidget.refresh(c); } catch (Throwable ignored) {}
         try {
             AppWidgetManager wm = AppWidgetManager.getInstance(c);
             int[] ids = wm.getAppWidgetIds(new ComponentName(c, WidgetProvider.class));
@@ -145,6 +156,10 @@ public class WidgetProvider extends AppWidgetProvider {
                 String[] al = Weather.mosqueAlert(wx[0], wx[1], wx.length > 2 ? wx[2] : 0, WidgetTip.NM[mi]);
                 if (al != null) tl.add(new String[]{al[0], al[1], ""});
             }
+            if (isEid(o, (now + Scheduler.TZ * 3600000L) / 86400000L)) tl.add(new String[]{"🎉 عيد مبارك", "كل عام وأنتم بخير، تقبّل الله طاعتكم", ""});
+            long dayN = (now + Scheduler.TZ * 3600000L) / 86400000L;
+            if (inWin(o, "lt", dayN)) tl.add(new String[]{"🌙 العشر الأواخر", "تحرَّ ليلة القدر في الوتر، وأكثر من: «اللهم إنك عفوٌّ تحب العفو فاعفُ عني»", ""});
+            if (inWin(o, "dh", dayN)) tl.add(new String[]{"🕋 عشر ذي الحجة", "أفضل أيام السنة: صُم ما تيسّر منها (ويوم عرفة آكدها) وأكثر من التكبير والتهليل", ""});
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
             if (ak != null) tl.add(ak);
             rv.removeAllViews(R.id.wflip);
