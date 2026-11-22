@@ -8,8 +8,8 @@ android {
         applicationId "sy.homs.mobile"
         minSdk 21
         targetSdk 34
-        versionCode 76
-        versionName "3.0.1"
+        versionCode 77
+        versionName "3.0.2"
     }
     signingConfigs {
         homs {

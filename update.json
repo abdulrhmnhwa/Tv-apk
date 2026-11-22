@@ -1,6 +1,6 @@
 {
-  "versionCode": 76,
-  "versionName": "3.0.1",
+  "versionCode": 77,
+  "versionName": "3.0.2",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "إمساكية رمضان تظهر في رمضان فقط + إصلاح جدول الإمساكية"
+  "notes": "تصحيح التاريخ الهجري تلقائياً من الإنترنت + تعديل يدوي + إمساكية قابلة للمشاركة"
 }
