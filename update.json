@@ -1,6 +1,6 @@
 {
-  "versionCode": 78,
-  "versionName": "3.1.0",
+  "versionCode": 79,
+  "versionName": "3.1.1",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "رمز QR على بطاقات المشاركة + تصحيح التاريخ الهجري + وضع رمضان"
+  "notes": "إضافة الوضع الليلي والنهاري للودجت من الإعدادات > الشاشة الرئيسية، بألوان النهاري نفسها في التطبيق مع بقاء الوضع الليلي كما هو"
 }
