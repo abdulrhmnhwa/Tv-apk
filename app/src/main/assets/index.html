@@ -379,7 +379,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.<br>⚠️ ربما تحتاج تشغيل VPN لتنزيل النسخة الجديدة.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 3.1.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة <span id="appVersion">3.1.2</span><br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -745,7 +745,9 @@ function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;setTimeout(cpSync,0);$("t
 function tlClose(){lvOn(0);if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className="";cpSync()}
 $("tlg").onclick=function(e){var b=e.target.closest("[data-tl]");if(!b)return;var k=b.dataset.tl;if(k==="q"){if(window.QR)QR.open();else{try{if(window.App&&App.openWeb)App.openWeb("https://tanzil.net/#1:1")}catch(x){}}}else{if(k==="c_sup")updDraw();if(k==="c_srel")relDraw();if(k==="c_hc")hcToday();if(k==="c_kh")khDraw();if(k==="c_im")imDraw();if(k==="c_qd")qdDraw();if(k==="c_hj")hjDraw();if(k==="c_ts")flSync();if(k==="c_sq")sqDraw();if(k==="c_as")asDraw();tlShow(k)}};
 var updUrl="";
-function updDraw(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}$("upc").textContent=v||"—";$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
+function syncAppVersion(){var v="";try{if(window.App&&App.appVer)v=App.appVer()}catch(e){}v=v||$("appVersion").textContent;$("appVersion").textContent=v;$("upc").textContent=v;return v}
+syncAppVersion();
+function updDraw(){syncAppVersion();$("upm").textContent="اضغط للتحقق من وجود نسخة جديدة";$("upr").style.display="none"}
 $("upk").onclick=function(){var m=$("upm");if(!(window.App&&App.checkUpdate)){m.textContent="هذه الميزة تعمل داخل التطبيق فقط";return}m.textContent="جارٍ التحقق…";$("upr").style.display="none";try{App.checkUpdate()}catch(e){m.textContent="تعذّر التحقق"}};
 window.updRes=function(r){var m=$("upm");if(!r||!r.ok){var er=(r&&r.err)||"net",tx;
   if(er==="cfg")tx="لم يُضبط رابط التحديث بعد (للمطوّر)";
@@ -992,4 +994,4 @@ adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);sync
 })();
 </script>
 </body>
- </html>
+                                                                                            </html>
