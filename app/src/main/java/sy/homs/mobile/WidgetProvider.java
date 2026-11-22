@@ -58,10 +58,29 @@ public class WidgetProvider extends AppWidgetProvider {
             12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
-        if (pct == 100) return; // الأحجام الافتراضية من ملف التخطيط
         float k = Math.max(70, Math.min(150, pct)) / 100f;
         for (int i = 0; i < FS_IDS.length; i++)
             rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
+    }
+
+    // Double the visible width from the code82 trial, without taking space from text.
+    // Scale both dimensions with the existing widget text setting.
+    static android.graphics.Bitmap scaledIndicator(SunMoonIndicator.State state, int gold,
+            int pct, android.util.DisplayMetrics metrics) {
+        float k = Math.max(70, Math.min(150, pct)) / 100f;
+        int w = Math.max(1, Math.round(32f * k * metrics.density));
+        int h = Math.max(1, Math.round(60f * k * metrics.density));
+        android.graphics.Bitmap source = SunMoonIndicator.draw(state, gold);
+        android.graphics.Bitmap result = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888);
+        result.setDensity(metrics.densityDpi);
+        android.graphics.Canvas canvas = new android.graphics.Canvas(result);
+        float scale = w / 32f * (56f / 96f);
+        float verticalScale = h / 96f;
+        canvas.translate((w - 48f * scale * 2f) / 2f, 0f);
+        canvas.scale(scale * 2f, verticalScale);
+        canvas.drawBitmap(source, 0f, 0f, new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG | android.graphics.Paint.FILTER_BITMAP_FLAG));
+        source.recycle();
+        return result;
     }
 
     /** أيام العيد (1–3 شوال، 10–13 ذو الحجة): يدفعها التطبيق في الإعداد ed كأزواج [بداية، نهاية-حصرية] بأيام يونكس */
@@ -129,7 +148,7 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setViewVisibility(R.id.wtom, tw.isEmpty() ? View.GONE : View.VISIBLE);
             rv.setTextViewText(R.id.wdate, WD[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + cal.get(Calendar.DAY_OF_MONTH) + " " + MO[cal.get(Calendar.MONTH)]);
             SunMoonIndicator.State sky = SunMoonIndicator.state(now, days);
-            rv.setImageViewBitmap(R.id.wsky, SunMoonIndicator.draw(sky, gold));
+            rv.setImageViewBitmap(R.id.wsky, scaledIndicator(sky, gold, o.optInt("wfs", 100), c.getResources().getDisplayMetrics()));
             rv.setContentDescription(R.id.wsky, SunMoonIndicator.description(sky));
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
