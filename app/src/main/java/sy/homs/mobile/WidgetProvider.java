@@ -266,7 +266,7 @@ final class SunMoonIndicator {
         android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(48, 96, android.graphics.Bitmap.Config.ARGB_8888);
         android.graphics.Canvas c = new android.graphics.Canvas(b);
         android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-        p.setColor(gold); p.setStrokeWidth(2f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+        p.setColor(gold); p.setStrokeWidth(3f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
         float x = 24f, top = 12f, bottom = 84f, y = top + (bottom - top) * s.progress;
         p.setAlpha(65); c.drawLine(x, top, x, bottom, p);
         p.setAlpha(210); c.drawLine(x, top, x, y, p);
