@@ -1,6 +1,6 @@
 {
-  "versionCode": 75,
-  "versionName": "3.0.0",
+  "versionCode": 76,
+  "versionName": "3.0.1",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "وضع رمضان + العشر الأواخر + عشر ذي الحجة + تهنئة العيد في الودجت"
+  "notes": "إمساكية رمضان تظهر في رمضان فقط + إصلاح جدول الإمساكية"
 }

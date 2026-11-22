@@ -203,7 +203,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 .rmbar i{position:absolute;right:0;top:0;bottom:0;background:var(--gold);border-radius:1rem}
 .rmkh .rmbar{height:.65rem;margin:.35rem 0 .25rem;overflow:visible}.rmkh .rmbar u{position:absolute;top:-.2rem;bottom:-.2rem;width:2px;background:#fff;opacity:.85}
 .rmkt{display:flex;justify-content:space-between;font-size:.92rem;margin-top:.7rem;color:var(--gold)}.rmkh small{color:var(--mut);font-size:.78rem}
-.imt{width:100%;border-collapse:collapse;text-align:center;font-size:.82rem}.imt th{color:var(--mut);font-weight:400;font-size:.7rem;padding:.3rem 0}.imt td{padding:.38rem 0;border-top:1px solid rgba(var(--gr),.15)}.imt tr.t td{background:rgba(var(--gr),.3);color:var(--gold);font-weight:700}.imt td:first-child{color:var(--gold)}.imt .tm b{font-weight:inherit}.imt .tm b:first-child{font-size:.65em;margin-inline-end:.15em;opacity:.7}
+.imt{width:100%;border-collapse:collapse;text-align:center;font-size:.78rem;table-layout:auto}.imt td{white-space:nowrap}.imt th{color:var(--mut);font-weight:400;font-size:.7rem;padding:.3rem 0}.imt td{padding:.38rem 0;border-top:1px solid rgba(var(--gr),.15)}.imt tr.t td{background:rgba(var(--gr),.3);color:var(--gold);font-weight:700}.imt td:first-child{color:var(--gold)}
 </style>
 <link rel="stylesheet" href="quran/reader.css">
 </head>
@@ -254,7 +254,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الأدوات -->
 <section class="tab" id="t2">
   <div class="top"><h1>الأدوات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
-  <div class="adg" id="tlg" style="margin-top:.8rem"><button class="adb" data-tl="c_qb"><b>🧭</b>البوصلة والميزان<small>القبلة · ميزان ماء رقمي</small></button><button class="adb" data-tl="c_ts"><b>📿</b>المسبحة<small>عدّاد التسبيح</small></button><button class="adb" data-tl="c_hc"><b>🌙</b>التقويم الهجري<small>الشهر بالتاريخين</small></button><button class="adb" data-tl="c_dt"><b>📅</b>الذهاب إلى تاريخ<small>أوقات أي يوم</small></button><button class="adb" data-tl="c_kh"><b>📖</b>ختمة القرآن<small>تتبّع وردك اليومي</small></button><button class="adb" data-tl="c_as"><b>✨</b>أسماء الله الحسنى<small>٩٩ اسماً بمعانيها</small></button><button class="adb" data-tl="c_qd"><b>🕌</b>قضاء الفوائت<small>عدّاد الصلوات الفائتة</small></button><button class="adb" data-tl="c_sq"><b>🌿</b>قضاء الصيام<small>الأيام التي عليّ قضاؤها</small></button><button class="adb" data-tl="c_hj"><b>🕋</b>الحج والعمرة<small>المناسك خطوة خطوة</small></button><button class="adb" data-tl="c_ev"><b>🗓️</b>المناسبات القادمة<small>تقريبي</small></button><button class="adb" data-tl="c_im" style="grid-column:1/3"><b>🌙</b>إمساكية رمضان<small>الإمساك والإفطار لكل يوم</small></button><button class="adb" data-tl="q" style="grid-column:1/3"><b>☪️</b>القرآن الكريم<small>المصحف كاملاً · بدون إنترنت</small></button></div>
+  <div class="adg" id="tlg" style="margin-top:.8rem"><button class="adb" data-tl="c_qb"><b>🧭</b>البوصلة والميزان<small>القبلة · ميزان ماء رقمي</small></button><button class="adb" data-tl="c_ts"><b>📿</b>المسبحة<small>عدّاد التسبيح</small></button><button class="adb" data-tl="c_hc"><b>🌙</b>التقويم الهجري<small>الشهر بالتاريخين</small></button><button class="adb" data-tl="c_dt"><b>📅</b>الذهاب إلى تاريخ<small>أوقات أي يوم</small></button><button class="adb" data-tl="c_kh"><b>📖</b>ختمة القرآن<small>تتبّع وردك اليومي</small></button><button class="adb" data-tl="c_as"><b>✨</b>أسماء الله الحسنى<small>٩٩ اسماً بمعانيها</small></button><button class="adb" data-tl="c_qd"><b>🕌</b>قضاء الفوائت<small>عدّاد الصلوات الفائتة</small></button><button class="adb" data-tl="c_sq"><b>🌿</b>قضاء الصيام<small>الأيام التي عليّ قضاؤها</small></button><button class="adb" data-tl="c_hj"><b>🕋</b>الحج والعمرة<small>المناسك خطوة خطوة</small></button><button class="adb" data-tl="c_ev"><b>🗓️</b>المناسبات القادمة<small>تقريبي</small></button><button class="adb" id="imt" data-tl="c_im" style="grid-column:1/3;display:none"><b>🌙</b>إمساكية رمضان<small>الإمساك والإفطار لكل يوم</small></button><button class="adb" data-tl="q" style="grid-column:1/3"><b>☪️</b>القرآن الكريم<small>المصحف كاملاً · بدون إنترنت</small></button></div>
   <div id="tlh" style="display:none">
   <div class="card"><div class="h"><span>البوصلة والميزان</span><small id="qtx"></small></div>
     <div class="seg" id="cpm" style="margin-bottom:.7rem"><button data-v="c" class="on" style="flex:1">🧭 البوصلة</button><button data-v="l" style="flex:1">📐 ميزان الماء</button></div>
@@ -376,7 +376,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="row" id="upr" style="display:none;margin-top:.5rem"><button class="btn" id="upd" style="flex:1">⬇️ تحميل التحديث</button></div>
     <div class="note">عند صدور نسخة جديدة يصلك تنبيه مرة واحدة فقط.<br>⚠️ ربما تحتاج تشغيل VPN لتنزيل النسخة الجديدة.</div></div>
   </div>
-  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 3.0.0<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
+  <div class="note" style="text-align:center;margin-top:1rem">مواقيت الصلاة سوريا · النسخة 3.0.1<br>من تطوير المهندس عبدالرحمن حوا · مجاني تماماً، ادعوا لي بالتوفيق 🤲🌹 · <span class="lnk" id="sup">الدعم</span><br><span style="font-size:.9em">نص القرآن الكريم: مشروع تنزيل (Tanzil Project) · tanzil.net · ترخيص CC BY 3.0</span></div>
 </section>
 
 </div>
@@ -449,7 +449,7 @@ function nm(i,full){var s=(i===2&&fri)?"الجمعة":NAMES[i];if(full&&isRam){i
 /* ---------- الرئيسية ---------- */
 function daily(n){
  var h=hj(n),Y=n.getUTCFullYear(),M=n.getUTCMonth(),Dd=n.getUTCDate();
- isRam=!!(h&&h.month===9);rmWin(n);rmOn=isRam&&cfg.rmz!==0;rmK="";fri=n.getUTCDay()===5;qb=qibla();
+ isRam=!!(h&&h.month===9);rmWin(n);rmOn=isRam&&cfg.rmz!==0;rmK="";$("imt").style.display=rmOn?"":"none";fri=n.getUTCDay()===5;qb=qibla();
  $("dates").innerHTML="<span>"+DAY[n.getUTCDay()]+"</span> "+Dd+" "+MON[M]+" "+Y+(h?"<br>"+h.day+" "+HM[h.month-1]+" "+h.year+" هـ":"");
  var mo=moon();$("mn").textContent=mo.e+" "+mo.p+"%";$("qbc").textContent=qb+"°";
  var doy=Math.floor((Date.UTC(Y,M,Dd)-Date.UTC(Y,0,0))/864e5);$("vs").style.whiteSpace="pre-line";lastV=-1;
@@ -685,7 +685,7 @@ $("tts").onclick=function(){if(window.App&&App.testTone)App.testTone(cfg.tone||"
 $("tdf").onclick=function(){window.toneSet("","الافتراضية")};
 window.toneSet=function(u,n){cfg.tone=u||"";cfg.toneName=n||"";saveCfg();syncSet()};
 $("rd").onchange=function(){cfg.rd=this.checked?1:0;saveCfg()};
-$("rwx").onchange=function(){cfg.rwx=this.checked?1:0;saveCfg()};$("rmz").onchange=function(){cfg.rmz=this.checked?1:0;saveCfg();rmOn=isRam&&cfg.rmz!==0;rmK=""};
+$("rwx").onchange=function(){cfg.rwx=this.checked?1:0;saveCfg()};$("rmz").onchange=function(){cfg.rmz=this.checked?1:0;saveCfg();rmOn=isRam&&cfg.rmz!==0;rmK="";$("imt").style.display=rmOn?"":"none"};
 function sltChk(){var need=false;try{need=!!cfg.slt&&!!window.App&&App.silentAccess&&!App.silentAccess()}catch(e){}$("sltw").style.display=need?"":"none"}
 $("slt").onchange=function(){cfg.slt=this.checked?1:0;saveCfg();if(cfg.slt){try{if(window.App&&App.silentAccess&&!App.silentAccess())App.askSilentAccess()}catch(e){}}sltChk()};
 $("sltg").onclick=function(){try{App.askSilentAccess()}catch(e){}};
@@ -712,6 +712,7 @@ var TLN={c_im:"إمساكية رمضان",c_s1:"تعديل الدقائق",c_s2:
 (function(){["c_s1","c_s2","c_s3","c_s4","c_s5","c_s6","c_s7"].forEach(function(id,i){var c=$("sth").children[i];if(c)c.id=id})})();
 function tlShow(id){var c=$(id);if(!c)return;tlOpen=id;setTimeout(cpSync,0);$("tlt").textContent=TLN[id];$("tlb").innerHTML="";
  if(id==="c_dt"){var d=document.createElement("div");d.className="tld";d.innerHTML='<button class="btn" id="dtd2" style="padding:.25rem .7rem;font-size:.8rem">اليوم</button>';$("tlb").appendChild(d);d.firstChild.onclick=dtToday}
+ if(id==="c_im"){var d2=document.createElement("div");d2.className="tld";d2.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">'+'<svg viewBox="0 0 24 24" width="1.15em" height="1.15em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-.2em"><circle cx="18" cy="5.5" r="2.8"/><circle cx="6" cy="12" r="2.8"/><circle cx="18" cy="18.5" r="2.8"/><path d="M8.5 10.7l7-4M8.5 13.3l7 4"/></svg> مشاركة</button>';$("tlb").appendChild(d2);d2.firstChild.onclick=imShare}
  if(id==="c_s1"){var d1=document.createElement("div");d1.className="tld";d1.innerHTML='<button class="btn" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button>';$("tlb").appendChild(d1);d1.firstChild.onclick=function(){$("rs").click()}}
  $("tlb").appendChild(c);$("tl").className="on";$("tl").scrollTop=0}
 function tlClose(){lvOn(0);if(tlOpen!==null){(/^c_s/.test(tlOpen)?$("sth"):$("tlh")).appendChild($(tlOpen));tlOpen=null}$("tl").className="";cpSync()}
@@ -783,12 +784,16 @@ function rmFull(T,kh){var d=rmS.day,o="",ex=Math.min(KP,d*20);
  if($("rmkr"))$("rmkr").onclick=function(){khRead(kh)};
  if($("rmk5"))$("rmk5").onclick=function(){kh.pages=Math.min(KP,(kh.pages||0)+5);khSave();rmK=""}}
 $("rmim").onclick=function(){imDraw();tlShow("c_im")};
+var imRows=[];function ar2(n){return String(n).replace(/\d/g,function(d){return"٠١٢٣٤٥٦٧٨٩"[d]})}
+function imShare(){imDraw();if(window.ShareCard&&imRows.length){var h=hj(new Date(rmS.s));ShareCard.imsak({city:cfg.cn,year:h?ar2(h.year)+" هـ":"",rows:imRows})}}
 function imDraw(){var s=rmS.s;if(s<0){$("imb").innerHTML='<div class="note">التقويم الهجري غير مدعوم على هذا الجهاز</div>';return}
  var L=Math.round((rmS.e-s)/864e5),today=nowU(),cur=rmS.day>0;
  $("imh").textContent=cur?"شهر رمضان الحالي":"رمضان القادم";
+ imRows=[];
  var o='<table class="imt"><tr><th>اليوم</th><th>التاريخ</th><th>الإمساك</th><th>الظهر</th><th>العصر</th><th>الإفطار</th><th>العشاء</th></tr>';
  for(var i=0;i<L;i++){var g=new Date(s+i*864e5),T=PT(g.getUTCFullYear(),g.getUTCMonth(),g.getUTCDate());
-  o+='<tr'+(g.getTime()===today?' class="t"':'')+'><td>'+(i+1)+'</td><td>'+g.getUTCDate()+"/"+(g.getUTCMonth()+1)+'</td>'+[0,2,3,4,5].map(function(k){return'<td class="tm">'+f(T[k])+'</td>'}).join("")+'</tr>'}
+  imRows.push([ar2(i+1),g.getUTCDate()+"/"+(g.getUTCMonth()+1),f2(T[0]).replace(/ [صم]$/,""),f2(T[4]).replace(/ [صم]$/,""),g.getTime()===today]);
+  o+='<tr'+(g.getTime()===today?' class="t"':'')+'><td>'+(i+1)+'</td><td>'+g.getUTCDate()+"/"+(g.getUTCMonth()+1)+'</td>'+[0,2,3,4,5].map(function(k){return'<td>'+f2(T[k]).replace(" ","\u00a0")+'</td>'}).join("")+'</tr>'}
  $("imb").innerHTML=o+'</table>'}
 /* ---------- ختمة القرآن ---------- */
 var KP=604,KE=(function(){var a=[21];for(var i=2;i<=29;i++)a.push(21+(i-1)*20);a.push(604);return a})();

@@ -149,6 +149,30 @@
     footer(b); return b.c;
   }
 
+  function drawImsak(d, t) {
+    var b = base(t), x = b.x, R = d.rows || [], half = Math.ceil(R.length / 2);
+    x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 64px " + AF; x.fillText("إمساكية رمضان", W / 2, 150);
+    pill(b, (d.city || "") + (d.year ? "  ·  " + d.year : ""), 232, "700 36px " + AF, 760);
+    var HW = 440, cols = [48, 150, 265, 385]; // مواضع الأعمدة من يمين كل نصف
+    [0, 1].forEach(function (h) {
+      var right = W - 90 - h * (HW + 20), y = 318;
+      x.fillStyle = t.mut; x.font = "400 26px " + AF; x.textAlign = "center";
+      ["اليوم", "التاريخ", "الإمساك", "الإفطار"].forEach(function (n, i) { x.fillText(n, right - cols[i], y); });
+      for (var i = 0; i < half; i++) {
+        var r = R[h * half + i]; if (!r) break;
+        var yy = 372 + i * 50, on = r[4];
+        x.fillStyle = on ? t.pill : (i % 2 ? "rgba(0,0,0,0)" : t.row); rr(x, right - HW, yy - 22, HW + 8, 44, 12); x.fill();
+        if (on) { x.strokeStyle = t.gold; x.lineWidth = 2; rr(x, right - HW, yy - 22, HW + 8, 44, 12); x.stroke(); }
+        x.fillStyle = on ? t.gold : t.txt; x.font = (on ? "700 " : "400 ") + "30px " + AF; x.textAlign = "center";
+        x.direction = "ltr";
+        for (var k = 0; k < 4; k++) { x.fillStyle = k === 0 ? t.gold : (on ? t.gold : t.txt); x.fillText(k ? ar(r[k]) : r[k], right - cols[k], yy + 2); }
+        x.direction = "rtl";
+      }
+    });
+    x.textAlign = "center"; x.fillStyle = t.mut; x.font = "400 26px " + AF; x.fillText("الإمساك = الفجر · الإفطار = المغرب", W / 2, 1122);
+    footer(b); return b.c;
+  }
+
   /* ---------- النافذة ---------- */
   var ui = null, cur = null;
   function css() {
@@ -186,7 +210,7 @@
     [].forEach.call(ui.querySelectorAll("[data-th]"), function (b) { b.classList.toggle("on", b.dataset.th === th); });
     msg("جارٍ التصميم…");
     fonts().then(function () {
-      var cv = cur.k === "v" ? drawVerse(cur.d, TH[th]) : cur.k === "z" ? drawDhikr(cur.d, TH[th]) : drawTimes(cur.d, TH[th]);
+      var cv = cur.k === "v" ? drawVerse(cur.d, TH[th]) : cur.k === "z" ? drawDhikr(cur.d, TH[th]) : cur.k === "i" ? drawImsak(cur.d, TH[th]) : drawTimes(cur.d, TH[th]);
       cur.url = cv.toDataURL("image/png");
       D.getElementById("shi").src = cur.url; msg("");
     });
@@ -210,6 +234,7 @@
     verse: function (d) { open("v", d); },
     dhikr: function (d) { open("z", d); },
     times: function (d) { open("t", d); },
+    imsak: function (d) { open("i", d); },
     close: hide,
     isOpen: function () { return !!(ui && ui.classList.contains("on")); }
   };
