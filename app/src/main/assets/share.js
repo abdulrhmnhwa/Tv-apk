@@ -12,11 +12,20 @@
   function lsG(k, d) { try { var v = localStorage.getItem(k); return v == null ? d : v; } catch (e) { return d; } }
   function lsS(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
+  var MQ = null;
+  function loadMq() {
+    return new Promise(function (res) {
+      if (MQ) return res();
+      var i = new Image(); i.onload = function () { MQ = i; res(); }; i.onerror = function () { res(); }; i.src = "data:image/png;base64,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";
+      setTimeout(res, 1500);
+    });
+  }
   function fonts() {
-    if (!D.fonts || !D.fonts.load) return Promise.resolve();
+    if (!D.fonts || !D.fonts.load) return loadMq();
     var p = ["40px QuranFont", "700 40px QuranFont", "40px GoogleSans", "700 40px GoogleSans"].map(function (f) {
       return D.fonts.load(f, "اب1").catch(function () {});
     });
+    p.push(loadMq());
     return Promise.race([Promise.all(p), new Promise(function (r) { setTimeout(r, 2500); })]);
   }
 
@@ -59,11 +68,30 @@
     x.direction = "rtl"; x.textBaseline = "middle";
     return { c: c, x: x, t: t };
   }
+  var QR_URL = "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest";
+  function qrCode(b) { // رمز QR أسفل اليسار يفتح صفحة آخر نسخة من التطبيق
+    try {
+      if (!window.QRGen) return;
+      var x = b.x, q = QRGen.make(QR_URL), cell = Math.max(3, Math.floor(128 / q.n)), sz = q.n * cell, pad = 12,
+          bx = 104, by = H - 108 - 22 - (sz + pad * 2);
+      x.save(); x.fillStyle = "#ffffff"; rr(x, bx, by, sz + pad * 2, sz + pad * 2, 14); x.fill();
+      x.fillStyle = "#000000";
+      for (var r = 0; r < q.n; r++) for (var c = 0; c < q.n; c++) if (q.d(r, c)) x.fillRect(bx + pad + c * cell, by + pad + r * cell, cell, cell);
+      x.fillStyle = b.t.mut; x.font = "400 20px " + AF; x.textAlign = "center"; x.direction = "rtl";
+      x.fillText("لتحميل التطبيق", bx + (sz + pad * 2) / 2, by + sz + pad * 2 + 20);
+      x.restore();
+    } catch (e) {}
+  }
   function footer(b) {
     var x = b.x, t = b.t;
+    qrCode(b);
     x.strokeStyle = t.gold; x.globalAlpha = 0.6; x.lineWidth = 1.5;
-    x.beginPath(); x.moveTo(W / 2 - 150, H - 190); x.lineTo(W / 2 + 150, H - 190); x.stroke(); x.globalAlpha = 1;
-    crescent(x, W / 2, H - 150, 20, t.gold);
+    x.beginPath(); x.moveTo(W / 2 - 150, H - 214); x.lineTo(W / 2 + 150, H - 214); x.stroke(); x.globalAlpha = 1;
+    if (MQ) { // أيقونة المسجد (نفس أيقونة الإشعارات) بلون الثيم
+      var m = D.createElement("canvas"); m.width = m.height = 96; var mx = m.getContext("2d");
+      mx.drawImage(MQ, 0, 0, 96, 96); mx.globalCompositeOperation = "source-in"; mx.fillStyle = t.gold; mx.fillRect(0, 0, 96, 96);
+      x.drawImage(m, W / 2 - 30, H - 204, 60, 60);
+    } else crescent(x, W / 2, H - 150, 20, t.gold);
     x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 40px " + AF; x.fillText(APP, W / 2, H - 100);
   }
   function pill(b, text, y, font, maxW) {

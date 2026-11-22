@@ -1,6 +1,6 @@
 {
-  "versionCode": 77,
-  "versionName": "3.0.2",
+  "versionCode": 78,
+  "versionName": "3.1.0",
   "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "تصحيح التاريخ الهجري تلقائياً من الإنترنت + تعديل يدوي + إمساكية قابلة للمشاركة"
+  "notes": "رمز QR على بطاقات المشاركة + تصحيح التاريخ الهجري + وضع رمضان"
 }
