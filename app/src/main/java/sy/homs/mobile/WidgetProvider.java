@@ -58,10 +58,26 @@ public class WidgetProvider extends AppWidgetProvider {
             12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
-        if (pct == 100) return; // الأحجام الافتراضية من ملف التخطيط
         float k = Math.max(70, Math.min(150, pct)) / 100f;
         for (int i = 0; i < FS_IDS.length; i++)
             rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
+    }
+
+    // Render vector geometry at the display's own pixel size, never enlarge a small bitmap.
+    // The icon keeps natural circular proportions while following the widget text setting.
+    static android.graphics.Bitmap scaledIndicator(SunMoonIndicator.State state, int gold,
+            int pct, android.util.DisplayMetrics metrics) {
+        float k = Math.max(70, Math.min(150, pct)) / 100f;
+        int w = Math.max(1, Math.round(32f * k * metrics.density));
+        int h = Math.max(1, Math.round(60f * k * metrics.density));
+        android.graphics.Bitmap result = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888);
+        result.setDensity(metrics.densityDpi);
+        android.graphics.Canvas canvas = new android.graphics.Canvas(result);
+        float scale = h / 96f;
+        canvas.translate((w - 48f * scale) / 2f, 0f);
+        canvas.scale(scale, scale);
+        SunMoonIndicator.drawOn(canvas, state, gold);
+        return result;
     }
 
     /** أيام العيد (1–3 شوال، 10–13 ذو الحجة): يدفعها التطبيق في الإعداد ed كأزواج [بداية، نهاية-حصرية] بأيام يونكس */
@@ -128,6 +144,9 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setTextViewText(R.id.wtom, tw);
             rv.setViewVisibility(R.id.wtom, tw.isEmpty() ? View.GONE : View.VISIBLE);
             rv.setTextViewText(R.id.wdate, WD[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + cal.get(Calendar.DAY_OF_MONTH) + " " + MO[cal.get(Calendar.MONTH)]);
+            SunMoonIndicator.State sky = SunMoonIndicator.state(now, days);
+            rv.setImageViewBitmap(R.id.wsky, scaledIndicator(sky, gold, o.optInt("wfs", 100), c.getResources().getDisplayMetrics()));
+            rv.setContentDescription(R.id.wsky, SunMoonIndicator.description(sky));
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
@@ -221,7 +240,74 @@ public class WidgetProvider extends AppWidgetProvider {
                 try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
                 catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
             } else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p);
+            // Refresh the progress marker without waking a sleeping phone.
+            // Existing prayer/dhikr wake-up alarms above stay unchanged.
+            PendingIntent skyTick = PendingIntent.getBroadcast(c, 8,
+                    new Intent(c, WidgetProvider.class).setAction(ACT),
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            am.set(AlarmManager.RTC, (now / 300000L + 1) * 300000L, skyTick);
             Weather.ensure(c);
         } catch (Exception ignored) {}
+    }
+}
+
+/** Day/night time progress, not astronomical sun/moon altitude or moon phase. */
+final class SunMoonIndicator {
+    static final class State {
+        final boolean day;
+        final float progress;
+        State(boolean day, float progress) { this.day = day; this.progress = progress; }
+    }
+
+    static State state(long now, long[][] days) {
+        long sunrise = days[1][1], sunset = days[1][4];
+        if (now >= sunrise && now < sunset) return between(true, now, sunrise, sunset);
+        // Night ends at sunrise, including the interval after Fajr before sunrise.
+        return now < sunrise
+                ? between(false, now, days[0][4], sunrise)
+                : between(false, now, sunset, days[2][1]);
+    }
+
+    private static State between(boolean day, long now, long start, long end) {
+        float p = end > start ? (float) ((double) (now - start) / (end - start)) : 0f;
+        return new State(day, Math.max(0f, Math.min(1f, p)));
+    }
+
+    static String description(State s) {
+        return (s.day ? "تقدّم النهار، شمس، " : "تقدّم الليل، هلال، ")
+                + Math.round(s.progress * 100) + "٪، ليس موقعاً فلكياً";
+    }
+
+    static android.graphics.Bitmap draw(State s, int gold) {
+        android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(48, 96, android.graphics.Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas c = new android.graphics.Canvas(b);
+        drawOn(c, s, gold);
+        return b;
+    }
+
+    static void drawOn(android.graphics.Canvas c, State s, int gold) {
+        android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        p.setColor(gold); p.setStrokeWidth(3f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+        float x = 24f, top = 12f, bottom = 84f, y = top + (bottom - top) * s.progress;
+        p.setAlpha(65); c.drawLine(x, top, x, bottom, p);
+        p.setAlpha(210); c.drawLine(x, top, x, y, p);
+        p.setAlpha(30); c.drawCircle(x, y, 12f, p);
+        p.setAlpha(255);
+        if (s.day) {
+            c.drawCircle(x, y, 6.625f, p);
+            p.setStrokeWidth(1.6f);
+            for (int i = 0; i < 8; i++) {
+                double a = i * Math.PI / 4;
+                c.drawLine(x + (float)Math.cos(a)*9.25f, y + (float)Math.sin(a)*9.25f,
+                        x + (float)Math.cos(a)*11.5f, y + (float)Math.sin(a)*11.5f, p);
+            }
+        } else {
+            // Transparent crescent, so both original widget gradients show through.
+            int save = c.saveLayer(12, y-12, 36, y+12, null);
+            c.drawCircle(x, y, 10f, p);
+            p.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
+            c.drawCircle(x+5f, y-3.75f, 9.25f, p);
+            p.setXfermode(null); c.restoreToCount(save);
+        }
     }
 }
