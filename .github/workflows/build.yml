@@ -1,8 +1,10 @@
-name: Build trial APK (no release)
+name: Build APK
 on:
   workflow_dispatch:
+  push:
+    branches: [ main, master ]
 permissions:
-  contents: read
+  contents: write
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,5 +20,14 @@ jobs:
       - run: gradle assembleDebug
       - uses: actions/upload-artifact@v4
         with:
-          name: widget-sun-moon-trial
+          name: HomsTV-apk
           path: app/build/outputs/apk/debug/*.apk
+      # نشر الـ APK كإصدار (Release) برابط تحميل مباشر ثابت يستخدمه نظام التحديث
+      - name: قراءة رقم النسخة
+        run: echo "VN=$(grep -oP 'versionName "\K[^"]+' app/build.gradle)" >> "$GITHUB_ENV"
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ env.VN }}
+          name: النسخة ${{ env.VN }}
+          make_latest: true
+          files: app/build/outputs/apk/debug/app-debug.apk
