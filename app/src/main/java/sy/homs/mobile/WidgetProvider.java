@@ -128,6 +128,9 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setTextViewText(R.id.wtom, tw);
             rv.setViewVisibility(R.id.wtom, tw.isEmpty() ? View.GONE : View.VISIBLE);
             rv.setTextViewText(R.id.wdate, WD[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + cal.get(Calendar.DAY_OF_MONTH) + " " + MO[cal.get(Calendar.MONTH)]);
+            SunMoonIndicator.State sky = SunMoonIndicator.state(now, days);
+            rv.setImageViewBitmap(R.id.wsky, SunMoonIndicator.draw(sky, gold));
+            rv.setContentDescription(R.id.wsky, SunMoonIndicator.description(sky));
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
@@ -221,7 +224,70 @@ public class WidgetProvider extends AppWidgetProvider {
                 try { am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
                 catch (Exception e) { am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p); }
             } else am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p);
+            // Refresh the progress marker without waking a sleeping phone.
+            // Existing prayer/dhikr wake-up alarms above stay unchanged.
+            PendingIntent skyTick = PendingIntent.getBroadcast(c, 8,
+                    new Intent(c, WidgetProvider.class).setAction(ACT),
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            am.set(AlarmManager.RTC, (now / 300000L + 1) * 300000L, skyTick);
             Weather.ensure(c);
         } catch (Exception ignored) {}
+    }
+}
+
+/** Day/night time progress, not astronomical sun/moon altitude or moon phase. */
+final class SunMoonIndicator {
+    static final class State {
+        final boolean day;
+        final float progress;
+        State(boolean day, float progress) { this.day = day; this.progress = progress; }
+    }
+
+    static State state(long now, long[][] days) {
+        long sunrise = days[1][1], sunset = days[1][4];
+        if (now >= sunrise && now < sunset) return between(true, now, sunrise, sunset);
+        // Night ends at sunrise, including the interval after Fajr before sunrise.
+        return now < sunrise
+                ? between(false, now, days[0][4], sunrise)
+                : between(false, now, sunset, days[2][1]);
+    }
+
+    private static State between(boolean day, long now, long start, long end) {
+        float p = end > start ? (float) ((double) (now - start) / (end - start)) : 0f;
+        return new State(day, Math.max(0f, Math.min(1f, p)));
+    }
+
+    static String description(State s) {
+        return (s.day ? "تقدّم النهار، شمس، " : "تقدّم الليل، هلال، ")
+                + Math.round(s.progress * 100) + "٪، ليس موقعاً فلكياً";
+    }
+
+    static android.graphics.Bitmap draw(State s, int gold) {
+        android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(48, 96, android.graphics.Bitmap.Config.ARGB_8888);
+        android.graphics.Canvas c = new android.graphics.Canvas(b);
+        android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        p.setColor(gold); p.setStrokeWidth(2f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+        float x = 24f, top = 12f, bottom = 84f, y = top + (bottom - top) * s.progress;
+        p.setAlpha(65); c.drawLine(x, top, x, bottom, p);
+        p.setAlpha(210); c.drawLine(x, top, x, y, p);
+        p.setAlpha(30); c.drawCircle(x, y, 12f, p);
+        p.setAlpha(255);
+        if (s.day) {
+            c.drawCircle(x, y, 5.3f, p);
+            p.setStrokeWidth(1.4f);
+            for (int i = 0; i < 8; i++) {
+                double a = i * Math.PI / 4;
+                c.drawLine(x + (float)Math.cos(a)*7.4f, y + (float)Math.sin(a)*7.4f,
+                        x + (float)Math.cos(a)*9.2f, y + (float)Math.sin(a)*9.2f, p);
+            }
+        } else {
+            // Transparent crescent, so both original widget gradients show through.
+            int save = c.saveLayer(12, y-12, 36, y+12, null);
+            c.drawCircle(x, y, 8f, p);
+            p.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
+            c.drawCircle(x+4f, y-3f, 7.4f, p);
+            p.setXfermode(null); c.restoreToCount(save);
+        }
+        return b;
     }
 }
