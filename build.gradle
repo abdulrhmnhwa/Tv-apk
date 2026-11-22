@@ -1,13 +1,3 @@
 plugins {
     id 'com.android.application' version '8.5.2' apply false
 }
-
-// Isolated widget trial. Public update metadata and releases are unchanged.
-subprojects {
-    afterEvaluate { p ->
-        if (p.plugins.hasPlugin('com.android.application')) {
-            p.android.defaultConfig.versionCode = 84
-            p.android.defaultConfig.versionName = '3.1.3'
-        }
-    }
-}
