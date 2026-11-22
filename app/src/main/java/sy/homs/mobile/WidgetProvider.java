@@ -81,6 +81,12 @@ public class WidgetProvider extends AppWidgetProvider {
             int[] ids = wm.getAppWidgetIds(new ComponentName(c, WidgetProvider.class));
             if (ids == null || ids.length == 0) return;
             JSONObject o = Prefs.obj(c);
+            boolean light = "light".equals(o.optString("wth", "dark"));
+            int gold = light ? 0xFFA46A00 : GOLD;
+            int muted = light ? 0xFF4C6B5C : MUTED;
+            int text = light ? 0xFF173A2C : WHITE;
+            int pastName = light ? 0xFF4C6B5C : PAST_N;
+            int pastTime = light ? 0xFF4C6B5C : PAST_T;
             long now = System.currentTimeMillis();
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
             cal.setTimeInMillis(now + Scheduler.TZ * 3600000L);
@@ -109,6 +115,13 @@ public class WidgetProvider extends AppWidgetProvider {
                 nIdx = ni; label = ni == 1 ? "المتبقي للشروق" : "المتبقي للأذان"; name = Scheduler.NAMES[ni]; target = nt; hi = ni == 1 ? 2 : ni;
             }
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
+            // RemoteViews may reuse the existing layout, so reset both palettes explicitly.
+            rv.setInt(R.id.wroot, "setBackgroundResource", light ? R.drawable.widget_bg_day : R.drawable.widget_bg);
+            rv.setInt(R.id.wtip, "setBackgroundResource", light ? R.drawable.tip_bg_day : R.drawable.tip_bg);
+            for (int id : new int[]{R.id.wcity, R.id.wlab}) rv.setTextColor(id, muted);
+            for (int id : new int[]{R.id.wtom, R.id.wdate}) rv.setTextColor(id, light ? muted : 0xFF8FB09E);
+            for (int id : new int[]{R.id.wclk, R.id.wat}) rv.setTextColor(id, text);
+            for (int id : new int[]{R.id.wap, R.id.wnext, R.id.wcd, R.id.wcdt}) rv.setTextColor(id, gold);
             String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, ids[0]));
             String tw = Weather.tomorrow(c); // يُقصّ من الآخر إن ضاق المكان فلا يؤثر على شيء
             rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
@@ -133,9 +146,9 @@ public class WidgetProvider extends AppWidgetProvider {
                 rv.setTextViewText(NID[j], Scheduler.NAMES[i]);
                 rv.setTextViewText(TID[j], Scheduler.fmt(days[1][i]));
                 boolean past = i != hi && days[1][i] <= now; // الصلوات التي مضى وقتها تُخفَّف، والقادمة بالذهبي
-                rv.setTextColor(NID[j], i == hi ? GOLD : past ? PAST_N : MUTED);
-                rv.setTextColor(TID[j], i == hi ? GOLD : past ? PAST_T : WHITE);
-                rv.setInt(CID[j], "setBackgroundResource", i == hi ? R.drawable.chip_on : 0);
+                rv.setTextColor(NID[j], i == hi ? gold : past ? pastName : muted);
+                rv.setTextColor(TID[j], i == hi ? gold : past ? pastTime : text);
+                rv.setInt(CID[j], "setBackgroundResource", i == hi ? (light ? R.drawable.chip_on_day : R.drawable.chip_on) : 0);
             }
             // شريط الذكر الذكي: بحسب الوقت واليوم والطقس
             int[] iqs = new int[6];
@@ -175,6 +188,10 @@ public class WidgetProvider extends AppWidgetProvider {
                 RemoteViews cv = new RemoteViews(c.getPackageName(), R.layout.widget_tip);
                 cv.setTextViewText(R.id.wtl, x[0]);
                 cv.setTextViewText(R.id.wtx, x[1]);
+                if (light) {
+                    cv.setTextColor(R.id.wtl, gold);
+                    cv.setTextColor(R.id.wtx, text);
+                }
                 if (fsp != 100) {
                     cv.setTextViewTextSize(R.id.wtl, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);
                     cv.setTextViewTextSize(R.id.wtx, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);

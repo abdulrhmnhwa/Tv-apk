@@ -312,7 +312,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 <!-- الإعدادات -->
 <section class="tab" id="t3">
   <div class="top"><h1>الإعدادات</h1><img src="eagle.png" alt="" style="position:absolute;left:50%;top:.45rem;height:2.2rem;transform:translateX(-50%);opacity:.65"></div>
-  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>حجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button><button class="adb" data-tl="c_srel"><b>🛡️</b>ضمان وصول الأذان<small>فحص الإشعارات والبطارية</small></button><button class="adb" data-tl="c_sup"><b>🔄</b>تحديث التطبيق<small>التحقق من وجود نسخة جديدة</small></button><button class="adb" id="fbk"><b>💡</b>أرسل لنا اقتراحاً<small>ملاحظاتك تهمنا</small></button></div>
+  <div class="adg" id="stg" style="margin-top:.8rem"><button class="adb" data-tl="c_s1"><b>⏱️</b>تعديل الدقائق<small>ضبط فرق كل صلاة</small></button><button class="adb" data-tl="c_s2"><b>🕌</b>مدة الإقامة<small>بعد الأذان</small></button><button class="adb" data-tl="c_s3"><b>🎨</b>المظهر والخط<small>ليلي / نهاري وحجم الخط</small></button><button class="adb" data-tl="c_s4"><b>📱</b>الشاشة الرئيسية<small>ليلي / نهاري وحجم خط الودجت</small></button><button class="adb" data-tl="c_s5"><b>🔔</b>التنبيهات<small>الأذان والتذكيرات والنغمة</small></button><button class="adb" data-tl="c_s6"><b>📍</b>الموقع والحساب<small>المدينة وطريقة الحساب</small></button><button class="adb" data-tl="c_s7"><b>🌙</b>تذكيرات مستحبة<small>صيام التطوع وسنن الجمعة</small></button><button class="adb" data-tl="c_srel"><b>🛡️</b>ضمان وصول الأذان<small>فحص الإشعارات والبطارية</small></button><button class="adb" data-tl="c_sup"><b>🔄</b>تحديث التطبيق<small>التحقق من وجود نسخة جديدة</small></button><button class="adb" id="fbk"><b>💡</b>أرسل لنا اقتراحاً<small>ملاحظاتك تهمنا</small></button></div>
   <div id="sth" style="display:none">
   <div class="card"><div class="h"><span>تعديل الدقائق</span><button class="btn" id="rs" style="padding:.25rem .7rem;font-size:.8rem">إعادة ضبط</button></div>
     <div id="adj"></div>
@@ -323,7 +323,8 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="sr"><span>حجم الخط<small>لكل نصوص التطبيق</small></span><div class="sp"><button id="fsm">−</button><span id="fsv"></span><button id="fsp">+</button></div></div>
     <div class="sr"><span>وضع رمضان التلقائي<small>في شهر رمضان تظهر بطاقة الإمساكية والعدّ التنازلي للإفطار والسحور ومؤشر الختمة</small></span><label class="sw"><input type="checkbox" id="rmz"><i></i></label></div>
     <div class="note">حجم الخط من 80% إلى 140%. التغيير يظهر فوراً.</div></div>
-  <div class="card"><div class="h"><span>حجم الخط على الشاشة الرئيسية</span></div>
+  <div class="card"><div class="h"><span>الشاشة الرئيسية</span></div>
+    <div class="sr"><span>شكل الودجت<small>مستقل عن مظهر التطبيق</small></span><div class="seg" id="wthseg"><button data-wth="dark">ليلي</button><button data-wth="light">نهاري</button></div></div>
     <div class="sr"><span>حجم النصوص<small>للودجت الخارجي على الشاشة الرئيسية</small></span><div class="sp"><button id="wfm">−</button><span id="wfv"></span><button id="wfp">+</button></div></div>
     <div class="note">اضغط + أو − لتكبير الخط أو تصغيره (من 70% إلى 150%). يتغيّر الودجت فوراً.</div></div>
   <div class="card"><div class="h"><span>التنبيهات</span></div>
@@ -416,7 +417,7 @@ var SLOG={0:"حمص عاصمة الثورة",9:"درعا مهد الثورة",8:
 var DK=["سبحان الله","الحمد لله","الله أكبر","لا إله إلا الله","أستغفر الله"];
 /* ---------- الإعدادات ---------- */
 var cfg;
-function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,iqs:1,ln:1,rm:1,re:1,rd:1,rwx:1,slt:0,rl:0,lb:0,tone:"",toneName:"",wfs:100,th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص",sqd:[],nfd:{},rfs:0,rf1:1,rf2:1,rf3:1,rf4:1,rfk:0,rfg:0}}
+function def(){return{city:0,mt:0,fa:18,ia:17,im:0,asr:1,adj:[0,0,0,0,0,0],on:[1,1,1,1,1,1],en:1,snd:1,pre:0,pres:1,iqr:0,iqs:1,ln:1,rm:1,re:1,rd:1,rwx:1,slt:0,rl:0,lb:0,tone:"",toneName:"",wfs:100,wth:"dark",th:"dark",fs:100,iq:[15,0,15,15,5,15],lat:34.7324,lng:36.7137,cn:"حمص",sqd:[],nfd:{},rfs:0,rf1:1,rf2:1,rf3:1,rf4:1,rfk:0,rfg:0}}
 function loadCfg(){var o={},s=null;try{if(window.App)s=App.get()}catch(e){}if(!s||s==="{}"){try{s=localStorage.getItem("cfg")}catch(e){}}try{if(s)o=JSON.parse(s)}catch(e){}var d=def();for(var k in d)if(o[k]===undefined)o[k]=d[k];return o}
 var svT;function saveCfg(now){var c=CITIES[cfg.city],m=METHODS[cfg.mt];cfg.lat=c[1];cfg.lng=c[2];cfg.cn=c[0];cfg.fa=m[1];cfg.ia=m[2];cfg.im=m[3];
  clearTimeout(svT);var go=function(){var s=JSON.stringify(cfg);try{localStorage.setItem("cfg",s)}catch(e){}try{if(window.App)App.save(s)}catch(e){}};if(now)go();else svT=setTimeout(go,350)}
@@ -690,6 +691,9 @@ function fsStep(d){cfg.fs=Math.max(80,Math.min(140,(cfg.fs||100)+d));lookApply()
 $("fsm").onclick=function(){fsStep(-10)};
 $("fsp").onclick=function(){fsStep(10)};
 lookApply();
+function wthDraw(){var mode=cfg.wth==="light"?"light":"dark";document.querySelectorAll("#wthseg button").forEach(function(b){var active=b.dataset.wth===mode;b.className=active?"on":"";b.setAttribute("aria-pressed",String(active))})}
+$("wthseg").onclick=function(e){var b=e.target.closest("button");if(!b)return;cfg.wth=b.dataset.wth==="light"?"light":"dark";wthDraw();saveCfg(true)};
+wthDraw();
 function wfsDraw(){$("wfv").textContent=(cfg.wfs||100)+"%"}
 function wfsStep(d){cfg.wfs=Math.max(70,Math.min(150,(cfg.wfs||100)+d));wfsDraw();saveCfg()}
 $("wfm").onclick=function(){wfsStep(-10)};
@@ -988,4 +992,4 @@ adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);sync
 })();
 </script>
 </body>
-</html>
+ </html>
