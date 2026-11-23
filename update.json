@@ -1,6 +1,6 @@
 {
-  "versionCode": 88,
-  "versionName": "3.2.0",
-  "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/latest/download/app-debug.apk",
-  "notes": "إصلاح ضغط شريط التذكيرات: المستطيل كله يفتح دائماً التذكير الظاهر حالياً أثناء التناوب، وتوسيط صف المواقيت بين المستطيلات، مع تحسين الفراغات والإطارات"
+  "versionCode": 98,
+  "versionName": "3.2.1",
+  "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/download/v3.2.1/app-debug.apk",
+  "notes": "تحسين تنسيق الويدجيت وتدرّج حجم النصوص، توسيط الصلاة والعدّاد وتوحيد المسافات، ضبط وصف الطقس وقوس الشمس، ومزامنة ألوان الإمساكية مع الويدجيت الأساسي"
 }
