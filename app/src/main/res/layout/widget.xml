@@ -11,7 +11,7 @@
     android:paddingBottom="6dp"
     android:background="@drawable/widget_bg">
 
-    <!-- الصف العلوي: المدينة والطقس (يمين) + الساعة (يسار) -->
+    <!-- الصف العلوي: المدينة والطقس (يمين) + قوس الشمس/القمر في الفراغ (وسط) + الساعة (يسار) -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,6 +41,14 @@
                 android:singleLine="true"
                 android:visibility="gone" />
         </LinearLayout>
+        <ImageView
+            android:id="@+id/warc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            android:importantForAccessibility="yes"
+            android:contentDescription="تقدّم النهار والليل" />
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +94,7 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- الصف الأوسط: الصلاة القادمة ووقتها (يمين) + الوقت المتبقي (يسار) -->
+    <!-- الصف الأوسط: الصلاة القادمة ووقتها (يمين) + الوقت المتبقي (يسار)، كلٌّ في مستطيل -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -94,9 +102,18 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <LinearLayout
+            android:id="@+id/wboxn"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:background="@drawable/box_bg"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/wnext"
@@ -111,27 +128,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#F4F1E8"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 android:singleLine="true" />
         </LinearLayout>
-        <ImageView
-            android:id="@+id/wsky"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:maxWidth="48dp"
-            android:maxHeight="90dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginEnd="1dp"
-            android:scaleType="fitCenter"
-            android:importantForAccessibility="yes"
-            android:contentDescription="تقدّم النهار والليل" />
         <LinearLayout
+            android:id="@+id/wboxc"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
+            android:background="@drawable/box_bg"
             android:orientation="vertical"
-            android:gravity="end">
+            android:gravity="end|center_vertical">
             <TextView
                 android:id="@+id/wlab"
                 android:layout_width="wrap_content"
@@ -159,19 +172,43 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- شريط الذكر الذكي: سطر واحد (العنوان + النص)، والضغط عليه يفتح القسم المناسب -->
+    <!-- صف أوقات الصلوات الخمس: كل وقت في مستطيل، والحالية مميزة -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3.5dp"
+        android:orientation="horizontal"
+        android:weightSum="5">
+        <LinearLayout android:id="@+id/c0" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:background="@drawable/chip_off" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/n0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
+            <TextView android:id="@+id/t0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/c1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:background="@drawable/chip_off" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/n1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
+            <TextView android:id="@+id/t1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/c2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:background="@drawable/chip_off" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/n2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
+            <TextView android:id="@+id/t2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/c3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:background="@drawable/chip_off" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/n3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
+            <TextView android:id="@+id/t3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
+        </LinearLayout>
+        <LinearLayout android:id="@+id/c4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="2dp" android:layout_marginEnd="2dp" android:paddingTop="2dp" android:paddingBottom="2dp" android:background="@drawable/chip_off" android:orientation="vertical" android:gravity="center">
+            <TextView android:id="@+id/n4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
+            <TextView android:id="@+id/t4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- شريط الذكر الذكي: الصف الأخير (العنوان + النص)، والضغط عليه يفتح القسم المناسب -->
     <LinearLayout
         android:id="@+id/wtip"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="4dp"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:paddingTop="3dp"
-        android:paddingBottom="3dp"
+        android:layout_marginTop="3.5dp"
         android:background="@drawable/tip_bg">
         <ViewFlipper
             android:id="@+id/wflip"
@@ -179,40 +216,11 @@
             android:layout_height="wrap_content"
             android:flipInterval="10000"
             android:inAnimation="@anim/widget_fade_in"
-            android:outAnimation="@anim/widget_fade_out"
             android:autoStart="true" />
         <FrameLayout
             android:id="@+id/wone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
-    </LinearLayout>
-
-    <!-- الصف السفلي: أوقات الصلوات الخمس -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="5">
-        <LinearLayout android:id="@+id/c0" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_margin="1dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:orientation="vertical" android:gravity="center">
-            <TextView android:id="@+id/n0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
-            <TextView android:id="@+id/t0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/c1" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_margin="1dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:orientation="vertical" android:gravity="center">
-            <TextView android:id="@+id/n1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
-            <TextView android:id="@+id/t1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/c2" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_margin="1dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:orientation="vertical" android:gravity="center">
-            <TextView android:id="@+id/n2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
-            <TextView android:id="@+id/t2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/c3" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_margin="1dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:orientation="vertical" android:gravity="center">
-            <TextView android:id="@+id/n3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
-            <TextView android:id="@+id/t3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
-        </LinearLayout>
-        <LinearLayout android:id="@+id/c4" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_margin="1dp" android:paddingTop="3dp" android:paddingBottom="3dp" android:orientation="vertical" android:gravity="center">
-            <TextView android:id="@+id/n4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#A9C2B4" android:textSize="12sp" android:singleLine="true" />
-            <TextView android:id="@+id/t4" android:layout_width="wrap_content" android:layout_height="wrap_content" android:includeFontPadding="false" android:layout_marginTop="1dp" android:textColor="#F4F1E8" android:textSize="13sp" android:textStyle="bold" android:singleLine="true" />
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
