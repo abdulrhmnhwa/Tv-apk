@@ -8,20 +8,23 @@
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
     android:paddingTop="8dp"
-    android:paddingBottom="6dp"
+    android:paddingBottom="10dp"
     android:background="@drawable/widget_bg">
 
-    <!-- الصف العلوي: المدينة والطقس (يمين) + قوس الشمس/القمر في الفراغ (وسط) + الساعة (يسار) -->
-    <LinearLayout
+    <!-- الصف العلوي: المدينة والطقس (يمين) + الساعة (يسار)، وقوس الشمس/القمر ثابت الوسط فوق الفاصل بين المستطيلين -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:layout_height="wrap_content">
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
             <TextView
                 android:id="@+id/wcity"
                 android:layout_width="match_parent"
@@ -41,16 +44,9 @@
                 android:singleLine="true"
                 android:visibility="gone" />
         </LinearLayout>
-        <ImageView
-            android:id="@+id/warc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:scaleType="fitCenter"
-            android:importantForAccessibility="yes"
-            android:contentDescription="تقدّم النهار والليل" />
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="end">
@@ -92,20 +88,30 @@
                 android:textSize="11sp"
                 android:singleLine="true" />
         </LinearLayout>
-    </LinearLayout>
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/warc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:importantForAccessibility="yes"
+            android:contentDescription="تقدّم النهار والليل" />
+    </FrameLayout>
 
     <!-- الصف الأوسط: الصلاة القادمة ووقتها (يمين) + الوقت المتبقي (يسار)، كلٌّ في مستطيل -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
+        android:layout_marginTop="3.5dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <LinearLayout
             android:id="@+id/wboxn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_weight="1"
             android:layout_marginStart="2dp"
             android:layout_marginEnd="2dp"
@@ -119,6 +125,7 @@
                 android:id="@+id/wnext"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:includeFontPadding="false"
                 android:textColor="#D6B25E"
                 android:textSize="30sp"
                 android:textStyle="bold"
@@ -127,8 +134,10 @@
                 android:id="@+id/wat"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="-20dp"
+                android:includeFontPadding="false"
                 android:textColor="#F4F1E8"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:singleLine="true" />
         </LinearLayout>
         <LinearLayout
@@ -144,11 +153,13 @@
             android:paddingBottom="1dp"
             android:background="@drawable/box_bg"
             android:orientation="vertical"
-            android:gravity="end|center_vertical">
+            android:gravity="center">
             <TextView
                 android:id="@+id/wlab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:includeFontPadding="false"
                 android:textColor="#A9C2B4"
                 android:textSize="12sp"
                 android:singleLine="true" />
