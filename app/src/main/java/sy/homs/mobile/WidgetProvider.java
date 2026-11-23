@@ -52,9 +52,9 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     /** أحجام الخطوط الأساسية (sp) كما في widget.xml؛ تُضرب بنسبة الإعداد (70–150%) */
-    private static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt,
+    static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt,
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.wdate};
-    private static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22,
+    static final float[] FS_SP = {14, 22, 12, 30, 12, 12, 28, 22,
             12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
@@ -64,20 +64,59 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     // Render vector geometry at the display's own pixel size, never enlarge a small bitmap.
-    // The icon keeps natural circular proportions while following the widget text setting.
-    static android.graphics.Bitmap scaledIndicator(SunMoonIndicator.State state, int gold,
-            int pct, android.util.DisplayMetrics metrics) {
+    // The arc follows the widget font setting and stays small: it only occupies free space
+    // in the top row between the city block and the clock block, so it never adds height.
+    static final float ARC_W_DP = 100f, ARC_H_DP = 40f, ARC_MIN_GAP_DP = 60f;
+
+    static android.graphics.Bitmap scaledArc(SunMoonIndicator.State state, int gold,
+            int pct, android.util.DisplayMetrics metrics, int gapPx) {
         float k = Math.max(70, Math.min(150, pct)) / 100f;
-        int w = Math.max(1, Math.round(32f * k * metrics.density));
-        int h = Math.max(1, Math.round(60f * k * metrics.density));
+        float visW = Math.min(ARC_W_DP * k * metrics.density, gapPx);
+        int w = Math.max(1, gapPx);
+        int h = Math.max(1, Math.round(ARC_H_DP * k * metrics.density));
         android.graphics.Bitmap result = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888);
         result.setDensity(metrics.densityDpi);
         android.graphics.Canvas canvas = new android.graphics.Canvas(result);
-        float scale = h / 96f;
-        canvas.translate((w - 48f * scale) / 2f, 0f);
+        float scale = Math.min(visW / 100f, h / 58f);
+        canvas.translate((w - 100f * scale) / 2f, (h - 58f * scale) / 2f);
         canvas.scale(scale, scale);
-        SunMoonIndicator.drawOn(canvas, state, gold);
+        SunMoonIndicator.drawArc(canvas, state, gold);
         return result;
+    }
+
+    static float textW(String s, float sp, boolean bold, android.util.DisplayMetrics m) {
+        android.text.TextPaint p = new android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+        p.setTextSize(sp * m.scaledDensity);
+        if (bold) p.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD));
+        return s == null ? 0f : p.measureText(s);
+    }
+
+    // The arc must never cost a single letter: it is only shown when the estimated free
+    // space between the city text and the clock block still fits a useful arc, and it is
+    // drawn centered in that free gap. Bigger widget text shrinks the gap until it hides.
+    static int arcGapPx(AppWidgetManager wm, int id, String cityLine, String tomLine, String dateLine,
+            int pct, android.util.DisplayMetrics m) {
+        float k = Math.max(70, Math.min(150, pct)) / 100f;
+        int widthDp = 250; // minResizeWidth: safe floor when the host has not reported a size yet
+        try {
+            Bundle b = wm.getAppWidgetOptions(id);
+            if (b != null) {
+                int o = b.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
+                if (o > 0) widthDp = o;
+            }
+        } catch (Throwable ignored) {}
+        java.text.SimpleDateFormat tf = new java.text.SimpleDateFormat("h:mm", java.util.Locale.getDefault());
+        tf.setTimeZone(java.util.TimeZone.getTimeZone("GMT+03:00"));
+        java.util.Date dnow = new java.util.Date();
+        String clk = tf.format(dnow);
+        String ap = new java.text.SimpleDateFormat("a", java.util.Locale.getDefault()).format(dnow);
+        float cityW = Math.max(textW(cityLine, 14 * k, false, m), tomLine.isEmpty() ? 0f : textW(tomLine, 11 * k, false, m));
+        float clockW = Math.max(textW(clk, 22 * k, true, m) + 4 * m.density + textW(ap, 12 * k, false, m),
+                textW(dateLine, 11 * k, false, m));
+        // 16dp safety margin on top of the root's 24dp horizontal padding: estimation
+        // error must shrink the arc (or hide it), never ellipsize a letter.
+        int gap = Math.round((widthDp - 40) * m.density - cityW - clockW);
+        return Math.min(gap, Math.round(260 * m.density));
     }
 
     /** أيام العيد (1–3 شوال، 10–13 ذو الحجة): يدفعها التطبيق في الإعداد ed كأزواج [بداية، نهاية-حصرية] بأيام يونكس */
@@ -143,10 +182,21 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
             rv.setTextViewText(R.id.wtom, tw);
             rv.setViewVisibility(R.id.wtom, tw.isEmpty() ? View.GONE : View.VISIBLE);
-            rv.setTextViewText(R.id.wdate, WD[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + cal.get(Calendar.DAY_OF_MONTH) + " " + MO[cal.get(Calendar.MONTH)]);
+            String dateLine = WD[cal.get(Calendar.DAY_OF_WEEK) - 1] + " " + cal.get(Calendar.DAY_OF_MONTH) + " " + MO[cal.get(Calendar.MONTH)];
+            rv.setTextViewText(R.id.wdate, dateLine);
+            int fspc = o.optInt("wfs", 100);
+            android.util.DisplayMetrics dm = c.getResources().getDisplayMetrics();
             SunMoonIndicator.State sky = SunMoonIndicator.state(now, days);
-            rv.setImageViewBitmap(R.id.wsky, scaledIndicator(sky, gold, o.optInt("wfs", 100), c.getResources().getDisplayMetrics()));
-            rv.setContentDescription(R.id.wsky, SunMoonIndicator.description(sky));
+            int gapPx = arcGapPx(wm, ids[0], wl.isEmpty() ? city : city + "  " + wl, tw, dateLine, fspc, dm);
+            if (gapPx >= Math.round(ARC_MIN_GAP_DP * dm.density)) {
+                rv.setImageViewBitmap(R.id.warc, scaledArc(sky, gold, fspc, dm, gapPx));
+                rv.setContentDescription(R.id.warc, SunMoonIndicator.description(sky));
+                rv.setViewVisibility(R.id.warc, View.VISIBLE);
+            } else {
+                rv.setViewVisibility(R.id.warc, View.GONE);
+            }
+            rv.setInt(R.id.wboxn, "setBackgroundResource", light ? R.drawable.box_bg_day : R.drawable.box_bg);
+            rv.setInt(R.id.wboxc, "setBackgroundResource", light ? R.drawable.box_bg_day : R.drawable.box_bg);
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
             rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
@@ -167,7 +217,7 @@ public class WidgetProvider extends AppWidgetProvider {
                 boolean past = i != hi && days[1][i] <= now; // الصلوات التي مضى وقتها تُخفَّف، والقادمة بالذهبي
                 rv.setTextColor(NID[j], i == hi ? gold : past ? pastName : muted);
                 rv.setTextColor(TID[j], i == hi ? gold : past ? pastTime : text);
-                rv.setInt(CID[j], "setBackgroundResource", i == hi ? (light ? R.drawable.chip_on_day : R.drawable.chip_on) : 0);
+                rv.setInt(CID[j], "setBackgroundResource", i == hi ? (light ? R.drawable.chip_on_day : R.drawable.chip_on) : (light ? R.drawable.chip_off_day : R.drawable.chip_off));
             }
             // شريط الذكر الذكي: بحسب الوقت واليوم والطقس
             int[] iqs = new int[6];
@@ -219,8 +269,12 @@ public class WidgetProvider extends AppWidgetProvider {
                 if (!x[2].isEmpty()) ti.putExtra("open", x[2]);
                 PendingIntent pi = PendingIntent.getActivity(c, 31 + j, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
                 cv.setOnClickPendingIntent(R.id.wtp, pi);
+                cv.setOnClickPendingIntent(R.id.wtl, pi);
+                cv.setOnClickPendingIntent(R.id.wtx, pi);
                 rv.addView(one ? R.id.wone : R.id.wflip, cv);
-                if (j == 0) rv.setOnClickPendingIntent(R.id.wtip, pi);
+                // الإطار الخارجي بلا هدف ثابت عند التناوب: الصف يملأ المستطيل كله،
+                // فكل نقطة فيه تتبع التنبيه الظاهر حالياً، والهدف الاحتياطي فقط للتنبيه الواحد الثابت
+                if (one) rv.setOnClickPendingIntent(R.id.wtip, pi);
             }
             if (!one) rv.setDisplayedChild(R.id.wflip, 0);
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
@@ -278,35 +332,36 @@ final class SunMoonIndicator {
                 + Math.round(s.progress * 100) + "٪، ليس موقعاً فلكياً";
     }
 
-    static android.graphics.Bitmap draw(State s, int gold) {
-        android.graphics.Bitmap b = android.graphics.Bitmap.createBitmap(48, 96, android.graphics.Bitmap.Config.ARGB_8888);
-        android.graphics.Canvas c = new android.graphics.Canvas(b);
-        drawOn(c, s, gold);
-        return b;
-    }
-
-    static void drawOn(android.graphics.Canvas c, State s, int gold) {
+    // Deep half-circle dome, 100x58 logical units, circular (rx = ry): sunrise at the right
+    // end, sunset at the left end (RTL, matching the prayer-chips order). Day: the sun
+    // travels right to left from sunrise to sunset; night: a crescent from sunset to sunrise.
+    static void drawArc(android.graphics.Canvas c, State s, int gold) {
         android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-        p.setColor(gold); p.setStrokeWidth(3f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
-        float x = 24f, top = 12f, bottom = 84f, y = top + (bottom - top) * s.progress;
-        p.setAlpha(65); c.drawLine(x, top, x, bottom, p);
-        p.setAlpha(210); c.drawLine(x, top, x, y, p);
-        p.setAlpha(30); c.drawCircle(x, y, 12f, p);
+        p.setColor(gold); p.setStrokeWidth(2.5f); p.setStrokeCap(android.graphics.Paint.Cap.ROUND);
+        p.setStyle(android.graphics.Paint.Style.STROKE);
+        android.graphics.RectF oval = new android.graphics.RectF(8f, 8f, 92f, 92f); // rx = ry = 42: true semicircle
+        float sweep = 180f * s.progress, start = 360f - sweep;
+        p.setAlpha(65); c.drawArc(oval, 180f, 180f, false, p);
+        if (sweep > 0.5f) { p.setAlpha(210); c.drawArc(oval, start, sweep, false, p); }
+        double a = Math.toRadians(start);
+        float x = 50f + 42f * (float) Math.cos(a), y = 50f + 42f * (float) Math.sin(a);
+        p.setStyle(android.graphics.Paint.Style.FILL);
+        p.setAlpha(30); c.drawCircle(x, y, 8f, p);
         p.setAlpha(255);
         if (s.day) {
-            c.drawCircle(x, y, 6.625f, p);
-            p.setStrokeWidth(1.6f);
+            c.drawCircle(x, y, 4.5f, p);
+            p.setStrokeWidth(1.4f);
             for (int i = 0; i < 8; i++) {
-                double a = i * Math.PI / 4;
-                c.drawLine(x + (float)Math.cos(a)*9.25f, y + (float)Math.sin(a)*9.25f,
-                        x + (float)Math.cos(a)*11.5f, y + (float)Math.sin(a)*11.5f, p);
+                double r = i * Math.PI / 4;
+                c.drawLine(x + (float) Math.cos(r) * 6.5f, y + (float) Math.sin(r) * 6.5f,
+                        x + (float) Math.cos(r) * 9f, y + (float) Math.sin(r) * 9f, p);
             }
         } else {
             // Transparent crescent, so both original widget gradients show through.
-            int save = c.saveLayer(12, y-12, 36, y+12, null);
-            c.drawCircle(x, y, 10f, p);
+            int save = c.saveLayer(x - 8, y - 8, x + 8, y + 8, null);
+            c.drawCircle(x, y, 5.5f, p);
             p.setXfermode(new android.graphics.PorterDuffXfermode(android.graphics.PorterDuff.Mode.CLEAR));
-            c.drawCircle(x+5f, y-3.75f, 9.25f, p);
+            c.drawCircle(x + 2.6f, y - 2f, 4.8f, p);
             p.setXfermode(null); c.restoreToCount(save);
         }
     }
