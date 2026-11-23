@@ -9,7 +9,7 @@
     android:paddingEnd="10dp"
     android:paddingTop="1dp"
     android:paddingBottom="1dp"
-    android:gravity="center_vertical">
+    android:gravity="center">
     <TextView
         android:id="@+id/wtl"
         android:layout_width="wrap_content"
@@ -26,7 +26,8 @@
         android:layout_marginStart="8dp"
         android:textColor="#F4F1E8"
         android:textSize="13sp"
-        android:lineSpacingMultiplier="0.9"
-        android:maxLines="2"
-        android:ellipsize="end" />
+        android:lineSpacingMultiplier="1.0"
+        android:gravity="center"
+        android:textDirection="rtl"
+        android:includeFontPadding="false" />
 </LinearLayout>

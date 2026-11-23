@@ -30,6 +30,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { refresh(c); }
     @Override public void onEnabled(Context c) { refresh(c); }
+    @Override public void onAppWidgetOptionsChanged(Context c, AppWidgetManager m, int id, Bundle options) { refresh(c); }
     @Override
     public void onReceive(final Context c, Intent i) {
         String a = i.getAction();
@@ -54,13 +55,13 @@ public class WidgetProvider extends AppWidgetProvider {
     /** أحجام الخطوط الأساسية (sp) كما في widget.xml؛ تُضرب بنسبة الإعداد (70–150%) */
     static final int[] FS_IDS = {R.id.wcity, R.id.wclk, R.id.wap, R.id.wnext, R.id.wat, R.id.wlab, R.id.wcd, R.id.wcdt,
             R.id.n0, R.id.n1, R.id.n2, R.id.n3, R.id.n4, R.id.t0, R.id.t1, R.id.t2, R.id.t3, R.id.t4, R.id.wdate};
-    static final float[] FS_SP = {14, 22, 12, 30, 12, 12, 28, 22,
+    static final float[] FS_SP = {14, 22, 12, 30, 14, 12, 28, 22,
             12, 12, 12, 12, 12, 13, 13, 13, 13, 13, 11};
 
     private static void applyFontScale(RemoteViews rv, int pct) {
         float k = Math.max(70, Math.min(150, pct)) / 100f;
         for (int i = 0; i < FS_IDS.length; i++)
-            rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_SP, FS_SP[i] * k);
+            rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_DIP, FS_SP[i] * k);
     }
 
     // Render vector geometry at the display's own pixel size, never enlarge a small bitmap.
@@ -86,7 +87,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     static float textW(String s, float sp, boolean bold, android.util.DisplayMetrics m) {
         android.text.TextPaint p = new android.text.TextPaint(android.graphics.Paint.ANTI_ALIAS_FLAG);
-        p.setTextSize(sp * m.scaledDensity);
+        p.setTextSize(sp * m.density);
         if (bold) p.setTypeface(android.graphics.Typeface.create(android.graphics.Typeface.DEFAULT, android.graphics.Typeface.BOLD));
         return s == null ? 0f : p.measureText(s);
     }
@@ -94,9 +95,20 @@ public class WidgetProvider extends AppWidgetProvider {
     // The arc must never cost a single letter: it is only shown when the estimated free
     // space between the city text and the clock block still fits a useful arc, and it is
     // drawn centered in that free gap. Bigger widget text shrinks the gap until it hides.
-    static int arcGapPx(AppWidgetManager wm, int id, String cityLine, String tomLine, String dateLine,
+    /** خطة القوس: وسطه ثابت فوق الفاصل بين المستطيلين، ونص الطقس يتصغّر ليتّسع بجانبه وإلا اختفى القوس */
+    static final class ArcPlan {
+        boolean show;
+        int bitmapW;
+        float citySp; // الحجم النهائي لسطر المدينة/الطقس (sp)
+        float tomSp;  // الحجم النهائي لسطر الغد (sp)
+        float descScale = 1f;
+    }
+
+    static ArcPlan planArc(AppWidgetManager wm, int id, String cityLine, String tomLine, String dateLine,
             int pct, android.util.DisplayMetrics m) {
         float k = Math.max(70, Math.min(150, pct)) / 100f;
+        ArcPlan p = new ArcPlan();
+        p.citySp = 14 * k; p.tomSp = 11 * k;
         int widthDp = 250; // minResizeWidth: safe floor when the host has not reported a size yet
         try {
             Bundle b = wm.getAppWidgetOptions(id);
@@ -110,13 +122,57 @@ public class WidgetProvider extends AppWidgetProvider {
         java.util.Date dnow = new java.util.Date();
         String clk = tf.format(dnow);
         String ap = new java.text.SimpleDateFormat("a", java.util.Locale.getDefault()).format(dnow);
-        float cityW = Math.max(textW(cityLine, 14 * k, false, m), tomLine.isEmpty() ? 0f : textW(tomLine, 11 * k, false, m));
+        return planArcCore(widthDp, cityLine, tomLine, dateLine, clk, ap, pct, m);
+    }
+
+    static ArcPlan planArcCore(int widthDp, String cityLine, String tomLine, String dateLine,
+            String clk, String ap, int pct, android.util.DisplayMetrics m) {
+        float k = Math.max(70, Math.min(150, pct)) / 100f;
+        ArcPlan p = new ArcPlan();
+        p.citySp = 14 * k; p.tomSp = 11 * k;
+        float total = Math.max(1, (widthDp - 24) * m.density);
+        float half = Math.max(1, total / 2f - 4 * m.density);
+        // Text always has the same half-row budget, whether the optional arc is shown or not.
+        float cityW = textW(cityLine, 14 * k, false, m);
+        float tomW = textW(tomLine, 11 * k, false, m);
+        p.citySp *= Math.min(1f, half / Math.max(1, cityW) * .96f);
+        p.tomSp *= Math.min(1f, half / Math.max(1, tomW) * .96f);
         float clockW = Math.max(textW(clk, 22 * k, true, m) + 4 * m.density + textW(ap, 12 * k, false, m),
                 textW(dateLine, 11 * k, false, m));
-        // 16dp safety margin on top of the root's 24dp horizontal padding: estimation
-        // error must shrink the arc (or hide it), never ellipsize a letter.
-        int gap = Math.round((widthDp - 40) * m.density - cityW - clockW);
-        return Math.min(gap, Math.round(260 * m.density));
+        float desired = Math.min(ARC_W_DP * k, 70) * m.density;
+        float availableArc = total - 2 * (clockW + 6 * m.density);
+        float arc = Math.min(desired, availableArc);
+        if (arc >= 32 * m.density) {
+            float textBudget = total / 2 - arc / 2 - 6 * m.density;
+            int start = descriptionStart(cityLine);
+            float prefix = textW(cityLine.substring(0,start), p.citySp, false, m);
+            float description = textW(cityLine.substring(start), p.citySp, false, m);
+            p.descScale = Math.max(.55f, Math.min(1, (textBudget - prefix) / Math.max(1,description) * .98f));
+            float combined = prefix + description * p.descScale;
+            if (combined > textBudget) p.citySp *= Math.max(.4f, textBudget / combined * .98f);
+            float tomorrow = textW(tomLine,p.tomSp,false,m);
+            if (tomorrow > textBudget) p.tomSp *= textBudget / tomorrow * .98f;
+            p.bitmapW = Math.max(1, Math.round(arc));
+            p.show = true;
+        }
+        return p;
+    }
+
+    static int descriptionStart(String line) {
+        int degree = line.indexOf('°');
+        return degree < 0 ? line.length() : Math.min(line.length(),degree+1);
+    }
+    static CharSequence weatherStyled(String line, ArcPlan p, android.util.DisplayMetrics dm) {
+        android.text.SpannableString text = new android.text.SpannableString(line);
+        int start=descriptionStart(line);
+        if(start<line.length()) text.setSpan(new android.text.style.AbsoluteSizeSpan(Math.max(1,Math.round(p.citySp*p.descScale*dm.density))),start,line.length(),android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return text;
+    }
+
+    static int widthOf(AppWidgetManager wm, int id) {
+        try { int w = wm.getAppWidgetOptions(id).getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0); if (w > 0) return w; }
+        catch (Throwable ignored) {}
+        return 250;
     }
 
     /** أيام العيد (1–3 شوال، 10–13 ذو الحجة): يدفعها التطبيق في الإعداد ed كأزواج [بداية، نهاية-حصرية] بأيام يونكس */
@@ -169,6 +225,9 @@ public class WidgetProvider extends AppWidgetProvider {
                 for (long[] r : days) for (int i = 0; i < 6; i++) if (r[i] > now && r[i] < nt) { nt = r[i]; ni = i; }
                 nIdx = ni; label = ni == 1 ? "المتبقي للشروق" : "المتبقي للأذان"; name = Scheduler.NAMES[ni]; target = nt; hi = ni == 1 ? 2 : ni;
             }
+            int[] iqs = new int[6];
+            for (int i = 0; i < 6; i++) iqs[i] = Scheduler.iq(o, i);
+            for (int widgetId : ids) {
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
             // RemoteViews may reuse the existing layout, so reset both palettes explicitly.
             rv.setInt(R.id.wroot, "setBackgroundResource", light ? R.drawable.widget_bg_day : R.drawable.widget_bg);
@@ -177,7 +236,7 @@ public class WidgetProvider extends AppWidgetProvider {
             for (int id : new int[]{R.id.wtom, R.id.wdate}) rv.setTextColor(id, light ? muted : 0xFF8FB09E);
             for (int id : new int[]{R.id.wclk, R.id.wat}) rv.setTextColor(id, text);
             for (int id : new int[]{R.id.wap, R.id.wnext, R.id.wcd, R.id.wcdt}) rv.setTextColor(id, gold);
-            String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, ids[0]));
+            String city = o.optString("cn", "حمص"), wl = Weather.line(c, wide(wm, widgetId));
             String tw = Weather.tomorrow(c); // يُقصّ من الآخر إن ضاق المكان فلا يؤثر على شيء
             rv.setTextViewText(R.id.wcity, wl.isEmpty() ? city : city + "  " + wl);
             rv.setTextViewText(R.id.wtom, tw);
@@ -187,9 +246,10 @@ public class WidgetProvider extends AppWidgetProvider {
             int fspc = o.optInt("wfs", 100);
             android.util.DisplayMetrics dm = c.getResources().getDisplayMetrics();
             SunMoonIndicator.State sky = SunMoonIndicator.state(now, days);
-            int gapPx = arcGapPx(wm, ids[0], wl.isEmpty() ? city : city + "  " + wl, tw, dateLine, fspc, dm);
-            if (gapPx >= Math.round(ARC_MIN_GAP_DP * dm.density)) {
-                rv.setImageViewBitmap(R.id.warc, scaledArc(sky, gold, fspc, dm, gapPx));
+            String cityLine = wl.isEmpty() ? city : city + "  " + wl;
+            ArcPlan arc = planArc(wm, widgetId, cityLine, tw, dateLine, fspc, dm);
+            if (arc.show) {
+                rv.setImageViewBitmap(R.id.warc, scaledArc(sky, gold, fspc, dm, arc.bitmapW));
                 rv.setContentDescription(R.id.warc, SunMoonIndicator.description(sky));
                 rv.setViewVisibility(R.id.warc, View.VISIBLE);
             } else {
@@ -199,7 +259,9 @@ public class WidgetProvider extends AppWidgetProvider {
             rv.setInt(R.id.wboxc, "setBackgroundResource", light ? R.drawable.box_bg_day : R.drawable.box_bg);
             rv.setTextViewText(R.id.wlab, label);
             rv.setTextViewText(R.id.wnext, name);
-            rv.setTextViewText(R.id.wat, (iqamaMode ? "الإقامة عند " : nIdx == 1 ? "الشروق عند " : "الأذان عند ") + Scheduler.fmt(target));
+            String timeText = Scheduler.fmt(target);
+            String atText = (iqamaMode ? "الإقامة عند " : "عند ") + timeText;
+            rv.setTextViewText(R.id.wat, atText);
             if (Build.VERSION.SDK_INT >= 24) {
                 rv.setChronometer(R.id.wcd, SystemClock.elapsedRealtime() + (target - now), null, true);
                 rv.setChronometerCountDown(R.id.wcd, true);
@@ -220,8 +282,6 @@ public class WidgetProvider extends AppWidgetProvider {
                 rv.setInt(CID[j], "setBackgroundResource", i == hi ? (light ? R.drawable.chip_on_day : R.drawable.chip_on) : (light ? R.drawable.chip_off_day : R.drawable.chip_off));
             }
             // شريط الذكر الذكي: بحسب الوقت واليوم والطقس
-            int[] iqs = new int[6];
-            for (int i = 0; i < 6; i++) iqs[i] = Scheduler.iq(o, i);
             int[] wx = Weather.cur(c);
             String[] tip = WidgetTip.pick(now, days[1], iqs, cal.get(Calendar.DAY_OF_WEEK),
                     wx == null ? -1 : wx[0], wx == null ? 20 : wx[1]);
@@ -256,15 +316,29 @@ public class WidgetProvider extends AppWidgetProvider {
                 String[] x = tl.get(j);
                 RemoteViews cv = new RemoteViews(c.getPackageName(), R.layout.widget_tip);
                 cv.setTextViewText(R.id.wtl, x[0]);
-                cv.setTextViewText(R.id.wtx, x[1]);
+                CharSequence reminder = x[1];
+                cv.setTextViewText(R.id.wtx, reminder);
                 if (light) {
                     cv.setTextColor(R.id.wtl, gold);
                     cv.setTextColor(R.id.wtx, text);
                 }
-                if (fsp != 100) {
-                    cv.setTextViewTextSize(R.id.wtl, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);
-                    cv.setTextViewTextSize(R.id.wtx, android.util.TypedValue.COMPLEX_UNIT_SP, 13 * fk);
-                }
+                int widthDp = 250;
+                Bundle bounds = wm.getAppWidgetOptions(widgetId);
+                if (bounds != null && bounds.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0) > 0)
+                    widthDp = bounds.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+                int reminderHeight = WidgetReminderText.height(c, fk);
+                android.widget.TextView titleProbe = new android.widget.TextView(c);
+                titleProbe.setTypeface(null, android.graphics.Typeface.BOLD);
+                titleProbe.setTextSize(android.util.TypedValue.COMPLEX_UNIT_DIP, 13 * fk);
+                titleProbe.setSingleLine(true);
+                titleProbe.setText(x[0]);
+                titleProbe.measure(View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.AT_MOST),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                int reminderWidth = Math.max(1, Math.round((widthDp - 60) * dm.density) - titleProbe.getMeasuredWidth());
+                cv.setTextViewTextSize(R.id.wtl, android.util.TypedValue.COMPLEX_UNIT_DIP, 13 * fk);
+                cv.setInt(R.id.wtx, "setHeight", reminderHeight);
+                cv.setTextViewTextSize(R.id.wtx, android.util.TypedValue.COMPLEX_UNIT_PX,
+                        WidgetReminderText.fit(reminder, reminderWidth, reminderHeight, 13 * fk * dm.density));
                 Intent ti = new Intent(c, MainActivity.class);
                 if (!x[2].isEmpty()) ti.putExtra("open", x[2]);
                 PendingIntent pi = PendingIntent.getActivity(c, 31 + j, ti, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
@@ -279,7 +353,17 @@ public class WidgetProvider extends AppWidgetProvider {
             if (!one) rv.setDisplayedChild(R.id.wflip, 0);
             rv.setOnClickPendingIntent(R.id.wroot, PendingIntent.getActivity(c, 3, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
             applyFontScale(rv, o.optInt("wfs", 100));
-            wm.updateAppWidget(ids, rv);
+            {
+                rv.setTextViewTextSize(R.id.wcity, android.util.TypedValue.COMPLEX_UNIT_DIP, arc.citySp);
+                if (!tw.isEmpty()) rv.setTextViewTextSize(R.id.wtom, android.util.TypedValue.COMPLEX_UNIT_DIP, arc.tomSp);
+            }
+            WidgetWidthFit.apply(c, rv, widthOf(wm, widgetId), fk, dateLine, cityLine, tw);
+            rv.setTextViewText(R.id.wcity, weatherStyled(cityLine,arc,dm));
+            rv.setTextViewTextSize(R.id.wcity, android.util.TypedValue.COMPLEX_UNIT_DIP, arc.citySp);
+            rv.setTextViewTextSize(R.id.wtom, android.util.TypedValue.COMPLEX_UNIT_DIP, arc.tomSp);
+            WidgetMiddleFit.apply(c, wm, widgetId, rv, fk, name, atText, timeText, label, tw.isEmpty(), arc.show);
+            wm.updateAppWidget(widgetId, rv);
+            }
 
             AlarmManager am = (AlarmManager) c.getSystemService(Context.ALARM_SERVICE);
             PendingIntent p = PendingIntent.getBroadcast(c, 7, new Intent(c, WidgetProvider.class).setAction(ACT),

@@ -687,7 +687,7 @@ function lookApply(){var r=document.documentElement,l=cfg.th==="light";if(l)r.se
  var bs=document.querySelectorAll("#thseg button");for(var i=0;i<bs.length;i++)bs[i].className=bs[i].dataset.th===(l?"light":"dark")?"on":"";
  $("fsv").textContent=(cfg.fs||100)+"%";try{if(window.App&&App.theme)App.theme(l)}catch(e){}}
 $("thseg").onclick=function(e){var b=e.target.closest("button");if(!b)return;cfg.th=b.dataset.th==="light"?"light":"dark";lookApply();saveCfg()};
-function fsStep(d){cfg.fs=Math.max(80,Math.min(140,(cfg.fs||100)+d));lookApply();saveCfg()}
+function fsStep(d){cfg.fs=Math.max(80,Math.min(140,(Number(cfg.fs)||100)+d));lookApply();saveCfg()}
 $("fsm").onclick=function(){fsStep(-10)};
 $("fsp").onclick=function(){fsStep(10)};
 lookApply();
@@ -695,7 +695,7 @@ function wthDraw(){var mode=cfg.wth==="light"?"light":"dark";document.querySelec
 $("wthseg").onclick=function(e){var b=e.target.closest("button");if(!b)return;cfg.wth=b.dataset.wth==="light"?"light":"dark";wthDraw();saveCfg(true)};
 wthDraw();
 function wfsDraw(){$("wfv").textContent=(cfg.wfs||100)+"%"}
-function wfsStep(d){cfg.wfs=Math.max(70,Math.min(150,(cfg.wfs||100)+d));wfsDraw();saveCfg()}
+function wfsStep(d){cfg.wfs=Math.max(70,Math.min(150,(Number(cfg.wfs)||100)+d));wfsDraw();saveCfg()}
 $("wfm").onclick=function(){wfsStep(-10)};
 $("wfp").onclick=function(){wfsStep(10)};
 wfsDraw();
@@ -994,4 +994,4 @@ adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);sync
 })();
 </script>
 </body>
-                                                                                            </html>
+  </html>
