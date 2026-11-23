@@ -40,6 +40,7 @@ public class RamadanWidget extends AppWidgetProvider {
             long rs = o.optLong("rs", -1), re = o.optLong("re", -1);
             boolean in = rs >= 0 && today >= rs && today < re;
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget_ram);
+            applyTheme(rv, "light".equals(o.optString("wth", "dark")));
             long target = now + 3600000L;
             if (in) {
                 long[] t0 = Scheduler.dayMs(o, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
@@ -76,6 +77,14 @@ public class RamadanWidget extends AppWidgetProvider {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p);
         } catch (Exception ignored) {}
+    }
+
+    static void applyTheme(RemoteViews rv, boolean light) {
+        rv.setInt(R.id.rroot,"setBackgroundResource",light?R.drawable.widget_bg_day:R.drawable.widget_bg);
+        int gold=light?0xFFA46A00:0xFFD6B25E, muted=light?0xFF4C6B5C:0xFFA9C2B4, text=light?0xFF173A2C:0xFFF4F1E8;
+        for(int id:new int[]{R.id.rtitle,R.id.rtimes})rv.setTextColor(id,gold);
+        for(int id:new int[]{R.id.rlab,R.id.rkh})rv.setTextColor(id,muted);
+        for(int id:new int[]{R.id.rcd,R.id.rcdt})rv.setTextColor(id,text);
     }
 
     private static void setCd(RemoteViews rv, long target, long now) {
