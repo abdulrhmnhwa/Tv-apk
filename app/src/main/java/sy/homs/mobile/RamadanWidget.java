@@ -23,6 +23,8 @@ public class RamadanWidget extends AppWidgetProvider {
 
     @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { refresh(c); }
     @Override public void onEnabled(Context c) { refresh(c); }
+    /** عند تغيير حجم الودجت يُعاد قياس النص ليتسع (كودجت الصلاة). */
+    @Override public void onAppWidgetOptionsChanged(Context c, AppWidgetManager m, int id, android.os.Bundle options) { refresh(c); }
     @Override public void onReceive(Context c, Intent i) {
         if (ACT.equals(i.getAction())) refresh(c); else super.onReceive(c, i);
     }
@@ -134,24 +136,27 @@ public class RamadanWidget extends AppWidgetProvider {
                 hSum += (fm.descent - fm.ascent) / d;
                 wMax = Math.max(wMax, p.measureText("88:88:88") / d);
             }
-            return fitPct(userPct, heightDp > 0 ? heightDp - 14f : 0, widthDp > 0 ? widthDp - 28f : 0, hSum, wMax);
+            return fitPct(userPct, heightDp > 0 ? heightDp - 14f : 0, widthDp > 0 ? widthDp - 28f : 0, hSum, wMax * 1.04f);
         } catch (Throwable t) { return Math.round(fontScale(userPct) * 100); }
     }
 
     /**
      * الارتفاع/العرض المتاحان للنص (dp) والمقاسان عند 100%. يُخفَّض مقياس المستخدم إلى أكبر ما يتسع،
-     * ولا يقل عن 100% إلا إن اختار المستخدم أقل. القيم 0 = مجهول فلا حدّ.
+     * ويصغّر تلقائياً عند ضيق الودجت (حتى MIN_FIT) كي لا يُقتطع النص. القيم 0 = مجهول فلا حدّ.
      */
     static int fitPct(int userPct, float availH, float availW, float textH1, float textW1) {
         int u = Math.round(fontScale(userPct) * 100);
         int cap = 150;
         if (availH > 0 && textH1 > 0) cap = Math.min(cap, (int) Math.floor(availH / textH1 * 100f));
         if (availW > 0 && textW1 > 0) cap = Math.min(cap, (int) Math.floor(availW / textW1 * 100f));
-        return Math.min(u, Math.max(100, cap));
+        return Math.min(u, Math.max(MIN_FIT, cap));
     }
 
+    /** أدنى تصغير تلقائي لاتساع النص: 30% (المستخدم نفسه يبقى 70% إلى 150%). */
+    static final int MIN_FIT = 30;
+
     static void applyFontScale(RemoteViews rv, int pct) {
-        float k = fontScale(pct);
+        float k = Math.max(MIN_FIT, Math.min(150, pct)) / 100f;
         for (int i = 0; i < FS_IDS.length; i++)
             rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_DIP, FS_SP[i] * k);
     }

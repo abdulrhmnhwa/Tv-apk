@@ -16,7 +16,8 @@ public class RamadanWidgetScaleTest {
     @Test public void fitUnknownKeepsUser() { assertEquals(150, RamadanWidget.fitPct(150, 0, 0, 100, 150)); }
     @Test public void fitCapsByHeight() { assertEquals(120, RamadanWidget.fitPct(150, 120, 500, 100, 100)); assertEquals(80, RamadanWidget.fitPct(80, 120, 500, 100, 100)); }
     @Test public void fitCapsByWidth() { assertEquals(130, RamadanWidget.fitPct(150, 500, 130, 100, 100)); }
-    @Test public void fitNeverBelow100WhenUserWantsMore() { assertEquals(100, RamadanWidget.fitPct(150, 50, 50, 100, 100)); }
+    @Test public void fitShrinksBelow100WhenNarrow() { assertEquals(50, RamadanWidget.fitPct(150, 500, 50, 100, 100)); assertEquals(30, RamadanWidget.fitPct(100, 5, 5, 100, 100)); }
+    @Test public void fitNeverBelowFloor() { assertEquals(RamadanWidget.MIN_FIT, RamadanWidget.fitPct(150, 1, 1, 1000, 1000)); }
     @Test public void fitAllowsFull150WhenRoomy() { assertEquals(150, RamadanWidget.fitPct(150, 400, 400, 100, 100)); }
     @Test public void fitMonotonicInRoom() {
         int prev = 0;

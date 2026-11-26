@@ -14,24 +14,29 @@
     <TextView
         android:id="@+id/rtitle"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:textColor="#D6B25E"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:ellipsize="none" />
     <TextView
         android:id="@+id/rlab"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:includeFontPadding="false"
         android:textColor="#A9C2B4"
         android:textSize="12sp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:ellipsize="none" />
     <Chronometer
         android:id="@+id/rcd"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:layoutDirection="ltr"
@@ -40,7 +45,8 @@
         android:textStyle="bold" />
     <TextView
         android:id="@+id/rcdt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:includeFontPadding="false"
         android:textColor="#F4F1E8"
@@ -50,19 +56,23 @@
     <TextView
         android:id="@+id/rtimes"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:includeFontPadding="false"
         android:textColor="#D6B25E"
         android:textSize="13sp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:ellipsize="none" />
     <TextView
         android:id="@+id/rkh"
         android:layout_width="match_parent"
+        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:includeFontPadding="false"
         android:textColor="#A9C2B4"
         android:textSize="12sp"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:ellipsize="none" />
 </LinearLayout>
