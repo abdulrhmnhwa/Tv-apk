@@ -8,13 +8,14 @@
     android:gravity="center_vertical"
     android:paddingStart="14dp"
     android:paddingEnd="14dp"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
     android:background="@drawable/widget_bg">
     <TextView
         android:id="@+id/rtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:textColor="#D6B25E"
         android:textSize="15sp"
         android:textStyle="bold"
@@ -24,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:includeFontPadding="false"
         android:textColor="#A9C2B4"
         android:textSize="12sp"
         android:singleLine="true" />
@@ -40,6 +42,7 @@
         android:id="@+id/rcdt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:includeFontPadding="false"
         android:textColor="#F4F1E8"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -49,6 +52,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:includeFontPadding="false"
         android:textColor="#D6B25E"
         android:textSize="13sp"
         android:singleLine="true" />
@@ -57,6 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
+        android:includeFontPadding="false"
         android:textColor="#A9C2B4"
         android:textSize="12sp"
         android:singleLine="true" />

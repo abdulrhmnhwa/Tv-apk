@@ -40,6 +40,8 @@ public class RamadanWidget extends AppWidgetProvider {
             long rs = o.optLong("rs", -1), re = o.optLong("re", -1);
             boolean in = rs >= 0 && today >= rs && today < re;
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget_ram);
+            final String[] st = new String[5];
+            boolean cdOn = false;
             applyTheme(rv, "light".equals(o.optString("wth", "dark")));
             long target = now + 3600000L;
             if (in) {
@@ -51,24 +53,29 @@ public class RamadanWidget extends AppWidgetProvider {
                 if (now < t0[0]) { target = t0[0]; lab = "المتبقي للإمساك"; }
                 else if (now < t0[4]) { target = t0[4]; lab = "المتبقي للإفطار"; }
                 else { target = t1[0]; lab = "المتبقي للإمساك"; }
-                rv.setTextViewText(R.id.rtitle, "🌙 رمضان · اليوم " + (today - rs + 1));
-                rv.setTextViewText(R.id.rlab, lab);
-                rv.setTextViewText(R.id.rtimes, "الإمساك " + Scheduler.fmt(t0[0]) + "  ·  الإفطار " + Scheduler.fmt(t0[4]));
+                txt(rv, st, 0, R.id.rtitle, "🌙 رمضان · اليوم " + (today - rs + 1));
+                txt(rv, st, 1, R.id.rlab, lab);
+                txt(rv, st, 3, R.id.rtimes, "الإمساك " + Scheduler.fmt(t0[0]) + "  ·  الإفطار " + Scheduler.fmt(t0[4]));
                 int pg = o.optInt("rk", -1);
-                rv.setTextViewText(R.id.rkh, pg < 0 ? "📖 اضغط لبدء ختمة رمضان"
+                txt(rv, st, 4, R.id.rkh, pg < 0 ? "📖 اضغط لبدء ختمة رمضان"
                         : "📖 الختمة: الجزء " + Math.min(30, pg / 20 + 1) + " · " + pg + "/604 صفحة");
                 setCd(rv, target, now);
+                cdOn = Build.VERSION.SDK_INT >= 24;
             } else {
                 long left = rs >= 0 && rs > today ? rs - today : -1;
-                rv.setTextViewText(R.id.rtitle, "🌙 رمضان");
-                rv.setTextViewText(R.id.rlab, left > 0 ? "بعد " + left + " يوماً بإذن الله" : "افتح التطبيق لتحديث التاريخ");
-                rv.setTextViewText(R.id.rtimes, "تظهر الإمساكية تلقائياً عند بدء الشهر");
-                rv.setTextViewText(R.id.rkh, "");
+                txt(rv, st, 0, R.id.rtitle, "🌙 رمضان");
+                txt(rv, st, 1, R.id.rlab, left > 0 ? "بعد " + left + " يوماً بإذن الله" : "افتح التطبيق لتحديث التاريخ");
+                txt(rv, st, 3, R.id.rtimes, "تظهر الإمساكية تلقائياً عند بدء الشهر");
+                txt(rv, st, 4, R.id.rkh, "");
+                // خارج رمضان: الأسطر الثلاثة الظاهرة في الوسط (داخل رمضان تبقى كما هي)
+                for (int cid : new int[]{R.id.rtitle, R.id.rlab, R.id.rtimes}) rv.setInt(cid, "setGravity", android.view.Gravity.CENTER_HORIZONTAL);
                 rv.setViewVisibility(R.id.rcd, View.GONE);
                 rv.setViewVisibility(R.id.rcdt, View.GONE);
                 target = ((now + Scheduler.TZ * 3600000L) / 86400000L + 1) * 86400000L - Scheduler.TZ * 3600000L;
             }
             rv.setOnClickPendingIntent(R.id.rroot, PendingIntent.getActivity(c, 5, new Intent(c, MainActivity.class), PendingIntent.FLAG_IMMUTABLE));
+            int[] box = widgetBoxDp(c, wm, ids);
+            applyFontScale(rv, scaleFor(c, o.optInt("wfs", 100), st, cdOn, box[0], box[1]));
             wm.updateAppWidget(ids, rv);
             long midnight = ((now + Scheduler.TZ * 3600000L) / 86400000L + 1) * 86400000L - Scheduler.TZ * 3600000L;
             long at = Math.min(target, midnight) + 1000;
@@ -77,6 +84,76 @@ public class RamadanWidget extends AppWidgetProvider {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, at, p);
         } catch (Exception ignored) {}
+    }
+
+    static final int[] FS_IDS = {R.id.rtitle, R.id.rlab, R.id.rcd, R.id.rcdt, R.id.rtimes, R.id.rkh};
+    static final float[] FS_SP = {15, 12, 32, 24, 13, 12};
+
+    /** نفس نطاق ودجت الصلاة: 70% إلى 150%. دالة نقية قابلة لاختبار JVM. */
+    static float fontScale(int pct) {
+        return Math.max(70, Math.min(150, pct)) / 100f;
+    }
+
+    static void txt(RemoteViews rv, String[] st, int i, int id, String t) { st[i] = t; rv.setTextViewText(id, t); }
+
+    /** أصغر مقاس (عرض، ارتفاع بالـdp) بين النسخ الموضوعة حسب الاتجاه الحالي: عمودي = (MIN_WIDTH, MAX_HEIGHT)، أفقي = (MAX_WIDTH, MIN_HEIGHT). 0 إن كان مجهولاً. */
+    static int[] widgetBoxDp(Context c, AppWidgetManager wm, int[] ids) {
+        boolean land = c.getResources().getConfiguration().orientation == android.content.res.Configuration.ORIENTATION_LANDSCAPE;
+        int w = Integer.MAX_VALUE, h = Integer.MAX_VALUE;
+        for (int id : ids) {
+            android.os.Bundle b = wm.getAppWidgetOptions(id);
+            int vw = b.getInt(land ? AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH : AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 0);
+            int vh = b.getInt(land ? AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT : AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, 0);
+            if (vw > 0) w = Math.min(w, vw);
+            if (vh > 0) h = Math.min(h, vh);
+        }
+        return new int[]{w == Integer.MAX_VALUE ? 0 : w, h == Integer.MAX_VALUE ? 0 : h};
+    }
+
+    /** يقيس النص الفعلي بخط الجهاز (Paint) عند 100% ثم يختار أكبر نسبة تتسع. المراجع: حشو عمودي 8dp وهوامش 6dp (ومقاس السطر = ascent..descent بلا حشو الخط). */
+    static int scaleFor(Context c, int userPct, String[] st, boolean cdOn, int widthDp, int heightDp) {
+        try {
+            float d = c.getResources().getDisplayMetrics().density;
+            android.graphics.Paint p = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+            float hSum = 0, wMax = 0;
+            int[] idx = {0, 1, 3, 4};
+            float[] sp = {FS_SP[0], FS_SP[1], FS_SP[4], FS_SP[5]};
+            for (int i = 0; i < 4; i++) {
+                String t = st[idx[i]];
+                if (t == null || t.length() == 0) continue;
+                p.setTypeface(i == 0 ? android.graphics.Typeface.DEFAULT_BOLD : android.graphics.Typeface.DEFAULT);
+                p.setTextSize(sp[i] * d);
+                android.graphics.Paint.FontMetrics fm = p.getFontMetrics();
+                hSum += (fm.descent - fm.ascent) / d;
+                wMax = Math.max(wMax, p.measureText(t) / d);
+            }
+            if (cdOn) {
+                p.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+                p.setTextSize(FS_SP[2] * d);
+                android.graphics.Paint.FontMetrics fm = p.getFontMetrics();
+                hSum += (fm.descent - fm.ascent) / d;
+                wMax = Math.max(wMax, p.measureText("88:88:88") / d);
+            }
+            return fitPct(userPct, heightDp > 0 ? heightDp - 14f : 0, widthDp > 0 ? widthDp - 28f : 0, hSum, wMax);
+        } catch (Throwable t) { return Math.round(fontScale(userPct) * 100); }
+    }
+
+    /**
+     * الارتفاع/العرض المتاحان للنص (dp) والمقاسان عند 100%. يُخفَّض مقياس المستخدم إلى أكبر ما يتسع،
+     * ولا يقل عن 100% إلا إن اختار المستخدم أقل. القيم 0 = مجهول فلا حدّ.
+     */
+    static int fitPct(int userPct, float availH, float availW, float textH1, float textW1) {
+        int u = Math.round(fontScale(userPct) * 100);
+        int cap = 150;
+        if (availH > 0 && textH1 > 0) cap = Math.min(cap, (int) Math.floor(availH / textH1 * 100f));
+        if (availW > 0 && textW1 > 0) cap = Math.min(cap, (int) Math.floor(availW / textW1 * 100f));
+        return Math.min(u, Math.max(100, cap));
+    }
+
+    static void applyFontScale(RemoteViews rv, int pct) {
+        float k = fontScale(pct);
+        for (int i = 0; i < FS_IDS.length; i++)
+            rv.setTextViewTextSize(FS_IDS[i], android.util.TypedValue.COMPLEX_UNIT_DIP, FS_SP[i] * k);
     }
 
     static void applyTheme(RemoteViews rv, boolean light) {

@@ -283,8 +283,11 @@ public class WidgetProvider extends AppWidgetProvider {
             }
             // شريط الذكر الذكي: بحسب الوقت واليوم والطقس
             int[] wx = Weather.cur(c);
+            long dayN = (now + Scheduler.TZ * 3600000L) / 86400000L;
+            // 8 كانون الأول بتوقيت الجهاز: تهنئة ذكرى انتصار الثورة السورية طوال اليوم (مقدَّمة على التذكيرات الموسمية الأخرى)
             String[] tip = WidgetTip.pick(now, days[1], iqs, cal.get(Calendar.DAY_OF_WEEK),
-                    wx == null ? -1 : wx[0], wx == null ? 20 : wx[1]);
+                    wx == null ? -1 : wx[0], wx == null ? 20 : wx[1],
+                    WidgetTip.isVictoryDay(now) ? 3 : (inWin(o, "lt", dayN) ? 1 : (inWin(o, "sh", dayN) ? 2 : 0)));
             // الشريط يتبادل كل 10 ثوانٍ (ViewFlipper) بين: التنبيه الذي يحين وقته، وتنبيه الصيام، وتنبيه «ما زال بإمكانك قراءة أذكار الصباح/المساء»
             java.util.ArrayList<String[]> tl = new java.util.ArrayList<>();
             tl.add(tip);
@@ -299,7 +302,6 @@ public class WidgetProvider extends AppWidgetProvider {
                 if (al != null) tl.add(new String[]{al[0], al[1], ""});
             }
             if (isEid(o, (now + Scheduler.TZ * 3600000L) / 86400000L)) tl.add(new String[]{"🎉 عيد مبارك", "كل عام وأنتم بخير، تقبّل الله طاعتكم", ""});
-            long dayN = (now + Scheduler.TZ * 3600000L) / 86400000L;
             if (inWin(o, "lt", dayN)) tl.add(new String[]{"🌙 العشر الأواخر", "تحرَّ ليلة القدر في الوتر، وأكثر من: «اللهم إنك عفوٌّ تحب العفو فاعفُ عني»", ""});
             if (inWin(o, "dh", dayN)) tl.add(new String[]{"🕋 عشر ذي الحجة", "أفضل أيام السنة: صُم ما تيسّر منها (ويوم عرفة آكدها) وأكثر من التكبير والتهليل", ""});
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);

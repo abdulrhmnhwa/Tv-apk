@@ -38,6 +38,14 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".AnnounceService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
         <service android:name=".FloatTasbih" android:exported="false" android:foregroundServiceType="specialUse">
             <property android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE" android:value="floating_tasbih_overlay" />
         </service>

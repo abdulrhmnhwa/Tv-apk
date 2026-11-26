@@ -86,12 +86,12 @@ public class WidgetTip {
             return t("📖 يوم الجمعة", "من السنن اليوم: قراءة سورة الكهف والإكثار من الصلاة على النبي ﷺ", "kahf");
         return null;
     }
-    /** تنبيه «ما زال بإمكانك»: أذكار الصباح بعد الشروق حتى انتهاء الضحى، وأذكار المساء من العصر حتى ساعتين بعد العشاء.
+    /** تنبيه «ما زال بإمكانك»: أذكار الصباح بعد الشروق حتى انتهاء الضحى، وأذكار المساء من المغرب (بعد الأذان) حتى ساعتين بعد العشاء.
      *  لا يُعاد إذا كان التنبيه الأساسي نفسه هو أذكار هذا الوقت (mainKey). */
     static String[] adhkarTip(long now, long[] r, String mainKey) {
         if (now >= r[1] && now < dhEnd(r) && !"m".equals(mainKey))
             return t("☀️ أذكار الصباح", "مازال بإمكانك قراءة أذكار الصباح", "m");
-        if (now >= r[3] && now < r[5] + EVE_AFTER * MIN && !"e".equals(mainKey))
+        if (now >= r[4] && now < r[5] + EVE_AFTER * MIN && !"e".equals(mainKey))
             return t("🌙 أذكار المساء", "مازال بإمكانك قراءة أذكار المساء", "e");
         return null;
     }
@@ -110,6 +110,27 @@ public class WidgetTip {
 
     static String[] t(String a, String b, String c) { return new String[]{a, b, c}; }
 
+    /** 8 كانون الأول بتوقيت الجهاز (لا توقيت سوريا الثابت): يوم تهنئة ذكرى انتصار الثورة السورية */
+    static boolean isVictoryDay(long now) {
+        java.util.Calendar dl = java.util.Calendar.getInstance();
+        dl.setTimeInMillis(now);
+        return dl.get(java.util.Calendar.MONTH) == java.util.Calendar.DECEMBER && dl.get(java.util.Calendar.DAY_OF_MONTH) == 8;
+    }
+
+    /** أقرب 8 كانون الأول 10:00 بتوقيت الجهاز بعد now مباشرة: ما دامت الساعة لم تبلغ 10:00 يوم ٨ كانون الأول تُجدول تهنئة هذا العام، وبعدها تُجدول للعام التالي (تتكرر كل سنة تلقائياً) */
+    static long victoryNext(long now) {
+        java.util.Calendar dl = java.util.Calendar.getInstance();
+        dl.setTimeInMillis(now);
+        for (int y = 0; y < 2; y++) {
+            java.util.Calendar v = java.util.Calendar.getInstance();
+            v.clear();
+            v.set(dl.get(java.util.Calendar.YEAR) + y, java.util.Calendar.DECEMBER, 8, 10, 0, 0);
+            long vt = v.getTimeInMillis();
+            if (vt > now) return vt;
+        }
+        return -1;
+    }
+
     /**
      * @param now  الوقت الحالي (ميلي ثانية)
      * @param r    أوقات اليوم: الفجر، الشروق، الظهر، العصر، المغرب، العشاء (ميلي ثانية)
@@ -119,6 +140,14 @@ public class WidgetTip {
      * @param temp الحرارة المئوية
      */
     static String[] pick(long now, long[] r, int[] iq, int dow, int code, int temp) {
+        return pick(now, r, iq, dow, code, temp, false);
+    }
+
+    static String[] pick(long now, long[] r, int[] iq, int dow, int code, int temp, boolean fitr) {
+        return pick(now, r, iq, dow, code, temp, fitr ? 1 : 0);
+    }
+    // promo: 0 = لا تذكير موسمي، 1 = صدقة الفطر (العشر الأواخر من رمضان)، 2 = صيام الست من شوال (شهر شوال كاملاً)
+    static String[] pick(long now, long[] r, int[] iq, int dow, int code, int temp, int promo) {
         int slot = (int) ((now / (30 * MIN)) % 100000);
 
         // 00) أذكار الأذان: من دخول الوقت لمدة ADHAN_LEN دقائق
@@ -156,12 +185,18 @@ public class WidgetTip {
         if (code >= 0 && temp >= 36 && now < r[2] && slot % 2 == 0)
             return t("🔥 اشتدّ الحر", "يُستحب الإبراد بصلاة الظهر عند شدة الحر، وأكثِر من الحمد على نعمة الظل والماء", "");
 
-        // 3) اليوم
+        // 3) التذكير الموسمي الغالب في وقت الفراغ (٢٥ دقيقة من كل نصف ساعة): صدقة الفطر في العشر الأواخر من رمضان، وصيام الست طوال شوال، وفي ٨ كانون الأول (بتوقيت الجهاز، promo=3) تهنئة ذكرى انتصار الثورة السورية — تتناوب مع الذكر العام الذي يظهر في الفاصل القصير (أول ٥ دقائق)، والتنبيهات الموقوتة أعلاه مقدَّمة على الجميع
+        if (promo != 0 && (int) ((now / MIN) % 30) >= 5)
+            return promo == 3
+                ? t("ذكرى انتصار الثورة السورية 💚", "كل عام وسوريا حرة وأهلها بخير. اللهم احفظ سوريا وارحم شهداءها.", "")
+                : promo == 2
+                ? t("🌙 صيام الست من شوال", "«من صام رمضان ثم أتبعه ستاً من شوال كان كصيام الدهر» رواه مسلم", "")
+                : t("🌾 صدقة الفطر", "أخرجها قبل صلاة العيد", "");
+        // 4) اليوم
         if (dow == FRI && now < r[4]) return FRIDAY[slot % FRIDAY.length]; // تذكيرات الجمعة تنتهي عند أذان المغرب
         if ((dow == MON || dow == THU) && now < r[3] && slot % 3 == 0)
             return t("🌙 صيام الاثنين والخميس", "كان النبي صلى الله عليه وسلم يتحرّى صيام الاثنين والخميس", "tab");
-
-        // 4) ذكر عام متجدّد
+        // 5) ذكر عام متجدّد
         String[] g = GEN[slot % GEN.length];
         return t(g[0], g[1], "tab");
     }

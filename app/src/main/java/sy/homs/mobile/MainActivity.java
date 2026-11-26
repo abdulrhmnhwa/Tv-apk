@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
 
     public class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
-        @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); LockNotif.refresh(MainActivity.this); }
+        @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); RamadanWidget.refresh(MainActivity.this); LockNotif.refresh(MainActivity.this); }
         @JavascriptInterface public void theme(boolean light) { runOnUiThread(() -> applyBars(light)); }
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
         @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
@@ -250,6 +250,7 @@ public class MainActivity extends Activity {
             });
         }
         @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> { trackWeb = false; openWebUi(u); }); }
+        @JavascriptInterface public void openOut(String u) { if (u == null || !u.startsWith("https://")) return; runOnUiThread(() -> { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(u))); } catch (Exception ig) {} }); }
         /** فتح القرآن مع تتبّع الموضع: عند الإغلاق تُرسل الصفحة/الموضع للواجهة لإضافتها على الختمة */
         @JavascriptInterface public void openQuran(String u) { runOnUiThread(() -> { trackWeb = true; openWebUi(u); }); }
         @JavascriptInterface public void wx2(int code, int max, int min) { Weather.storeTomorrow(MainActivity.this, code, max, min); WidgetProvider.refresh(MainActivity.this); }
@@ -262,6 +263,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        AnnounceService.init(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
         w = new WebView(this);
@@ -273,6 +275,7 @@ public class MainActivity extends Activity {
         s.setAllowUniversalAccessFromFileURLs(true);
         s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setSupportZoom(false);
+        s.setMediaPlaybackRequiresUserGesture(false); // تلاوة الآيات داخل المصحف تبدأ من زر الاستماع في الأقسام
         w.setWebViewClient(new WebViewClient() {
             @Override public void onPageFinished(WebView v, String url) {
                 loaded = true;

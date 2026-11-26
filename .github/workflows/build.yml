@@ -17,11 +17,33 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.7
-      - run: gradle assembleDebug
+      - run: gradle assembleRelease
+      # توقيع الإصدار: المفتاحان وكلمتاهما في GitHub Secrets فقط (لا شيء منها بالمستودع). المفتاح القديم مطلوب لتحديث الأجهزة القديمة، والجديد مع سلسلة التدوير للأندرويد 9 وما فوق
+      - name: توقيع الإصدار
+        env:
+          OLD_KS_B64: ${{ secrets.OLD_KS_B64 }}
+          OLD_KS_PASS: ${{ secrets.OLD_KS_PASS }}
+          NEW_KS_B64: ${{ secrets.NEW_KS_B64 }}
+          NEW_KS_PASS: ${{ secrets.NEW_KS_PASS }}
+        run: |
+          set -euo pipefail
+          test -n "$OLD_KS_B64" && test -n "$OLD_KS_PASS" && test -n "$NEW_KS_B64" && test -n "$NEW_KS_PASS"
+          echo "$OLD_KS_B64" | base64 -d > "$RUNNER_TEMP/old.ks"
+          echo "$NEW_KS_B64" | base64 -d > "$RUNNER_TEMP/new.p12"
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          DIR=app/build/outputs/apk/release
+          ls "$DIR"
+          "$BT/zipalign" -p -f 4 "$DIR/app-release-unsigned.apk" "$DIR/aligned.apk"
+          "$BT/apksigner" sign --ks "$RUNNER_TEMP/old.ks" --ks-pass env:OLD_KS_PASS \
+            --next-signer --ks "$RUNNER_TEMP/new.p12" --ks-pass env:NEW_KS_PASS \
+            --lineage app/signing-lineage.bin --rotation-min-sdk-version 28 \
+            --out "$DIR/app-release.apk" "$DIR/aligned.apk"
+          rm -f "$DIR/aligned.apk" "$DIR/app-release-unsigned.apk" "$RUNNER_TEMP/old.ks" "$RUNNER_TEMP/new.p12"
+          "$BT/apksigner" verify --verbose --print-certs "$DIR/app-release.apk" | grep -E 'Verifies|v1 scheme|v2 scheme|v3 scheme|certificate SHA-256'
       - uses: actions/upload-artifact@v4
         with:
           name: HomsTV-apk
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/release/*.apk
       # نشر الـ APK كإصدار (Release) برابط تحميل مباشر ثابت يستخدمه نظام التحديث
       - name: قراءة رقم النسخة
         run: echo "VN=$(grep -oP 'versionName "\K[^"]+' app/build.gradle)" >> "$GITHUB_ENV"
@@ -30,4 +52,4 @@ jobs:
           tag_name: v${{ env.VN }}
           name: النسخة ${{ env.VN }}
           make_latest: true
-          files: app/build/outputs/apk/debug/app-debug.apk
+          files: app/build/outputs/apk/release/app-release.apk

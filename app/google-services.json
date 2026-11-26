@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "766975728544",
+    "project_id": "awqat-salah",
+    "storage_bucket": "awqat-salah.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766975728544:android:e9a1f02b26efb8deefe2c5",
+        "android_client_info": {
+          "package_name": "sy.homs.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBG_iwWpQsvNNoYTJcayAeIeqZ5acK22u4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

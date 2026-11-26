@@ -3,16 +3,18 @@
  * النص: مشروع تنزيل Tanzil Project (النسخة العثمانية Uthmani 1.1) — ترخيص CC BY 3.0 — tanzil.net
  * النص يُعرض كما هو دون أي تعديل في حروفه؛ تُفصل البسملة فقط في رأس السورة عند العرض.
  * الصفحات والأجزاء: ترقيم مصحف المدينة (604 صفحة) من بيانات تنزيل.
+ * التفسير: «التفسير الميسّر» (إصدار مجمع الملك فهد لطباعة المصحف الشريف) — النص الرقمي من موسوعة
+ * القرآن الكريم quranenc.com (إصدار الترجمة V1.0.1، 2026-11-09) — مضمّن داخل التطبيق ويُعرض بنصّه دون أي تغيير، ويعمل بدون إنترنت.
  * ما يحتاج إنترنت (اختياري): الاستماع للآية، والتفسير والترجمة على موقع تنزيل.
  */
 (function () {
   "use strict";
   var D = document;
   function $(i) { return D.getElementById(i); }
-  var Q = null, M = null, FS, FA, FT, NT = null, PI, BASE, SAJ = {}, QTR = {}, JZ, BIS = "";
-  var st = { pg: 1, fs: 1, sel: -1, tab: "s", opts: null, playing: -1, built: false };
+  var Q = null, M = null, TAF = null, FS, FA, FT, NT = null, PI, BASE, SAJ = {}, QTR = {}, JZ, BIS = "";
+  var st = { pg: 1, fs: 1, tfs: 1, sel: -1, tab: "s", opts: null, playing: -1, built: false };
   var bm = {}, au = null, toastT = 0;
-  var RC = "Alafasy_128kbps";
+  var RC = (lsG("cfg", {}).rcQ) || "Alafasy_128kbps";
   var SIZES = [0.85, 1, 1.15, 1.3, 1.5, 1.75, 2, 2.5, 3], FMIN = 0.7, FMAX = 3.5;
   var AR = "٠١٢٣٤٥٦٧٨٩";
 
@@ -45,7 +47,7 @@
     return t;
   }
   function prep() {
-    Q = window.QTXT; M = window.QMETA;
+    Q = window.QTXT; M = window.QMETA; TAF = window.TAFSIR_MUYASSAR || null;
     FS = []; FA = []; FT = []; BASE = [];
     var g = 0;
     for (var s = 0; s < 114; s++) {
@@ -91,17 +93,21 @@
       '</div></div>' +
       '<div class="qk" id="qrk"><span id="qrkt"></span><button class="btn" id="qrkd">✓ انتهيت هنا</button></div>' +
       '<div class="qb" id="qrb"><div class="qfr"><div class="qpg" id="qrp"></div></div>' +
-      '<div class="qcr">نص المصحف: <button id="qrcr">مشروع تنزيل Tanzil Project</button> · ترخيص CC BY 3.0<br>الترقيم: مصحف المدينة (٦٠٤ صفحة)</div></div>' +
+      '<div class="qcr">نص المصحف: <button id="qrcr">مشروع تنزيل Tanzil Project</button> · ترخيص CC BY 3.0<br>الترقيم: مصحف المدينة (٦٠٤ صفحة)<br>التفسير الميسّر: مجمع الملك فهد لطباعة المصحف الشريف · النص الرقمي <button id="qrcs">quranenc.com</button> · إصدار V1.0.1</div></div>' +
       '<div class="qpl" id="qrpl"><span id="qrpt"></span><button id="qrps">⏹ إيقاف</button></div>' +
       '<div class="qf"><button class="qnb" id="qrpv">‹ السابقة</button>' +
       '<div class="qpn"><span>صفحة</span><input id="qrg" type="number" min="1" max="604" inputmode="numeric"><span>/ ٦٠٤</span></div>' +
       '<button class="qnb" id="qrnx">التالية ›</button></div>' +
-      '<div class="qpa" id="qra"><div class="qtabs"><button data-t="s">السور</button><button data-t="j">الأجزاء</button><button data-t="f">بحث</button><button data-t="b">العلامات</button><button class="qx" id="qrax" aria-label="إغلاق">✕</button></div><div class="qpc" id="qrpc"></div></div>' +
+      '<div class="qpa" id="qra"><div class="qtabs"><button data-t="s">السور</button><button data-t="j">الأجزاء</button><button data-t="f">بحث</button><button data-t="b">العلامات</button><button data-t="r">القارئ</button><button class="qx" id="qrax" aria-label="إغلاق">✕</button></div><div class="qpc" id="qrpc"></div></div>' +
       '<div class="qsd" id="qrd"><div class="qsx" id="qrx"></div></div>' +
+      '<div class="qtf" id="qtf"><div class="qtfc" id="qtfc"></div></div>' +
       '<div class="qtoast" id="qrto"></div>';
     D.body.appendChild(r);
+    if (!window.TAFSIR_MUYASSAR) { var tsf = D.createElement("script"); tsf.src = "quran/tafsir-muyassar.js"; D.head.appendChild(tsf); }
     st.fs = lsG("qrfs", 1);
     if (typeof st.fs !== "number" || st.fs < FMIN || st.fs > FMAX) st.fs = 1;
+    st.tfs = lsG("qtffs", 1);
+    if (typeof st.tfs !== "number" || st.tfs < FMIN || st.tfs > FMAX) st.tfs = 1;
 
     $("qrc").onclick = close;
     $("qrkd").onclick = close;
@@ -123,6 +129,8 @@
     };
     $("qrw").onclick = function () { site(PI[st.pg - 1]); };
     $("qrcr").onclick = function () { site(-1); };
+    $("qrcs").onclick = function () { openURL("https://quranenc.com/ar/home/about"); };
+    $("qtf").onclick = function (e) { if (e.target === this) this.className = "qtf"; };
     $("qrpv").onclick = function () { go(st.pg - 1, false, -1); };
     $("qrnx").onclick = function () { go(st.pg + 1, false, 1); };
     $("qrg").onchange = function () { var v = parseInt(this.value, 10); if (v >= 1 && v <= 604) go(v); else this.value = st.pg; };
@@ -321,11 +329,12 @@
     $("qrx").innerHTML =
       "<h3>سورة " + esc(M.s[s - 1][0]) + " · الآية " + ar(a) + '</h3><div class="qvt">' + esc(body(i)) + "</div>" +
       '<div class="qsg">' +
+      '<button data-a="tafsir">📖 تفسير الآية<small>التفسير الميسّر · بدون إنترنت</small></button>' +
       '<button data-a="play">' + (st.playing === i ? "⏹ إيقاف الصوت" : "🔊 استماع") + "<small>يحتاج إنترنت</small></button>" +
       '<button data-a="bm">' + (bm[i] ? "🔖 إزالة العلامة" : "🔖 علامة مرجعية") + "</button>" +
       '<button data-a="copy">📋 نسخ الآية</button>' +
       '<button data-a="site">🌐 تفسير وترجمة<small>على موقع تنزيل · إنترنت</small></button>' +
-      '<button data-a="card" style="grid-column:1/-1">'+SHI+' بطاقة للمشاركة<small>صورة جميلة للآية تُرسل على واتساب وغيره</small></button>' +
+      '<button data-a="card">'+SHI+' بطاقة للمشاركة<small>صورة جميلة للآية</small></button>' +
       "</div>";
     $("qrd").className = "qsd on";
   }
@@ -340,6 +349,7 @@
     if (!b) return;
     var i = st.sel, k = b.getAttribute("data-a");
     if (i < 0) return;
+    if (k === "tafsir") { closeSheet(); openTafsir(i); return; }
     if (k === "play") { var was = st.playing === i; closeSheet(); if (was) stop(); else play(i); return; }
     if (k === "bm") {
       if (bm[i]) delete bm[i]; else bm[i] = 1;
@@ -353,6 +363,59 @@
     }
     if (k === "site") { closeSheet(); site(i); }
     if (k === "card") { closeSheet(); if (window.ShareCard) ShareCard.verse({ text: body(i), sura: M.s[FS[i] - 1][0], ayah: FA[i], page: pageOf(i) }); }
+  }
+  function openTafsir(i) {
+    TAF = TAF || window.TAFSIR_MUYASSAR || null;
+    var s = FS[i], a = FA[i];
+    var t = (TAF && TAF[s - 1]) ? TAF[s - 1][a - 1] : "";
+    if (!t) {
+      toast("جارٍ تحميل التفسير…");
+      if (!window.TAFSIR_MUYASSAR) { var ts2 = D.createElement("script"); ts2.src = "quran/tafsir-muyassar.js"; D.head.appendChild(ts2); }
+      return;
+    }
+    $("qtfc").innerHTML =
+      '<div class="qtfh"><b>تفسير الآية · التفسير الميسّر</b><button class="qi" id="qtfq" aria-label="إغلاق">✕</button></div>' +
+      '<div class="qtfb">' +
+      '<div class="qtfref">سورة ' + esc(M.s[s - 1][0]) + ' · الآية ' + ar(a) + '</div>' +
+      '<div class="qtfv">' + esc(body(i)) + ' <span class="qn">﴿' + ar(a) + '﴾</span></div>' +
+      '<div class="qtft">' + esc(t) + '</div>' +
+      '<button class="qtfsb" id="qtfsb">مشاركة التفسير</button>' +
+      '<div class="qtfs">المصدر: التفسير الميسّر — إصدار مجمع الملك فهد لطباعة المصحف الشريف<br>النص الرقمي: موسوعة القرآن الكريم (quranenc.com) · إصدار V1.0.1 · يُعرض بنصّه دون تغيير</div>' +
+      '</div>';
+    $("qtf").className = "qtf on";
+    $("qtfq").onclick = function () { $("qtf").className = "qtf"; };
+    $("qtfsb").onclick = function () { if (window.ShareCard) ShareCard.tafsir({ text: body(i), sura: M.s[FS[i] - 1][0], ayah: FA[i], page: pageOf(i), tafsir: t }); };
+    tafFs();
+    // التكبير بالقرص بإصبعين داخل التفسير (مثل المصحف: من ٧٠٪ إلى ٣٥٠٪ مع حفظ المستوى)
+    var qb = $("qtf").querySelector(".qtfb");
+    var qz = null, qm = false;
+    function qd(e) { var a = e.touches[0], c = e.touches[1]; return Math.hypot(a.clientX - c.clientX, a.clientY - c.clientY) || 1; }
+    qb.addEventListener("touchstart", function (e) {
+      if (e.touches.length >= 2) { qm = true; qz = { d: qd(e), f: st.tfs }; }
+    }, { passive: true });
+    qb.addEventListener("touchmove", function (e) {
+      if (!qz || e.touches.length < 2) return;
+      e.preventDefault();
+      st.tfs = Math.max(FMIN, Math.min(FMAX, qz.f * qd(e) / qz.d));
+      tafFs();
+    }, { passive: false });
+    qb.addEventListener("touchend", function (e) {
+      if (!qm || e.touches.length !== 0) return;
+      qm = false;
+      if (qz) {
+        st.tfs = Math.round(st.tfs * 100) / 100;
+        if (Math.abs(st.tfs - 1) < 0.04) st.tfs = 1;
+        lsS("qtffs", st.tfs); tafFs();
+        toast(st.tfs === 1 ? "حجم التفسير الافتراضي" : "تكبير التفسير " + ar(Math.round(st.tfs * 100)) + "٪");
+        qz = null;
+      }
+    }, { passive: true });
+  }
+  function tafFs() {
+    var c = $("qtfc"); if (!c) return;
+    var v = c.querySelector(".qtfv"), t = c.querySelector(".qtft");
+    if (v) v.style.fontSize = (1.15 * st.tfs) + "rem";
+    if (t) t.style.fontSize = (1.02 * st.tfs) + "rem";
   }
   function mark() {
     [].forEach.call($("qrp").querySelectorAll(".qv"), function (v) {
@@ -376,20 +439,109 @@
   }
 
   /* ---------- أونلاين: الموقع والصوت ---------- */
-  function site(i) {
-    var u = "https://tanzil.net/" + (i >= 0 ? "#" + FS[i] + ":" + FA[i] : "");
+  function openURL(u) {
     try {
       if (window.App && App.openSite) App.openSite(u);
       else if (window.App && App.openWeb) App.openWeb(u);
       else toast("يتطلب نسخة التطبيق");
     } catch (e) { toast("تعذّر فتح الموقع"); }
   }
+  function site(i) {
+    openURL("https://tanzil.net/" + (i >= 0 ? "#" + FS[i] + ":" + FA[i] : ""));
+  }
+  var preAu = null, preUrl = "";
+  function preload(i) {
+    preAu = null; preUrl = "";
+    if (i < 0 || i >= FT.length) return;
+    var u = "https://everyayah.com/data/" + RC + "/" + p3(FS[i]) + p3(FA[i]) + ".mp3";
+    try { var a = new Audio(); a.preload = "auto"; a.src = u; a.load(); preAu = a; preUrl = u; } catch (e) {}
+  }
+  /* ---------- التشغيل المتصل للسورة (quranicaudio/QDC) ---------- */
+  var QDC_RC = { "Alafasy_128kbps": 7, "Husary_128kbps": 6, "Minshawy_Murattal_128kbps": 9, "Abdul_Basit_Murattal_192kbps": 2, "Abdurrahmaan_As-Sudais_192kbps": 3, "Saood_ash-Shuraym_128kbps": 10 };
+  var chCache = {}, chReq = {}, chCur = -1, chQid = -1;
+  function fi(s, a) { for (var k = 0; k < FT.length; k++) { if (FS[k] === s && FA[k] === a) return k } return -1; }
+  function loadChapter(qid, s, cb, bg) {
+    var k = qid + ":" + s;
+    if (chCache[k]) { cb(chCache[k]); return; }
+    if (chReq[k]) { chReq[k].push(cb); return; }
+    chReq[k] = [cb];
+    fetch("https://api.qurancdn.com/api/qdc/audio/reciters/" + qid + "/audio_files?chapter=" + s + "&segments=true")
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var af = (d.audio_files || [])[0];
+        if (!af || !af.verse_timings || !af.verse_timings.length) throw 0;
+        var info = { url: af.audio_url, vt: af.verse_timings.map(function (v) { return [v.timestamp_from, v.timestamp_to]; }) };
+        chCache[k] = info;
+        var q = chReq[k] || []; delete chReq[k];
+        q.forEach(function (f) { f(info); });
+      })
+      .catch(function () {
+        delete chReq[k];
+        if (!bg && st.playing !== -1) { toast("تعذّر تشغيل الصوت — تحتاج اتصالاً بالإنترنت"); stop(); }
+      });
+  }
+  function showPlayingUI(i) {
+    $("qrpt").textContent = "🔊 سورة " + M.s[FS[i] - 1][0] + " · الآية " + ar(FA[i]);
+    $("qrpl").className = "qpl on";
+    mark();
+    var v = $("qrp").querySelector('.qv[data-i="' + i + '"]');
+    if (v && v.scrollIntoView) v.scrollIntoView({ block: "center", behavior: "smooth" });
+  }
+  function onTick() {
+    if (!au || chCur < 0 || st.playing === -1) return;
+    var info = chCache[chQid + ":" + chCur];
+    if (!info) return;
+    var ms = au.currentTime * 1000;
+    var lo = 0, hi = info.vt.length - 1, a = 0;
+    while (lo <= hi) { var m = (lo + hi) >> 1; if (info.vt[m][0] <= ms) { a = m; lo = m + 1; } else hi = m - 1; }
+    var i = fi(chCur, a + 1);
+    if (i !== -1 && i !== st.playing) {
+      st.playing = i;
+      if (pageOf(i) !== st.pg) go(pageOf(i), false, 1);
+      showPlayingUI(i);
+    }
+  }
+  function onChapterEnd() {
+    if (st.playing === -1) return;
+    var s = chCur;
+    for (var n = 0; n < FT.length; n++) {
+      if (FS[n] === s + 1) {
+        if (pageOf(n) !== st.pg) go(pageOf(n), false, 1);
+        playCont(n);
+        return;
+      }
+    }
+    stop();
+  }
+  function playCont(i) {
+    var qid = QDC_RC[RC], s = FS[i], a = FA[i];
+    st.playing = i;
+    showPlayingUI(i);
+    loadChapter(qid, s, function (info) {
+      if (st.playing !== i) return;
+      if (chCur !== s || chQid !== qid || !au) {
+        if (au) { au.ontimeupdate = au.onended = au.onerror = null; try { au.pause(); } catch (e) {} }
+        au = new Audio(info.url);
+        try { au.preload = "auto"; } catch (e) {}
+        chCur = s; chQid = qid;
+        au.ontimeupdate = onTick;
+        au.onended = onChapterEnd;
+        au.onerror = function () { if (st.playing !== -1) { toast("تعذّر تشغيل الصوت — تحتاج اتصالاً بالإنترنت"); stop(); } };
+      }
+      try { if (info.vt[a - 1]) au.currentTime = info.vt[a - 1][0] / 1000; } catch (e) {}
+      var pr = au.play();
+      if (pr && pr.catch) pr.catch(function () {});
+      for (var nx = 0; nx < FT.length; nx++) { if (FS[nx] === s + 1) { loadChapter(qid, s + 1, function () {}, true); break; } }
+    });
+  }
   function play(i) {
+    if (QDC_RC[RC]) { playCont(i); return; }
     stop(true);
     st.playing = i;
     var url = "https://everyayah.com/data/" + RC + "/" + p3(FS[i]) + p3(FA[i]) + ".mp3";
     try {
-      au = new Audio(url);
+      if (preAu && preUrl === url) { au = preAu; preAu = null; preUrl = ""; }
+      else au = new Audio(url);
       au.onended = function () {
         var n = i + 1;
         if (st.playing === i && n < FT.length) { if (pageOf(n) !== st.pg) go(pageOf(n), false, 1); play(n); } else stop();
@@ -397,6 +549,7 @@
       au.onerror = function () { if (st.playing === i) { toast("تعذّر تشغيل الصوت — تحتاج اتصالاً بالإنترنت"); stop(); } };
       var pr = au.play();
       if (pr && pr.catch) pr.catch(function () {});
+      preload(i + 1);
     } catch (e) { stop(); return; }
     $("qrpt").textContent = "🔊 سورة " + M.s[FS[i] - 1][0] + " · الآية " + ar(FA[i]);
     $("qrpl").className = "qpl on";
@@ -407,7 +560,7 @@
   function stop(quiet) {
     if (au) { au.onended = au.onerror = null; try { au.pause(); } catch (e) {} au = null; }
     st.playing = -1;
-    if (!quiet) { $("qrpl").className = "qpl"; mark(); }
+    if (!quiet) { preAu = null; preUrl = ""; $("qrpl").className = "qpl"; mark(); }
   }
 
   /* ---------- الفهرس والبحث ---------- */
@@ -425,6 +578,12 @@
       }
     } else if (t === "f") {
       o = '<input class="qin" id="qrsq" placeholder="اكتب كلمة أو آية للبحث (بدون تشكيل)…" autocomplete="off"><div id="qrsr"><div class="qem">البحث يعمل بدون إنترنت في كامل المصحف</div></div>';
+    } else if (t === "r") {
+      var RL = window.RECITERS || [["Alafasy_128kbps", "مشاري العفاسي"]];
+      o = '<div class="qem">قارئ الاستماع داخل المصحف (مستقل عن قارئ أمثلة التجويد) — يحتاج إنترنت. المصدر: تسجيل متصل للسورة (quranicaudio.com / quran.com) للعفاسي والحصري والمنشاوي وعبد الباسط والسديس والشريم، ومقاطع لكل آية (everyayah.com) للمعيقلي والغامدي</div>' +
+        RL.map(function (r2) {
+          return '<button class="qrw" data-rc="' + r2[0] + '"><span class="nb">' + (r2[0] === RC ? "✓" : "🎙️") + '</span><span class="nm">' + esc(r2[1]) + '</span></button>';
+        }).join("");
     } else {
       var ks = Object.keys(bm).map(Number).sort(function (a, b) { return a - b; });
       o = ks.length ? ks.map(function (i) {
@@ -471,6 +630,14 @@
     box.innerHTML = o;
   }
   function onPanel(e) {
+    var rc = e.target.closest("[data-rc]");
+    if (rc) {
+      RC = rc.getAttribute("data-rc");
+      if (window.setCfg) window.setCfg("rcQ", RC); else { var c0 = lsG("cfg", {}); c0.rcQ = RC; lsS("cfg", c0); }
+      stop();
+      openPanel("r");
+      return;
+    }
     var d = e.target.closest("[data-del]");
     if (d) {
       e.stopPropagation();
@@ -492,7 +659,7 @@
     ov.classList.add("on");
     if (!Q) $("qrp").innerHTML = '<div class="qld">جارٍ تحميل المصحف…</div>';
     loadData(function () {
-      if (opts.sura) goVerse(gi(opts.sura, 1)); // يفتح على أول آية من السورة مع تمييزها لحظة
+      if (opts.sura) goVerse(gi(opts.sura, opts.ayah || 1)); // يفتح على الآية المطلوبة مع تمييزها
       else go(opts.page || lsG("qrp", 1));
       var k = $("qrk");
       if (opts.khatma) { $("qrkt").textContent = "📖 " + opts.khatma; k.className = "qk on"; } else k.className = "qk";
@@ -510,6 +677,7 @@
   function back() {
     var ov = $("qr");
     if (!ov || !ov.classList.contains("on")) return false;
+    if ($("qtf").className === "qtf on") { $("qtf").className = "qtf"; return true; }
     if ($("qrd").className === "qsd on") { closeSheet(); return true; }
     if ($("qra").className === "qpa on") { closePanel(); return true; }
     close();

@@ -158,6 +158,17 @@ public class Scheduler {
                 if (eo[k] && ex[k] > now + 20000 && ex[k] < best) { best = ex[k]; evIdx = ek[k] == 8 ? rec : 0; evKind = ek[k]; }
             }
         }
+        // تهنئة ذكرى انتصار الثورة السورية: 8 كانون الأول الساعة 10:00 بتوقيت الجهاز، كل سنة (لا خيار ضبط لها بطلب المستخدم)
+        {
+            Calendar dl = Calendar.getInstance();
+            for (int y = 0; y < 2; y++) {
+                Calendar v = Calendar.getInstance();
+                v.clear();
+                v.set(dl.get(Calendar.YEAR) + y, Calendar.DECEMBER, 8, 10, 0, 0);
+                long vt = v.getTimeInMillis();
+                if (vt > now + 20000 && vt < best) { best = vt; evIdx = 0; evKind = 14; break; }
+            }
+        }
         return best == Long.MAX_VALUE ? -1 : best;
     }
 

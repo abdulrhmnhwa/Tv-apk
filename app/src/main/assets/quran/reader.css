@@ -78,4 +78,18 @@
 #qr .qtoast{position:absolute;left:50%;bottom:5.2rem;transform:translateX(-50%);z-index:8;background:var(--selbg);border:1px solid var(--gold);color:var(--w);border-radius:2rem;padding:.4rem 1rem;font-size:.85rem;display:none;max-width:90%;text-align:center}
 #qr .qtoast.on{display:block}
 #qr .qld{padding:3rem 1rem;text-align:center;color:var(--mut)}
+/* لوحة التفسير */
+#qr .qtf{position:absolute;inset:0;z-index:6;display:none;background:rgba(0,0,0,.5);align-items:center;justify-content:center}
+#qr .qtf.on{display:flex}
+#qr .qtfc{width:calc(100% - 1.6rem);max-width:34rem;max-height:86%;display:flex;flex-direction:column;background:var(--selbg);border:1px solid var(--gold);border-radius:1.1rem;animation:qsup .2s ease-out;overflow:hidden}
+#qr .qtfb{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-y;overscroll-behavior:contain}
+#qr .qtfh{flex:none;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.6rem .9rem;border-bottom:1px solid rgba(var(--gr),.35);background:rgba(var(--gr),.14)}
+#qr .qtfh b{color:var(--gold);font-size:1rem}
+#qr .qtfref{flex:none;text-align:center;color:var(--mut);font-size:.8rem;padding:.45rem .9rem 0}
+#qr .qtfv{flex:none;margin:.5rem .9rem 0;padding:.6rem .7rem;border:1px solid rgba(var(--gr),.5);border-radius:.8rem;background:rgba(var(--gr),.12);font-family:var(--qf);font-size:1.15rem;line-height:2;text-align:center;color:var(--w)}
+#qr .qtfv .qn{font-size:.9em;color:var(--gold)}
+#qr .qtft{padding:.7rem .95rem .9rem;font-size:1.02rem;line-height:1.95;color:var(--w);-webkit-user-select:text;user-select:text}
+#qr .qtfsb{display:block;margin:0 auto .55rem;padding:.5rem 1.5rem;border-radius:.85rem;border:1px solid var(--gold,#d6b25e);background:rgba(214,178,94,.14);color:var(--txt,#f4f1e8);font:inherit;font-size:.92rem;cursor:pointer}
+.qtfsb:active{opacity:.75}
+.qtfs{flex:none;padding:.5rem .9rem .7rem;border-top:1px solid rgba(var(--gr),.35);color:var(--mut);font-size:.72rem;line-height:1.8;text-align:center}
 @media (prefers-reduced-motion:reduce){#qr.on,#qr .qsx{animation:none}}

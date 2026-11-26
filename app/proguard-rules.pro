@@ -1,0 +1,9 @@
+-keepclassmembers class * { @android.webkit.JavascriptInterface <methods>; }
+-keep class sy.homs.mobile.AnnounceService { *; }
+-keep class sy.homs.mobile.AnnounceDedupe { *; }
+-keep class sy.homs.mobile.AnnounceGate { *; }
+-keepattributes JavascriptInterface
+-printusage /tmp/r8-usage.txt
+-printmapping /tmp/r8-mapping.txt
+-dontoptimize
+-dontobfuscate

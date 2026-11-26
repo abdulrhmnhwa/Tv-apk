@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.application'
+    id 'com.google.gms.google-services'
 }
 android {
     namespace 'sy.homs.mobile'
@@ -8,23 +9,21 @@ android {
         applicationId "sy.homs.mobile"
         minSdk 21
         targetSdk 34
-        versionCode 98
-        versionName "3.2.1"
+        versionCode 99
+        versionName "3.3.0"
     }
-    signingConfigs {
-        homs {
-            storeFile file('homs.keystore')
-            storePassword 'homs1234'
-            keyAlias 'homs'
-            keyPassword 'homs1234'
-        }
-    }
+    // التوقيع لا يُحفظ بالمستودع: نسخة release تُبنى بدون توقيع ثم يوقّعها مسار GitHub Actions بمفاتيح الأسرار الخاصة.
     buildTypes {
-        debug { signingConfig signingConfigs.homs }
-        release { minifyEnabled false; signingConfig signingConfigs.homs }
+        release { minifyEnabled true; shrinkResources true; proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro' }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation 'com.google.firebase:firebase-messaging'
+    testImplementation 'junit:junit:4.13.2'
 }

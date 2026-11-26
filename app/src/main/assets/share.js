@@ -100,7 +100,12 @@
     x.strokeStyle = t.gold; x.lineWidth = 2; rr(x, W / 2 - w / 2, y - h / 2, w, h, 42); x.stroke();
     x.textAlign = "center"; x.fillStyle = t.gold; x.fillText(text, W / 2, y + 3, w - 40);
   }
-  function wrap(x, text, maxW) {
+  function wrap(x, text, maxW, nl) {
+    if (nl) { /* يحترم فواصل الأسطر الصريحة: كل مقطع يُلفّ مستقلاً */
+      var out = [];
+      String(text).split(/\n/).forEach(function (seg) { wrap(x, seg, maxW).forEach(function (ln) { out.push(ln); }); });
+      return out;
+    }
     var words = String(text).replace(/\s+/g, " ").trim().split(" "), lines = [], cur = "";
     words.forEach(function (w) {
       var tr = cur ? cur + " " + w : w;
@@ -110,14 +115,14 @@
     return lines;
   }
   /* يختار أكبر خط يتّسع النص به داخل المساحة، وإن لم يتّسع يقتطع بنقاط */
-  function fit(x, text, face, weight, maxW, maxH, from, to, lh) {
+  function fit(x, text, face, weight, maxW, maxH, from, to, lh, nl) {
     for (var s = from; s >= to; s -= 2) {
       x.font = weight + " " + s + "px " + face;
-      var L = wrap(x, text, maxW);
+      var L = wrap(x, text, maxW, nl);
       if (L.length * s * lh <= maxH) return { s: s, L: L, lh: lh };
     }
     x.font = weight + " " + to + "px " + face;
-    var L2 = wrap(x, text, maxW), mx = Math.max(1, Math.floor(maxH / (to * lh)));
+    var L2 = wrap(x, text, maxW, nl), mx = Math.max(1, Math.floor(maxH / (to * lh)));
     if (L2.length > mx) { L2 = L2.slice(0, mx); L2[mx - 1] = L2[mx - 1].replace(/\s*\S*$/, "") + " …"; }
     return { s: to, L: L2, lh: lh };
   }
@@ -146,19 +151,63 @@
     }).filter(function (z) { return z.trim() && !SRC.test(z.trim().slice(0, 14)); }).join("\n").replace(/\s+/g, " ").trim();
   }
   function drawDhikr(d, t) {
-    d = { t: d.t, a: noSrc(d.a) || d.a, s: noSrc(d.s), c: d.c };
+    /* على الكانفس تُعرض أرقام الآيات بأقواس ﴿ ﴾ بدل علامة ۝ (تظهر مزدوجة ومطبوعة فوق الرقم في رسم الكانفس) */
+    /* تنظيف التخريج سطراً سطراً حتى تبقى فواصل الأسطر الصريحة (مثل البسملة بسطر وحدها) */
+    var aClean = String(d.a || "").split(/\n/).map(function (ln) { return noSrc(ln); }).filter(function (z, i, arr) { return z || arr.length === 1; }).join("\n");
+    d = { t: d.t, a: (aClean || d.a).replace(/۝\s*([٠-٩0-9]+)/g, '\uFD3F$1\uFD3E'), s: noSrc(d.s), c: d.c, g: d.g };
     var b = base(t), x = b.x;
     pill(b, d.t || "ذكر", 170, "700 42px " + AF);
     var hasS = d.s && d.s.trim();
-    var f = fit(x, d.a, QF, "400", 860, hasS ? 560 : 720, 62, 28, 1.9);
+    var f = fit(x, d.a, QF, "400", 860, hasS ? 560 : 720, 62, 28, 1.9, 1);
     drawLines(b, f, QF, "400", 250, hasS ? 580 : 760, t.txt);
     var y = hasS ? 860 : 1030;
     if (d.c) { x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 34px " + AF; x.fillText("التكرار: " + d.c, W / 2, y); y += 70; }
     if (hasS) {
-      var g = fit(x, d.s, AF, "400", 820, 1130 - y, 30, 22, 1.65);
-      drawLines(b, g, AF, "400", y - 15, 1130 - y + 15, t.mut);
+      var g = fit(x, d.s, AF, "400", 820, 1068 - y, 30, 22, 1.65);
+      drawLines(b, g, AF, "400", y - 15, 1068 - y + 15, t.mut);
+    }
+    if (d.g) { /* اسم القسم تحت، فوق خط التذييل الناعم بمسافة، وبين معيّنتين (زخرفة) يميناً ويساراً */
+      var gl = (/^(أذكار|دعاء)/.test(d.g) ? "من " : "من أذكار ") + d.g;
+      x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 30px " + AF;
+      var gy = H - 214 - 36;
+      x.fillText(gl, W / 2, gy);
+      var gw = x.measureText(gl).width;
+      [W / 2 - gw / 2 - 42, W / 2 + gw / 2 + 42].forEach(function (px) {
+        x.save(); x.translate(px, gy); x.rotate(Math.PI / 4); x.fillRect(-6, -6, 12, 12); x.restore();
+      });
     }
     footer(b); return b.c;
+  }
+  /* بطاقة التفسير: يُقاس النص أولاً ويُضبط ارتفاع البطاقة حتى لا تُقتطع الآية ولا التفسير أبداً */
+  function drawTafsir(d, t) {
+    var mx = D.createElement("canvas").getContext("2d");
+    var ayTxt = "\uFD3F" + d.text + "\uFD3E", tfTxt = String(d.tafsir || "");
+    var sA, LA;
+    for (sA = 48; sA >= 18; sA -= 2) { mx.font = "400 " + sA + "px " + QF; LA = wrap(mx, ayTxt, 860); if (LA.length <= 6) break; }
+    var ayH = LA.length * sA * 1.8;
+    var sT, LT;
+    for (sT = 32; sT > 20; sT -= 2) { mx.font = "400 " + sT + "px " + AF; LT = wrap(mx, tfTxt, 880); if (LT.length * sT * 1.7 <= 560) break; }
+    mx.font = "400 " + sT + "px " + AF; LT = wrap(mx, tfTxt, 880);
+    var tfH = LT.length * sT * 1.7;
+    var bandA = Math.max(ayH, 200), bandT = Math.max(tfH, 560);
+    var sepY = 262 + bandA + 24, tfY = sepY + 28;
+    var l1Y = tfY + bandT + 18, l2Y = l1Y + 32;
+    H = Math.max(1350, Math.ceil(l2Y + 28 + 214));
+    var b = base(t), x = b.x;
+    pill(b, "سورة " + d.sura + " · الآية " + ar(d.ayah) + (d.page ? " · صفحة " + ar(d.page) : ""), 140, "700 36px " + AF, 940);
+    x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 34px " + AF;
+    x.fillText("تفسير الآية · التفسير الميسّر", W / 2, 236);
+    drawLines(b, { s: sA, L: LA, lh: 1.8 }, QF, "400", 262, bandA, t.gold);
+    x.strokeStyle = t.gold; x.globalAlpha = 0.5; x.lineWidth = 1.5;
+    x.beginPath(); x.moveTo(W / 2 - 120, sepY); x.lineTo(W / 2 + 120, sepY); x.stroke(); x.globalAlpha = 1;
+    drawLines(b, { s: sT, L: LT, lh: 1.7 }, AF, "400", tfY, bandT, t.txt);
+    /* سطرا المصدر: بمحاذاة اليمين وعرض أقصى 690px فلا يقربان رمز QR أسفل اليسار */
+    x.fillStyle = t.mut; x.font = "400 20px " + AF; x.textAlign = "right";
+    x.fillText("المصدر: التفسير الميسّر — مجمع الملك فهد لطباعة المصحف الشريف", W - 130, l1Y, 690);
+    x.fillText("النص الرقمي: quranenc.com · إصدار V1.0.1 · يُعرض بنصّه دون تغيير", W - 130, l2Y, 690);
+    footer(b);
+    H = 1350;
+    return b.c;
   }
   function drawTimes(d, t) {
     var b = base(t), x = b.x;
@@ -238,7 +287,7 @@
     [].forEach.call(ui.querySelectorAll("[data-th]"), function (b) { b.classList.toggle("on", b.dataset.th === th); });
     msg("جارٍ التصميم…");
     fonts().then(function () {
-      var cv = cur.k === "v" ? drawVerse(cur.d, TH[th]) : cur.k === "z" ? drawDhikr(cur.d, TH[th]) : cur.k === "i" ? drawImsak(cur.d, TH[th]) : drawTimes(cur.d, TH[th]);
+      var cv = cur.k === "v" ? drawVerse(cur.d, TH[th]) : cur.k === "z" ? drawDhikr(cur.d, TH[th]) : cur.k === "f" ? drawTafsir(cur.d, TH[th]) : cur.k === "i" ? drawImsak(cur.d, TH[th]) : drawTimes(cur.d, TH[th]);
       cur.url = cv.toDataURL("image/png");
       D.getElementById("shi").src = cur.url; msg("");
     });
@@ -261,6 +310,7 @@
   window.ShareCard = {
     verse: function (d) { open("v", d); },
     dhikr: function (d) { open("z", d); },
+    tafsir: function (d) { open("f", d); },
     times: function (d) { open("t", d); },
     imsak: function (d) { open("i", d); },
     close: hide,
