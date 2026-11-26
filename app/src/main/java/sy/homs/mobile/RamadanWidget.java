@@ -69,8 +69,6 @@ public class RamadanWidget extends AppWidgetProvider {
                 txt(rv, st, 1, R.id.rlab, left > 0 ? "بعد " + left + " يوماً بإذن الله" : "افتح التطبيق لتحديث التاريخ");
                 txt(rv, st, 3, R.id.rtimes, "تظهر الإمساكية تلقائياً عند بدء الشهر");
                 txt(rv, st, 4, R.id.rkh, "");
-                // خارج رمضان: الأسطر الثلاثة الظاهرة في الوسط (داخل رمضان تبقى كما هي)
-                for (int cid : new int[]{R.id.rtitle, R.id.rlab, R.id.rtimes}) rv.setInt(cid, "setGravity", android.view.Gravity.CENTER_HORIZONTAL);
                 rv.setViewVisibility(R.id.rcd, View.GONE);
                 rv.setViewVisibility(R.id.rcdt, View.GONE);
                 target = ((now + Scheduler.TZ * 3600000L) / 86400000L + 1) * 86400000L - Scheduler.TZ * 3600000L;
