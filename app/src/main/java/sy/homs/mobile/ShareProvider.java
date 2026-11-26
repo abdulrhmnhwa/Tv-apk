@@ -30,7 +30,7 @@ public class ShareProvider extends ContentProvider {
         return ParcelFileDescriptor.open(f, ParcelFileDescriptor.MODE_READ_ONLY);
     }
 
-    @Override public String getType(Uri u) { return "image/png"; }
+    @Override public String getType(Uri u) { String n = u.getLastPathSegment(); return n != null && n.endsWith(".apk") ? "application/vnd.android.package-archive" : "image/png"; }
 
     @Override public Cursor query(Uri u, String[] p, String s, String[] a, String o) {
         File f = file(u);

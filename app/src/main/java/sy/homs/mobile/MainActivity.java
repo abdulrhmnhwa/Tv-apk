@@ -96,6 +96,33 @@ public class MainActivity extends Activity {
             fo.close();
             return f;
         }
+        /** مشاركة ملف التطبيق (APK) المثبّت نفسه عبر قائمة المشاركة، بلا أذونات */
+        @JavascriptInterface public String shareApk() {
+            try {
+                File d = new File(getCacheDir(), "share");
+                d.mkdirs();
+                File[] old = d.listFiles();
+                if (old != null) for (File o : old) o.delete();
+                File f = new File(d, "Awqat-" + UpdateCheck.currentName(MainActivity.this).replaceAll("[^0-9.]", "") + ".apk");
+                java.io.FileInputStream in = new java.io.FileInputStream(getApplicationInfo().sourceDir);
+                java.io.FileOutputStream fo = new java.io.FileOutputStream(f);
+                byte[] buf = new byte[65536];
+                int n;
+                while ((n = in.read(buf)) > 0) fo.write(buf, 0, n);
+                in.close();
+                fo.close();
+                final Uri u = ShareProvider.uri(f.getName());
+                runOnUiThread(() -> {
+                    try {
+                        Intent it = new Intent(Intent.ACTION_SEND).setType("application/vnd.android.package-archive");
+                        it.putExtra(Intent.EXTRA_STREAM, u);
+                        it.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        startActivity(Intent.createChooser(it, "مشاركة التطبيق"));
+                    } catch (Exception ig) {}
+                });
+                return "ok";
+            } catch (Throwable e) { return "err"; }
+        }
         @JavascriptInterface public String shareImg(String b64, String cap) {
             try {
                 final File f = cardFile(b64);
@@ -271,7 +298,7 @@ public class MainActivity extends Activity {
         WebSettings s = w.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
-        s.setAllowFileAccess(true);
+        s.setAllowFileAccess(false); // file:///android_asset يبقى متاحاً حسب توثيق أندرويد
         s.setAllowUniversalAccessFromFileURLs(true);
         s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setSupportZoom(false);
