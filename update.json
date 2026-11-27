@@ -1,6 +1,6 @@
 {
-  "versionCode": 108,
-  "versionName": "3.4.0",
-  "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/download/v3.4.0/app-release.apk",
-  "notes": "تحسينات على البرنامج"
+  "versionCode": 109,
+  "versionName": "3.4.1",
+  "url": "https://github.com/abdulrhmnhwa/Tv-apk/releases/download/v3.4.1/app-release.apk",
+  "notes": "• إيقاف تذكير الضحى قبل الظهر بربع ساعة احتياطًا، في التطبيق والودجت، مع توضيح تحت دائرة الضحى. • بدء تنبيه ما قبل الظهر قبل موعده بعشر دقائق. • بطاقة خاصة يوم الجمعة بعنوان «محل خلاف» وقوس برتقالي، مع توضيح اختلاف العلماء في استثناء الجمعة من النهي عند استواء الشمس."
 }
