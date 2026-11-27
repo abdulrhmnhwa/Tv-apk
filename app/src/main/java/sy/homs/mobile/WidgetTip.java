@@ -10,7 +10,8 @@ public class WidgetTip {
     static final long MIN = 60000L;
     static final int MK = 20;          // دقائق وقت الكراهة بعد الشروق
     static final int DH_LEN = 600;     // يبقى تذكير الضحى طوال وقتها (حتى قبل الظهر بـ DH_GAP دقيقة)
-    static final int DH_GAP = 20;      // الضحى ينتهي قبل الظهر بهذه الدقائق
+    static final int DH_GAP = 15;      // تذكير الضحى يتوقف قبل الظهر بهذه الدقائق (احتياط، وليس نهاية شرعية ثابتة)
+    static final int MORN_GAP = 20;    // نهاية تذكير «ما زال بإمكانك» لأذكار الصباح (كما كانت، لم تتغير)
     static final int EVE_AFTER = 120;  // أذكار المساء ما زال وقتها حتى هذه الدقائق بعد أذان العشاء
     static final int SLEEP_AFTER = 40; // أذكار النوم بعد العشاء بهذه الدقائق
     static int nightBefore = 120;      // الثلث الأخير: قبل الفجر بهذه الدقائق (تضبطه الودجت من الإعدادات)
@@ -56,6 +57,7 @@ public class WidgetTip {
 
     static long dhStart(long[] r) { return r[1] + MK * MIN; }
     static long dhEnd(long[] r) { return Math.min(dhStart(r) + DH_LEN * MIN, r[2] - DH_GAP * MIN); }
+    static long mornEnd(long[] r) { return Math.min(dhStart(r) + DH_LEN * MIN, r[2] - MORN_GAP * MIN); }
     /** وقت تذكير صيام الغد: بعد إقامة العشاء */
     static long fastAt(long[] r, int[] iq) { return r[5] + Math.max(0, iq[5]) * MIN; }
 
@@ -89,7 +91,7 @@ public class WidgetTip {
     /** تنبيه «ما زال بإمكانك»: أذكار الصباح بعد الشروق حتى انتهاء الضحى، وأذكار المساء من المغرب (بعد الأذان) حتى ساعتين بعد العشاء.
      *  لا يُعاد إذا كان التنبيه الأساسي نفسه هو أذكار هذا الوقت (mainKey). */
     static String[] adhkarTip(long now, long[] r, String mainKey) {
-        if (now >= r[1] && now < dhEnd(r) && !"m".equals(mainKey))
+        if (now >= r[1] && now < mornEnd(r) && !"m".equals(mainKey))
             return t("☀️ أذكار الصباح", "مازال بإمكانك قراءة أذكار الصباح", "m");
         if (now >= r[4] && now < r[5] + EVE_AFTER * MIN && !"e".equals(mainKey))
             return t("🌙 أذكار المساء", "مازال بإمكانك قراءة أذكار المساء", "e");
@@ -207,7 +209,7 @@ public class WidgetTip {
         for (long[] r : days) {
             if (r == null) continue;
             long[] b = {
-                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, r[5] + EVE_AFTER * MIN, fastAt(r, iq), r[2] - 60 * MIN,
+                r[0] - nightBefore * MIN, r[0], dhStart(r), dhEnd(r), mornEnd(r), r[3], r[4], r[5] + SLEEP_AFTER * MIN, r[5] + EVE_AFTER * MIN, fastAt(r, iq), r[2] - 60 * MIN,
                 r[0], r[2], r[3], r[4], r[5],
                 r[0] - RAIN_BEFORE * MIN, r[2] - RAIN_BEFORE * MIN, r[3] - RAIN_BEFORE * MIN, r[4] - RAIN_BEFORE * MIN, r[5] - RAIN_BEFORE * MIN,
                 r[0] + (iq[0] > 0 ? iq[0] : 10) * MIN, r[2] + (iq[2] > 0 ? iq[2] : 10) * MIN, r[3] + (iq[3] > 0 ? iq[3] : 10) * MIN,

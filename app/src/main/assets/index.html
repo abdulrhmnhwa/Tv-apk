@@ -69,6 +69,7 @@ button,select{font:inherit;color:inherit}
 .rc .l{font-size:.85rem;color:var(--mut)}.rc .n{font-size:1.75rem;color:var(--gold);font-weight:700;line-height:1.3}
 .rc .c{font-size:2rem;font-weight:700;direction:ltr;line-height:1.2}.rc .t{font-size:.9rem;color:var(--mut)}
 .rnote{display:none;text-align:center;color:var(--warn);font-size:.95rem;margin:.1rem 0 .4rem;line-height:1.6}
+.dnote{text-align:center;font-size:.78rem;line-height:1.7;color:var(--gold);margin:.6rem .4rem .1rem;padding:.45rem .6rem;border:1px solid rgba(214,178,94,.35);border-radius:.8rem;background:rgba(255,255,255,.04)}
 .chips{display:flex;gap:.5rem;margin-top:.5rem}
 .chip{flex:1;text-align:center;background:rgba(var(--ov),.06);border-radius:.8rem;padding:.5rem .2rem;font-size:.85rem;line-height:1.4}
 .chip b{display:block;font-size:1rem;color:var(--gold)}
@@ -259,6 +260,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
     <div class="dt" id="dates"></div>
     <div class="ring"><svg viewBox="0 0 200 200"><circle class="tr" cx="100" cy="100" r="90"/><circle class="pg" id="pg" cx="100" cy="100" r="90" stroke-dasharray="565.5" stroke-dashoffset="565.5"/></svg>
       <div class="rc"><div class="l" id="rl">الصلاة القادمة</div><div class="n" id="rn">--</div><div class="c" id="rcnt">--:--:--</div><div class="t" id="rt"></div></div></div>
+    <div class="dnote" id="dnote" style="display:none"></div>
     <div class="chips"><div class="chip">الساعة<b id="clk">--</b></div><div class="chip">القبلة<b id="qbc">--°</b></div><div class="chip">القمر<b id="mn">--</b></div></div>
   </div>
   <div class="card rmz" id="rmc" style="display:none">
@@ -565,7 +567,7 @@ $("rll").onclick=function(e){var b=e.target.closest("[data-rl]");if(!b)return;tr
 $("rlt0").onclick=function(){try{App.relTest(0)}catch(e){}};
 $("rlt1").onclick=function(){var b=this;try{App.relTest(60)}catch(e){}b.textContent="✅ جُدول بعد دقيقة — أغلق التطبيق الآن";setTimeout(function(){b.textContent="⏱️ بعد دقيقة"},6000)};
 document.addEventListener("visibilitychange",function(){if(!document.hidden){relBanner();if(tlOpen==="c_srel")relDraw()}});setTimeout(relBanner,1500);setTimeout(function(){hsShow();hSync()},2500);
-var fxi=0,lastV=-1,MK=20,DH=20;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
+var fxi=0,lastV=-1,MK=20,DH=15,NH=10;$("fxc").onclick=function(){fxi=(fxi+1)%FACTS.length;$("fx").textContent=FACTS[fxi]};
 function renderList(T,ni){
  var s="";for(var i=0;i<6;i++){var a=cfg.adj[i],sm=(isRam&&i===0)?"الإمساك":(isRam&&i===4)?"الإفطار":"";
   s+='<div class="p'+(i===ni?' on':'')+(i===sel?' sel':'')+'" data-i="'+i+'"><span class="nm">'+nm(i)+(sm?'<small>'+sm+'</small>':'')+(a?'<em>'+(a>0?"+":"")+a+'<b>د</b></em>':'')+'</span><span class="rt"><span class="tm">'+f(T[i])+'</span>'+
@@ -581,16 +583,16 @@ function tick(){
  var lp=-1;for(i=5;i>=0;i--){if(i!==1&&T[i]<=nh){lp=i;break}}
  var since=lp>=0?Math.round((nh-T[lp])*60):999;
  var iqm=lp>=0?(cfg.iq[lp]||0):0,inIq=lp>=0&&iqm>0&&nh<T[lp]+iqm/60;
- var sr=T[1],mkE=sr+MK/60,dhE=T[2]-DH/60,dm=inIq?0:(nh>=sr&&nh<mkE)?1:(nh>=mkE&&nh<dhE)?2:(nh>=dhE&&nh<T[2])?3:0;
+ var sr=T[1],mkE=sr+MK/60,dhE=T[2]-DH/60,nhE=T[2]-NH/60,dm=inIq?0:(nh>=sr&&nh<mkE)?1:(nh>=mkE&&nh<dhE)?2:(nh>=nhE&&nh<T[2])?3:0,fc=dm===3&&fri&&sel<0;
  if(inIq){tt=T[lp]+iqm/60;pv=T[lp];var rq=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الإقامة بعد";$("rn").textContent=nm(lp);$("rcnt").textContent=z(Math.floor(rq/60))+":"+z(rq%60);$("rt").textContent="الإقامة عند "+f2(tt)}
- else if(dm){var de=dm===1?mkE:dm===2?dhE:T[2];pv=dm===1?sr:dm===2?mkE:dhE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===2?"وقت صلاة الضحى":"من أوقات النهي";$("rn").textContent=dm===2?"صلاة الضحى":"وقت الكراهة";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent="ينتهي عند "+f2(de)}
+ else if(dm){var de=dm===1?mkE:dm===2?dhE:T[2];pv=dm===1?sr:dm===2?mkE:nhE;tt=de;var rd=Math.max(0,Math.round((de-nh)*3600));$("rl").textContent=dm===2?"وقت صلاة الضحى":fc?"قبيل صلاة الجمعة":"من أوقات النهي";$("rn").textContent=dm===2?"صلاة الضحى":fc?"محل خلاف":"وقت الكراهة";$("rcnt").textContent=rd>=3600?z(Math.floor(rd/3600))+":"+z(Math.floor(rd%3600/60))+":"+z(rd%60):z(Math.floor(rd/60))+":"+z(rd%60);$("rt").textContent=fc?"المتبقي لدخول الظهر":"ينتهي عند "+f2(de)}
  else if(since<10){$("rl").textContent="حان الآن موعد";$("rn").textContent=nm(lp);$("rcnt").textContent="🕌";$("rt").textContent=f2(T[lp])}
 
  else{var rem=Math.max(0,Math.round((tt-nh)*3600));$("rl").textContent="الصلاة القادمة";$("rn").textContent=nm(ni,1);
   $("rcnt").textContent=z(Math.floor(rem/3600))+":"+z(Math.floor(rem%3600/60))+":"+z(rem%60);$("rt").textContent="عند "+f2(tt)}
  if(sel>=0){var st=T[sel]>nh?T[sel]:PT(Y,M,Dd+1)[sel]+24,rs=Math.max(0,Math.round((st-nh)*3600));tt=st;pv=st-24;$("rl").textContent="باقي على";$("rn").textContent=nm(sel,1);$("rcnt").textContent=z(Math.floor(rs/3600))+":"+z(Math.floor(rs%3600/60))+":"+z(rs%60);$("rt").textContent="عند "+f2(st)}
  var rg=document.querySelector(".ring"),mn=(tt-nh)*60,soon=sel<0&&!inIq&&!dm&&(since<10||mn<=15);if(rg.classList.contains("soon")!==soon)rg.classList.toggle("soon",soon);rg.classList.toggle("fast",soon&&since>=10&&mn<=1);
- $("pg").style.stroke=(dm===1||dm===3)?"#ce1126":"";
+ $("pg").style.stroke=fc?"#F28C28":(dm===1||dm===3)?"#ce1126":"";var rnt=sel<0&&dm===2?"احتياطًا، يتوقف تذكير الضحى قبل الظهر بربع ساعة":fc?"الشافعية ومن وافقهم يستثنون يوم الجمعة من النهي عند استواء الشمس، وعلماء آخرون لا يستثنونه.":"";if($("dnote").textContent!==rnt){$("dnote").textContent=rnt;$("dnote").style.display=rnt?"":"none"}
  var fr=Math.min(1,Math.max(0,(nh-pv)/(tt-pv)));$("pg").setAttribute("stroke-dashoffset",(565.5*(1-fr)).toFixed(1));
 try{rmTick(T,nh,Y,M,Dd,dk)}catch(e){}
  var key=sel+"|"+ni+"|"+cfg.adj.join()+"|"+cfg.on.join()+"|"+cfg.iq.join()+"|"+dk;
