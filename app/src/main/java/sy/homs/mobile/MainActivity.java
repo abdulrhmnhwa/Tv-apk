@@ -76,6 +76,7 @@ public class MainActivity extends Activity {
     public class Bridge {
         @JavascriptInterface public String get() { return Prefs.cfg(MainActivity.this); }
         @JavascriptInterface public void save(String j) { Prefs.setCfg(MainActivity.this, j); Scheduler.schedule(MainActivity.this); WidgetProvider.refresh(MainActivity.this); RamadanWidget.refresh(MainActivity.this); LockNotif.refresh(MainActivity.this); }
+        @JavascriptInterface public String nlog() { return NotifLog.get(MainActivity.this); }
         @JavascriptInterface public void theme(boolean light) { runOnUiThread(() -> applyBars(light)); }
         @JavascriptInterface public void test() { runOnUiThread(() -> Takbeer.play(getApplicationContext(), () -> {})); }
         @JavascriptInterface public void vib(int ms) { runOnUiThread(() -> buzz(false)); }
@@ -299,7 +300,7 @@ public class MainActivity extends Activity {
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
         s.setAllowFileAccess(false); // file:///android_asset يبقى متاحاً حسب توثيق أندرويد
-        s.setAllowUniversalAccessFromFileURLs(true);
+        s.setAllowUniversalAccessFromFileURLs(false);
         s.setCacheMode(WebSettings.LOAD_NO_CACHE);
         s.setSupportZoom(false);
         s.setMediaPlaybackRequiresUserGesture(false); // تلاوة الآيات داخل المصحف تبدأ من زر الاستماع في الأقسام
@@ -590,7 +591,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    @Override protected void onResume() { super.onResume(); w.onResume(); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); UpdateCheck.maybe(this); PrayerSilence.check(this); }
+    @Override protected void onResume() { super.onResume(); w.onResume(); w.evaluateJavascript("window.bellAnim&&window.bellAnim()", null); syncTs(); w.removeCallbacks(poll); w.postDelayed(poll, 500); if (web != null) web.onResume(); Scheduler.schedule(this); WidgetProvider.refresh(this); LockNotif.refresh(this); UpdateCheck.maybe(this); PrayerSilence.check(this); }
     @Override protected void onPause() { w.removeCallbacks(poll); w.evaluateJavascript("window.selReset&&window.selReset()", null); w.onPause(); if (web != null) web.onPause(); super.onPause(); }
     @Override protected void onDestroy() { if (web != null) web.destroy(); w.destroy(); super.onDestroy(); }
 }

@@ -202,6 +202,7 @@ public class UpdateCheck {
                     .setStyle(new Notification.BigTextStyle().bigText(notes == null || notes.isEmpty() ? txt : txt + "\n" + notes))
                     .setContentIntent(pi).setAutoCancel(true);
             nm.notify(NID, b.build());
+            NotifLog.add(c, "update", "تحديث جديد لمواقيت الصلاة", txt);
         } catch (Exception ignored) {}
     }
 }

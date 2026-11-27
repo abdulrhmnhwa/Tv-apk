@@ -182,6 +182,7 @@ public class AdhanReceiver extends BroadcastReceiver {
                 } catch (Throwable ignored) {}
             }
             nm.notify(NOTE_ID, b.build());
+            NotifLog.add(c, "adhan", title, text);
         } catch (Exception ignored) {}
     }
 }

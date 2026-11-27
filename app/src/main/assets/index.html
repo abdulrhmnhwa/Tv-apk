@@ -233,6 +233,18 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 .rmkh .rmbar{height:.65rem;margin:.35rem 0 .25rem;overflow:visible}.rmkh .rmbar u{position:absolute;top:-.2rem;bottom:-.2rem;width:2px;background:#fff;opacity:.85}
 .rmkt{display:flex;justify-content:space-between;font-size:.92rem;margin-top:.7rem;color:var(--gold)}.rmkh small{color:var(--mut);font-size:.78rem}
 .imt{width:100%;border-collapse:collapse;text-align:center;font-size:.78rem;table-layout:auto}.imt td{white-space:nowrap}.imt th{color:var(--mut);font-weight:400;font-size:.7rem;padding:.3rem 0}.imt td{padding:.38rem 0;border-top:1px solid rgba(var(--gr),.15)}.imt tr.t td{background:rgba(var(--gr),.3);color:var(--gold);font-weight:700}.imt td:first-child{color:var(--gold)}
+#bell{display:inline-flex;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#bp{display:inline-flex;align-items:center;direction:rtl;height:44px;border-radius:22px;overflow:hidden;box-sizing:border-box;background:rgba(214,178,94,.16);border:1px solid rgba(214,178,94,.5);color:#d6b25e;font-weight:700;font-size:1.05rem;white-space:nowrap}
+#bi{flex:none;width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+#bt{padding:0 4px 0 16px;opacity:1}
+#bp.go{transition:width .7s cubic-bezier(.65,0,.35,1)}
+#bp.go #bt{opacity:0;transition:opacity .45s ease}
+@media (prefers-reduced-motion:reduce){#bp.go,#bp.go #bt{transition:none}}
+#bi{position:relative}
+#bell.off #bi svg{opacity:.5}
+#bell.off #bi:after{content:"";position:absolute;left:8px;right:8px;top:50%;height:2px;background:#d6b25e;transform:rotate(-45deg);border-radius:1px}
+@media (max-width:350px){#bp{font-size:.8rem;height:40px;border-radius:20px}#bi{width:38px;height:38px}#bt{padding:0 2px 0 6px}}
+@media (max-width:330px){#bp{font-size:.7rem;height:36px;border-radius:18px}#bi{width:34px;height:34px}#bt{padding:0 2px 0 4px}}
 </style>
 <link rel="stylesheet" href="quran/reader.css">
 </head>
@@ -241,7 +253,7 @@ nav button.on{color:var(--gold)}nav button.on b{filter:none}
 
 <!-- الرئيسية -->
 <section class="tab on" id="t0">
-  <div class="top"><h1 id="cty"><span>حمص</span><small>عاصمة الثورة</small></h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell">🔔</span><svg id="nw" viewBox="0 0 24 24"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5.5 12.5a10 10 0 0 1 13 0"/><path d="M9 16.2a5 5 0 0 1 6 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/><line id="sl" x1="3" y1="3" x2="21" y2="21"/></svg></div></div>
+  <div class="top"><h1 id="cty"><span>حمص</span><small>عاصمة الثورة</small></h1><img id="eg" src="eagle.png" alt=""><div class="ic"><span id="bell" role="button" aria-label="الإشعارات"><span id="bp"><span id="bi"><svg width="24" height="24" viewBox="0 0 24 24" fill="#d6b25e" stroke="#d6b25e" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0-6 6v3.5L4.2 16a1 1 0 0 0 .9 1.5h13.8a1 1 0 0 0 .9-1.5L18 12.5V9a6 6 0 0 0-6-6z"/><path d="M9.8 19.5a2.4 2.4 0 0 0 4.4 0"/></svg></span><span id="bt">الإشعارات</span></span></span></div></div>
   <div class="card" id="rlb" style="display:none;cursor:pointer;border-color:#e0a030;background:rgba(224,160,48,.12)"><div class="h"><span>⚠️ قد لا يصلك الأذان في وقته</span><small id="rlx" style="font-size:1.2rem">✕</small></div><div class="note" id="rlbt" style="margin:0">اضغط لفحص الإعدادات وإصلاحها بخطوات بسيطة</div></div>
   <div class="card bt">
     <div class="dt" id="dates"></div>
@@ -716,7 +728,7 @@ $("city").innerHTML=CITIES.map(function(c,i){return'<option value="'+i+'">'+c[0]
 $("mt").innerHTML=METHODS.map(function(m,i){return'<option value="'+i+'">'+m[0]+'</option>'}).join("");
 function syncSet(){$("fxc").style.display=cfg.cn==="حمص"?"":"none";var m=METHODS[cfg.mt];$("mtd").textContent="الفجر "+m[1]+"° · "+(m[3]?"العشاء بعد المغرب بـ"+m[3]+" د":"العشاء "+m[2]+"°");$("city").value=cfg.city;$("mt").value=cfg.mt;$("en").value=cfg.en?(cfg.snd?2:1):0;$("pre").value=cfg.pre?(cfg.pres?2:1):0;$("iqr").value=cfg.iqr?(cfg.iqs?2:1):0;$("rm").checked=!!cfg.rm;$("rd").checked=!!cfg.rd;$("rwx").checked=cfg.rwx!==0;$("rmz").checked=cfg.rmz!==0;$("slt").checked=!!cfg.slt;sltChk();$("rln").checked=!!cfg.rl;lbDraw();$("tnm").textContent=cfg.tone==="silent"?"صامت":(cfg.tone?(cfg.toneName||"نغمة مخصصة"):"الافتراضية");$("re").checked=!!cfg.re;$("ln").checked=!!cfg.ln;["rfs","rf1","rf2","rf3","rf4","rfk","rfg"].forEach(function(k){$(k).checked=!!cfg[k]});rfUI();
  [].forEach.call($("asr").children,function(b){b.className=(+b.dataset.v===cfg.asr)?"on":""});
- var sl=SLOG[cfg.city]||"",tg=sl.indexOf(cfg.cn)===0?sl.slice(cfg.cn.length).replace(/^[\s,،]+/,""):"";$("cty").innerHTML="";var cs=document.createElement("span");cs.textContent=cfg.cn;$("cty").appendChild(cs);if(tg){var sm=document.createElement("small");sm.textContent=tg;$("cty").appendChild(sm)};$("bell").textContent=cfg.en?"🔔":"🔕"}
+ var sl=SLOG[cfg.city]||"",tg=sl.indexOf(cfg.cn)===0?sl.slice(cfg.cn.length).replace(/^[\s,،]+/,""):"";$("cty").innerHTML="";var cs=document.createElement("span");cs.textContent=cfg.cn;$("cty").appendChild(cs);if(tg){var sm=document.createElement("small");sm.textContent=tg;$("cty").appendChild(sm)};$("bell").className=cfg.en?"":"off"}
 $("city").onchange=function(){cfg.city=+this.value;saveCfg();syncSet();tick.d="";tick();weather()};
 $("mt").onchange=function(){cfg.mt=+this.value;saveCfg();syncSet();lastKey="";tick()};
 $("en").onchange=function(){var v=+this.value;cfg.en=v?1:0;if(v)cfg.snd=v===2?1:0;saveCfg();syncSet()};
@@ -852,7 +864,7 @@ function rmFull(T,kh){var d=rmS.day,o="",ex=Math.min(KP,d*20);
  $("rmk").innerHTML=o;
  if($("rmkn"))$("rmkn").onclick=function(){KHS.list.push({name:"ختمة رمضان",start:nowU(),days:Math.max(1,(rmS.e-nowU())/864e5),pages:0});KHS.sel=KHS.list.length-1;khSave();rmK=""};
  if($("rmkr"))$("rmkr").onclick=function(){khRead(kh)};
- if($("rmk5"))$("rmk5").onclick=function(){kh.pages=Math.min(KP,(kh.pages||0)+5);khSave();rmK=""}}
+ if($("rmk5"))$("rmk5").onclick=function(){khRoll(kh);kh.pages=Math.min(KP,(kh.pages||0)+5);khSave();rmK=""}}
 $("rmim").onclick=function(){imDraw();tlShow("c_im")};
 var imRows=[];function ar2(n){return String(n).replace(/\d/g,function(d){return"٠١٢٣٤٥٦٧٨٩"[d]})}
 function imShare(){imDraw();if(window.ShareCard&&imRows.length){var h=hj(new Date(rmS.s));ShareCard.imsak({city:cfg.cn,year:h?ar2(h.year)+" هـ":"",rows:imRows})}}
@@ -870,7 +882,17 @@ var KP=604,KE=(function(){var a=[21];for(var i=2;i<=29;i++)a.push(21+(i-1)*20);a
 function khFin(p){var n=0;while(n<30&&KE[n]<=p)n++;return n}
 var KHS=ls("khm2"),khAdd=0,khD=30;
 if(!KHS){KHS={list:[],sel:0,done:0};var oldk=ls("khm");if(oldk){KHS.done=oldk.done||0;if(oldk.on)KHS.list.push({name:"ختمتي",start:oldk.start,days:oldk.days,pages:oldk.pages})}}
-function khSave(){ls("khm2",KHS)}
+function khDay(){return Math.floor(nowU()/864e5)}
+function khId(kh){if(!kh.id)kh.id="k"+Date.now().toString(36)+Math.floor(Math.random()*1e5).toString(36);return kh.id}
+/* الورد اليومي الثابت = 604 ÷ عدد الأيام (للأعلى)، لا يتغيّر بالقراءة ولا بين الأيام */
+function khGoal(kh){return Math.max(1,Math.min(KP,Math.ceil(KP/Math.max(1,Math.round(kh.days||30)))))}
+/* قبل أي تغيير في الصفحات: إن تغيّر اليوم نُثبّت صفحات بداية اليوم الجديد (لكل ختمة على حدة) */
+function khRoll(kh){khId(kh);var t=khDay();if(kh.dd!==t){kh.dd=t;kh.db=kh.pages||0}}
+function khToday(kh){return kh.dd===khDay()?Math.max(0,(kh.pages||0)-(kh.db||0)):0}
+function khSync(){var L=KHS.list,k=L[KHS.sel>=L.length?0:KHS.sel],w=0;L.forEach(khId);
+ if(k)w={i:khId(k),n:k.name,s:k.start,d:k.days,p:k.pages||0,dd:k.dd===undefined?-1:k.dd,db:k.db||0};
+ if(JSON.stringify(cfg.kw||0)!==JSON.stringify(w)){if(w)cfg.kw=w;else delete cfg.kw;saveCfg(1)}}
+function khSave(){ls("khm2",KHS);try{khSync()}catch(e){}}
 function khDraw(){var b=$("khb"),o="",L=KHS.list;if(KHS.sel>=L.length)KHS.sel=0;
  o+='<div class="row" style="margin:0 0 .6rem">'+L.map(function(k,i){return'<button class="chp'+(i===KHS.sel&&!khAdd?' on':'')+'" data-ks="'+i+'">'+k.name.replace(/</g,"&lt;")+'</button>'}).join("")+'<button class="chp'+(khAdd?' on':'')+'" id="khnew">＋ ختمة جديدة</button></div>';
  if(khAdd||!L.length){
@@ -880,15 +902,15 @@ function khDraw(){var b=$("khb"),o="",L=KHS.list;if(KHS.sel>=L.length)KHS.sel=0;
   $("khgo").onclick=function(){var nm=$("khnm").value.replace(/\s+/g," ").trim()||"ختمة "+(L.length+1);L.push({name:nm,start:nowU(),days:khD,pages:0});KHS.sel=L.length-1;khAdd=0;khSave();khDraw()};
   if($("khcn"))$("khcn").onclick=function(){khAdd=0;khDraw()};
   $("khnew")&&($("khnew").onclick=function(){});bindKs(b);return}
- var kh=L[KHS.sel],el=Math.floor((nowU()-kh.start)/864e5),left=Math.max(1,kh.days-el),rem=KP-kh.pages,wird=Math.ceil(rem/left),pct=Math.round(kh.pages/KP*1000)/10,juz=Math.min(30,khFin(kh.pages)+1),late=el>=kh.days&&rem>0;
+ var kh=L[KHS.sel],el=Math.floor((nowU()-kh.start)/864e5),left=Math.max(1,kh.days-el),rem=KP-kh.pages,wird=Math.min(rem,khGoal(kh)),pct=Math.round(kh.pages/KP*1000)/10,juz=Math.min(30,khFin(kh.pages)+1),late=el>=kh.days&&rem>0;
  o+='<div style="text-align:center;color:var(--gold);font-weight:700;margin-bottom:.2rem">'+kh.name.replace(/</g,"&lt;")+'</div><div class="kst"><div><b>'+kh.pages+'</b><small>صفحة مقروءة</small></div><div><b>'+rem+'</b><small>صفحة متبقية</small></div><div><b>'+(kh.pages>=KP?30:juz)+'</b><small>الجزء الحالي</small></div></div><div class="khp"><i style="width:'+pct+'%"></i></div><div class="mut" style="text-align:center;font-size:.85rem">'+pct+'% · اليوم '+(el+1)+' من '+kh.days+(KHS.done?' · ختمات مكتملة: '+KHS.done:'')+'</div>';
- if(rem>0)o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.05rem">'+(late?"تجاوزت المدة المحددة؛ ":"")+'وردك اليومي: <b>'+wird+'</b> صفحة ≈ '+(Math.round(wird/20*10)/10)+' جزء</div>';
+ if(rem>0)o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.05rem">'+(late?"تجاوزت المدة المحددة؛ ":"")+'وردك اليومي: <b>'+wird+'</b> صفحة ≈ '+(Math.round(wird/20*10)/10)+' جزء</div><div class="mut" style="text-align:center;font-size:.85rem;margin-top:-.4rem">'+(khToday(kh)>=khGoal(kh)?"أتممت ورد اليوم ✓"+(khToday(kh)>khGoal(kh)?" (قرأت اليوم "+khToday(kh)+")":""):"قرأت اليوم "+khToday(kh)+" من "+khGoal(kh)+" صفحة")+'</div>';
  else o+='<div style="text-align:center;margin:.7rem 0;color:var(--gold);font-size:1.1rem">🎉 ما شاء الله، أتممت الختمة! تقبّل الله منك</div>';
  if(rem>0)o+='<div class="row" style="margin:.2rem 0 .6rem"><button class="btn" id="khrd" style="flex:1">📖 ابدأ القراءة الآن</button></div>';
  o+='<div class="row">'+(rem>0?'<button class="btn" id="kh1">+1 صفحة</button><button class="btn" id="kh5">+5</button><button class="btn" id="khj">'+(kh.pages===0||KE.indexOf(kh.pages)>=0?"+ جزء":"+ أتممت الجزء")+'</button><button class="btn" id="khw">قرأت وردي</button>':'<button class="btn" id="khfin">إنهاء الختمة</button>')+'</div><div class="row" style="margin-top:.4rem"><button class="btn" id="khm1">−1 صفحة</button><button class="btn" id="khx">حذف الختمة</button></div>';
- b.innerHTML=o;bindKs(b);var add=function(n){kh.pages=Math.max(0,Math.min(KP,kh.pages+n));khSave();khDraw()};
+ b.innerHTML=o;bindKs(b);var add=function(n){khRoll(kh);kh.pages=Math.max(0,Math.min(KP,kh.pages+n));khSave();khDraw()};
  if($("khrd"))$("khrd").onclick=function(){khRead(kh)};
- if($("kh1")){$("kh1").onclick=function(){add(1)};$("kh5").onclick=function(){add(5)};$("khj").onclick=function(){var f=khFin(kh.pages);if(f<30)add(KE[f]-kh.pages)};$("khw").onclick=function(){add(wird)}}
+ if($("kh1")){$("kh1").onclick=function(){add(1)};$("kh5").onclick=function(){add(5)};$("khj").onclick=function(){var f=khFin(kh.pages);if(f<30)add(KE[f]-kh.pages)};$("khw").onclick=function(){khRoll(kh);add(Math.max(0,Math.min(rem,khGoal(kh)-khToday(kh))))}}
  $("khm1").onclick=function(){add(-1)};
  if($("khfin"))$("khfin").onclick=function(){KHS.done++;L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()};
  var x=$("khx"),arm=0;x.onclick=function(){if(!arm){arm=1;x.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;x.textContent="حذف الختمة"},3000);return}L.splice(KHS.sel,1);KHS.sel=0;khSave();khDraw()}}
@@ -904,12 +926,12 @@ function khRead(kh){var st=kh.pages||0;kq={i:KHS.sel,st:st};
  if(window.QR){QR.open({page:pn,khatma:"ختمة «"+kh.name+"» — اقرأ ثم اضغط «انتهيت هنا»",onClose:function(p){kqShow(0,false,"");var i=$("kqp");if(i){i.value=p;i.oninput()}}});return}
  try{if(window.App&&App.openQuran)App.openQuran(u);else if(window.App&&App.openWeb)App.openWeb(u);else alert("افتح التطبيق بآخر نسخة لتفعيل القراءة")}catch(e){}}
 window.quranDone=function(){if(!kq)return;kqShow(0,false,"")};
-function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.72);display:flex;align-items:center;justify-content:center;padding:1rem";document.body.appendChild(d)}
+function kqShow(pg,ex,hash){var L=KHS.list,kh=L[kq.i];if(!kh)return;var d=$("kqd");if(!d){d=document.createElement("div");d.id="kqd";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:.8rem";document.body.appendChild(d)}
  var st=kq.st;
  d.innerHTML='<div class="card" style="max-width:22rem;width:100%;text-align:center"><div style="color:var(--gold);font-weight:700;font-size:1.1rem;margin-bottom:.4rem">📖 انتهت قراءتك</div><div class="mut" style="font-size:.85rem" id="kqn">اكتب رقم الصفحة التي وصلت إليها</div><div style="margin:.7rem 0">أنا الآن في الصفحة <input class="tin" id="kqp" type="number" min="1" max="604" value="" style="width:5.5rem;display:inline-block;text-align:center"></div><div id="kqm" style="color:var(--gold);margin-bottom:.7rem"></div><div class="row"><button class="btn" id="kqok">إضافة للختمة</button><button class="btn" id="kqno">تجاهل</button></div></div>';
  var inp=$("kqp"),upd=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;$("kqm").textContent=k>0?"ستُضاف "+k+" صفحة (المقروء: "+(p-1)+") إلى «"+kh.name.replace(/</g,"&lt;")+"»":"لا صفحات جديدة للإضافة"};inp.oninput=upd;upd();
  $("kqno").onclick=function(){d.remove();kq=null};
- $("kqok").onclick=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;if(!(k>0)){d.remove();kq=null;return}kh.pages=Math.min(KP,kh.pages+k);khSave();d.remove();kq=null;khDraw()}}
+ $("kqok").onclick=function(){var p=Math.max(0,Math.min(604,+inp.value||0)),k=p>0?p-1-st:0;if(!(k>0)){d.remove();kq=null;return}khRoll(kh);kh.pages=Math.min(KP,kh.pages+k);khSave();d.remove();kq=null;khDraw()}}
 /* ---------- قضاء الفوائت ---------- */
 var qd=ls("qd")||{f:0,z:0,a:0,m:0,i:0},QN=[["f","الفجر"],["z","الظهر"],["a","العصر"],["m","المغرب"],["i","العشاء"]];
 function qdDraw(){var tot=0,o="";QN.forEach(function(q){tot+=qd[q[0]]||0;o+='<div class="qdr"><span>'+q[1]+'</span><button data-q="'+q[0]+',-1">✓ قضيت</button><b>'+(qd[q[0]]||0)+'</b><button data-q="'+q[0]+',1">+</button></div>'});
@@ -1017,7 +1039,7 @@ function sqDraw(){var o="",R=sqDays(),ch=sq.days,tk=sqKey(new Date(nowU()));
   b=e.target.closest("[data-ck]");if(b){var k3=b.dataset.ck,ix=sq.days.indexOf(k3);if(ix>=0)sq.days.splice(ix,1);else sq.days.push(k3);sqSync();sqDraw()}};
  var zb=$("sqz"),arm=0;zb.onclick=function(){if(!arm){arm=1;zb.textContent="اضغط للتأكيد";setTimeout(function(){arm=0;zb.textContent="تصفير"},3000);return}sq={n:0,done:0,mode:sq.mode,fri:sq.fri,days:[]};sqSync();sqDraw()}}
 $("qdb").onclick=function(e){var b=e.target.closest("[data-q]");if(!b)return;var a=b.dataset.q.split(","),k=a[0];qd[k]=Math.max(0,(qd[k]||0)+ +a[1]);ls("qd",qd);qdDraw()};
-window.goBack=function(){if(window.ShareCard&&ShareCard.isOpen()){ShareCard.close();return true}if(window.QR&&QR.back())return true;if(window.selReset())return true;if($("tl").className==="on"&&tlOpen==="c_tj"&&lcSt.tjb!=null){lcStopEx();lcSt.tjb=null;lcDraw("tjb");return true}if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";adClean();return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
+window.goBack=function(){var nd=$("nld");if(nd){nd.remove();return true}if(window.ShareCard&&ShareCard.isOpen()){ShareCard.close();return true}if(window.QR&&QR.back())return true;if(window.selReset())return true;if($("tl").className==="on"&&tlOpen==="c_tj"&&lcSt.tjb!=null){lcStopEx();lcSt.tjb=null;lcDraw("tjb");return true}if($("tl").className==="on"){tlClose();return true}if($("adk").className==="on"){$("adk").className="";adClean();return true}if($("spm").className==="on"){$("spm").className="";return true}if(cur!==0){show(0);return true}return false};
 /* ---------- الأذكار ---------- */
 var AD=window.ADHKAR||[],CATS=window.ADHKAR_CATS||[],adm="m",adL=[],adO={d:""};
 AD.forEach(function(x,i){x.i=i});
@@ -1058,7 +1080,7 @@ $("adr").onclick=function(){adO[adm]={};ls("adk",adO);adDraw()};
 $("adi").onclick=function(e){var b=e.target.closest(".ac");if(!b)return;var x=adL.filter(function(y){return y.i===+b.dataset.i})[0];if(!x)return;var l=adLeft(x);if(l<=0)return;l--;(adO[adm]=adO[adm]||{})[x.i]=l;adO[adm].ts=Date.now();ls("adk",adO);
  var c=$("ad"+x.i);b.innerHTML=adBtn(x);if(l<=0){c.className="card ad done";vib(30)}adProg()};
 /* فتح قسم معيّن من الأذكار (من الودجت أو الإشعارات): m, e, sleep, salah … أو tab لتبويب الأذكار فقط */
-window.openAdhkar=function(k){if(k==="kahf"){if(tlOpen!==null)tlClose();$("adk").className="";adClean();show(3);if(window.QR)QR.open({sura:18});return}if(k==="sq"){if(tlOpen!==null)tlClose();sqDraw();tlShow("c_sq");return}show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
+window.openAdhkar=function(k){if(k==="kahf"){if(tlOpen!==null)tlClose();$("adk").className="";adClean();show(3);if(window.QR)QR.open({sura:18});return}if(k==="kh"){if(tlOpen!==null)tlClose();khDraw();tlShow("c_kh");var _k=KHS.list[KHS.sel];if(_k&&(_k.pages||0)<KP)khRead(_k);return}if(k==="sq"){if(tlOpen!==null)tlClose();sqDraw();tlShow("c_sq");return}show(2);$("adk").className="";adClean();if(k&&k!=="tab")adOpen(k)};
 $("sup").onclick=function(){$("spm").className="on"};
 $("mrl").onclick=function(){var u="https://drive.google.com/drive/folders/1guT6C4OD5waAmNoqhW-IxUcvZhby55aS?usp=drive_link";try{if(window.App&&App.openOut){App.openOut(u);return}}catch(e){}try{if(window.App&&App.openWeb){App.openWeb(u);return}}catch(e){}try{window.open(u)}catch(e){}};
 $("fbk").onclick=function(){var b=this,r="";try{r=window.App&&App.sendFeedback?App.sendFeedback():"web"}catch(e){r="web"}
@@ -1066,9 +1088,31 @@ $("fbk").onclick=function(){var b=this,r="";try{r=window.App&&App.sendFeedback?A
  if(r!=="ok"){var sm=b.querySelector("small"),o=sm.textContent;sm.textContent="الميزة غير مفعّلة بعد";setTimeout(function(){sm.textContent=o},2500)}};
 $("spx").onclick=function(){$("spm").className=""};
 $("spm").onclick=function(e){if(e.target===this)this.className=""};
-function net(){$("nw").setAttribute("class",navigator.onLine?"":"off")}
+function net(){}
 window.addEventListener("online",function(){net();weather()});window.addEventListener("offline",net);net();
 adLoad();ls("adk",adO);try{cfg.sqd=sqRem();nfSync()}catch(e){}saveCfg(true);syncSet();tick();setInterval(function(){if(!document.hidden)tick()},1000);document.addEventListener("visibilitychange",function(){if(!document.hidden)tick()});weather();var wxT=Date.now();function wxMaybe(){if(!document.hidden&&Date.now()-wxT>=18e5){wxT=Date.now();weather()}}setInterval(wxMaybe,6e4);document.addEventListener("visibilitychange",wxMaybe);
+
+
+/* ---------- سجل آخر 10 إشعارات للتطبيق (من وقت التحديث فقط) ---------- */
+function nlOpen(){var a=[];try{a=JSON.parse(window.App&&App.nlog?App.nlog():"[]")||[]}catch(e){a=[]}
+ var d=$("nld");if(!d){d=document.createElement("div");d.id="nld";d.style.cssText="position:fixed;top:0;left:0;right:0;bottom:0;z-index:70;background:rgba(0,0,0,.86);display:flex;align-items:center;justify-content:center;padding:.8rem";document.body.appendChild(d)}
+ var td=nowU(),h="";
+ for(var i=0;i<a.length&&i<10;i++){var x=a[i],t=new Date((+x.t||0)+TZ*36e5),dd=Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate()),
+  w=dd===td?"اليوم":(dd===td-864e5?"أمس":t.getUTCDate()+"/"+(t.getUTCMonth()+1)),hm=("0"+t.getUTCHours()).slice(-2)+":"+("0"+t.getUTCMinutes()).slice(-2);
+  h+='<div style="margin-top:.5rem;padding:.6rem .8rem;background:rgba(var(--gr),.1);border:1px solid rgba(var(--gr),.3);border-radius:.8rem"><div style="display:flex;justify-content:space-between;gap:.5rem"><b style="color:var(--gold)">'+String(x.a||"").replace(/</g,"&lt;")+'</b><span class="mut" style="font-size:.75rem;white-space:nowrap">'+w+" "+hm+'</span></div><div style="font-size:.88rem;margin-top:.2rem">'+String(x.b||"").replace(/</g,"&lt;")+'</div></div>'}
+ if(!a.length)h='<div class="note" style="text-align:center;margin-top:.8rem">لا توجد إشعارات مسجّلة بعد. يبدأ التسجيل من هذا التحديث.</div>';
+ d.innerHTML='<div style="max-width:24rem;width:100%;max-height:92vh;display:flex;flex-direction:column;background:var(--bg0);border:1px solid rgba(var(--gr),.45);border-radius:1rem;padding:.8rem;box-sizing:border-box"><div style="color:var(--gold);font-weight:700;font-size:1.1rem;text-align:center;flex:none">الإشعارات الأخيرة</div><div style="flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;margin-top:.3rem">'+h+'</div><button class="btn" id="nlx" style="flex:none;width:100%;margin-top:.7rem">إغلاق</button></div>';
+ $("nlx").onclick=function(){d.remove()}}
+
+var bLast=0,bT=0;
+function bellAnim(rs){var n=Date.now();if(rs&&n-bLast<20000)return;if(!rs&&n-bLast<2500)return;bLast=n;var p=$("bp");if(!p)return;clearTimeout(bT);
+ p.className="";p.style.width="";var w=p.offsetWidth;p.style.width=w+"px";void p.offsetWidth;
+ bT=setTimeout(function(){p.className="go";p.style.width=p.offsetHeight+"px"},5000)}
+window.bellAnim=function(){bellAnim(1)};
+window.addEventListener("resize",function(){var p=$("bp");if(p&&p.className!=="go"){p.style.width="";p.style.width=p.offsetWidth+"px"}});
+bellAnim(0);
+$("bell").style.cursor="pointer";$("bell").onclick=nlOpen;
+try{khSync()}catch(e){}
 })();
 </script>
 </body>

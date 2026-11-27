@@ -187,6 +187,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     public static void refresh(Context c) {
         try { RamadanWidget.refresh(c); } catch (Throwable ignored) {}
+        try { KhatmaWidget.refresh(c); } catch (Throwable ignored) {}
         try {
             AppWidgetManager wm = AppWidgetManager.getInstance(c);
             int[] ids = wm.getAppWidgetIds(new ComponentName(c, WidgetProvider.class));

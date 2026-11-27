@@ -82,7 +82,7 @@ public class AnnounceService extends FirebaseMessagingService {
                     .setAutoCancel(true)
                     .setContentIntent(pi);
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            if (nm != null) nm.notify(msgId.hashCode(), nb.build());
+            if (nm != null) { nm.notify(msgId.hashCode(), nb.build()); NotifLog.add(this, "announce", title, body); }
         } catch (Throwable ignored) {}
     }
 }
