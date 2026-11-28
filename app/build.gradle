@@ -9,8 +9,8 @@ android {
         applicationId "sy.homs.mobile"
         minSdk 21
         targetSdk 34
-        versionCode 109
-        versionName "3.4.1"
+        versionCode 110
+        versionName "3.5.0"
     }
     // التوقيع لا يُحفظ بالمستودع: نسخة release تُبنى بدون توقيع ثم يوقّعها مسار GitHub Actions بمفاتيح الأسرار الخاصة.
     buildTypes {

@@ -193,6 +193,22 @@ public class WidgetProvider extends AppWidgetProvider {
             int[] ids = wm.getAppWidgetIds(new ComponentName(c, WidgetProvider.class));
             if (ids == null || ids.length == 0) return;
             JSONObject o = Prefs.obj(c);
+            if (!Scheduler.hasAround(o, System.currentTimeMillis())) { // الموقع المختار بلا بيانات صحيحة: لا نعرض أوقاتاً خاطئة
+                for (int widgetId : ids) {
+                    RemoteViews nv = new RemoteViews(c.getPackageName(), R.layout.widget);
+                    nv.setTextViewText(R.id.wcity, o.optString("cn", ""));
+                    nv.setTextViewText(R.id.wlab, "مواقيت غير متاحة");
+                    nv.setTextViewText(R.id.wnext, "—");
+                    nv.setTextViewText(R.id.wat, "يلزم اتصال بالإنترنت");
+                    nv.setViewVisibility(R.id.wcd, View.GONE);
+                    nv.setViewVisibility(R.id.wcdt, View.GONE);
+                    nv.setViewVisibility(R.id.wtom, View.GONE);
+                    nv.setTextViewText(R.id.wdate, "");
+                    for (int j = 0; j < 5; j++) { nv.setTextViewText(NID[j], Scheduler.NAMES[j == 0 ? 0 : j + 1]); nv.setTextViewText(TID[j], "—"); }
+                    wm.updateAppWidget(widgetId, nv);
+                }
+                return;
+            }
             boolean light = "light".equals(o.optString("wth", "dark"));
             int gold = light ? 0xFFA46A00 : GOLD;
             int muted = light ? 0xFF4C6B5C : MUTED;
@@ -307,6 +323,8 @@ public class WidgetProvider extends AppWidgetProvider {
             if (inWin(o, "dh", dayN)) tl.add(new String[]{"🕋 عشر ذي الحجة", "أفضل أيام السنة: صُم ما تيسّر منها (ويوم عرفة آكدها) وأكثر من التكبير والتهليل", ""});
             String[] ak = WidgetTip.adhkarTip(now, days[1], tip[2]);
             if (ak != null) tl.add(ak);
+            String[] wm0 = WidgetMsg.item(c, now); // رسالة مؤقتة من المالك: الثالثة بعد عنصرين (10 دقائق من الاستلام)
+            if (wm0 != null) tl.add(WidgetMsg.insertIndex(tl.size()), wm0);
             rv.removeAllViews(R.id.wflip);
             rv.removeAllViews(R.id.wone);
             // تنبيه واحد فقط: يُعرض ثابتاً بلا تبديل (ViewFlipper مع عنصر واحد كان يومض)
@@ -375,6 +393,8 @@ public class WidgetProvider extends AppWidgetProvider {
             long slot = (now / 1800000L + 1) * 1800000L;
             long tzMs = Scheduler.TZ * 3600000L, midnight = ((now + tzMs) / 86400000L + 1) * 86400000L - tzMs; // لتبديل "غداً" إلى "اليوم" عند منتصف الليل
             long crit = Math.min(Math.min(target, midnight), WidgetTip.nextBoundary(now, new long[][]{days[1], days[2]}, iqs));
+            long wmu = WidgetMsg.activeUntil(c, now);
+            if (wmu > 0) crit = Math.min(crit, wmu);
             long at = Math.min(crit, slot) + 1000;
             // التوقيت الدقيق فقط عند حدث حقيقي (صلاة/نافذة ذكر)؛ أما تدوير الذكر كل نصف ساعة فيكفيه منبّه غير دقيق يوفّر البطارية
             if (crit <= slot) {

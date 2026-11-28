@@ -277,6 +277,30 @@ public class MainActivity extends Activity {
                 }
             });
         }
+        /** جلب سنة كاملة من خادم أم القرى (KACST) بطلب أصلي، بلا CORS؛ يعيد النتيجة للصفحة بدالة kacstCb */
+        @JavascriptInterface public void kacstFetch(final String id, final int year, final double lat, final double lon) {
+            if (id == null || year < 2000 || year > 2200 || Double.isNaN(lat) || Double.isNaN(lon)) return;
+            new Thread(() -> {
+                String body = null; boolean ok = false;
+                java.net.HttpURLConnection cn = null;
+                try {
+                    String u = "https://umqserv.kacst.gov.sa/api/v1/Prayer/GetPrayerByYear?lang=ar&format=12&yg=" + year + "&lat=" + lat + "&lon=" + lon + "&zone=3";
+                    cn = (java.net.HttpURLConnection) new java.net.URL(u).openConnection();
+                    cn.setConnectTimeout(15000); cn.setReadTimeout(25000);
+                    cn.setRequestProperty("User-Agent", "Mozilla/5.0");
+                    if (cn.getResponseCode() == 200) {
+                        java.io.InputStream in = cn.getInputStream();
+                        java.io.ByteArrayOutputStream bo = new java.io.ByteArrayOutputStream();
+                        byte[] bf = new byte[8192]; int r, tot = 0;
+                        while ((r = in.read(bf)) > 0) { tot += r; if (tot > 3000000) throw new java.io.IOException("big"); bo.write(bf, 0, r); }
+                        body = bo.toString("UTF-8"); ok = true;
+                    }
+                } catch (Exception e) { body = null; ok = false; }
+                finally { if (cn != null) cn.disconnect(); }
+                final String fb = ok ? body : ""; final boolean fo = ok;
+                runOnUiThread(() -> { if (w != null) w.evaluateJavascript("window.kacstCb&&window.kacstCb(" + JSONObject.quote(id) + "," + fo + "," + JSONObject.quote(fb) + ")", null); });
+            }).start();
+        }
         @JavascriptInterface public void openWeb(String u) { runOnUiThread(() -> { trackWeb = false; openWebUi(u); }); }
         @JavascriptInterface public void openOut(String u) { if (u == null || !u.startsWith("https://")) return; runOnUiThread(() -> { try { startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(u))); } catch (Exception ig) {} }); }
         /** فتح القرآن مع تتبّع الموضع: عند الإغلاق تُرسل الصفحة/الموضع للواجهة لإضافتها على الختمة */

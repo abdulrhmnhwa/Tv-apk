@@ -31,6 +31,7 @@ public class AnnounceService extends FirebaseMessagingService {
                 }
             }
             FirebaseMessaging.getInstance().subscribeToTopic(TOPIC);
+            FirebaseMessaging.getInstance().subscribeToTopic(WidgetMsg.TOPIC);
         } catch (Throwable ignored) {}
         try {
             if (Build.VERSION.SDK_INT >= 33
@@ -59,6 +60,11 @@ public class AnnounceService extends FirebaseMessagingService {
         try {
             Map<String, String> d = m.getData();
             if (d == null) return;
+            if ("widget".equals(d.get("kind"))) { // رسالة ودجت مؤقتة: بلا إشعار
+                long until = WidgetMsg.accept(this, d.get("msg_id"), d.get("title"), d.get("text"), System.currentTimeMillis());
+                if (until > 0) WidgetProvider.refresh((Context) this);
+                return;
+            }
             String msgId = d.get("msg_id");
             long sentAtMs;
             try { sentAtMs = Long.parseLong(String.valueOf(d.get("sent_at"))); } catch (Exception e) { sentAtMs = 0; }

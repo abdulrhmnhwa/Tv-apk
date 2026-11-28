@@ -2,7 +2,7 @@
    window.ShareCard.verse({text,sura,ayah,page}) · .dhikr({t,a,s,c}) · .times({city,d1,d2,rows:[[اسم,وقت],..],next}) */
 (function () {
   "use strict";
-  var W = 1080, H = 1350, D = document, APP = "مواقيت الصلاة سوريا";
+  var W = 1080, H = 1350, D = document, APP = "مواقيت الصلاة";
   var TH = {
     n: { bg0: "#0b3b2b", bg1: "#04170f", gold: "#d6b25e", txt: "#f4f1e8", mut: "#a9c2b4", pat: "rgba(214,178,94,.075)", pill: "rgba(214,178,94,.13)", row: "rgba(255,255,255,.05)" },
     d: { bg0: "#fffdf5", bg1: "#f0e4c2", gold: "#8a5a00", txt: "#2b2416", mut: "#7a6a45", pat: "rgba(138,90,0,.10)", pill: "rgba(138,90,0,.10)", row: "rgba(138,90,0,.06)" }
@@ -92,7 +92,7 @@
       mx.drawImage(MQ, 0, 0, 96, 96); mx.globalCompositeOperation = "source-in"; mx.fillStyle = t.gold; mx.fillRect(0, 0, 96, 96);
       x.drawImage(m, W / 2 - 30, H - 204, 60, 60);
     } else crescent(x, W / 2, H - 150, 20, t.gold);
-    x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 40px " + AF; x.fillText(APP, W / 2, H - 100);
+    x.textAlign = "center"; x.fillStyle = t.gold; x.font = "700 40px " + AF; x.fillText("تطبيق " + APP, W / 2, H - 100);
   }
   function pill(b, text, y, font, maxW) {
     var x = b.x, t = b.t; x.font = font; var w = Math.min(maxW || 900, x.measureText(text).width + 90), h = 84;

@@ -28,6 +28,7 @@ public class LockNotif {
                     PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
             JSONObject o = Prefs.obj(c);
             if (o.optInt("ln", 1) == 0) { nm.cancel(ID); am.cancel(al); return; }
+            if (!Scheduler.hasAround(o, System.currentTimeMillis())) { nm.cancel(ID); am.cancel(al); return; } // لا بيانات صحيحة للموقع المختار
 
             long now = System.currentTimeMillis();
             Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));

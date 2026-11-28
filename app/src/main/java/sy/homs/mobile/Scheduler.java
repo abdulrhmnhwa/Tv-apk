@@ -14,7 +14,7 @@ import java.util.TimeZone;
 public class Scheduler {
     public static final String ACT = "sy.homs.mobile.ADHAN";
     static final double R = Math.PI / 180;
-    static final int TZ = 3;
+    static int TZ = 3;
     static final double DDH = 1, DMG = 2; // احتياط الظهر +1 د والمغرب +2 د (معايرة وزارة الأوقاف)
     static final int WX_PRE = 10; // تنبيه الطقس قبل الأذان بهذه الدقائق
     static final int PRE = 15; // دقائق التذكير قبل الأذان
@@ -27,7 +27,53 @@ public class Scheduler {
     }
 
     /** الفجر، الشروق، الظهر، العصر، المغرب، العشاء بالساعات (توقيت سوريا، بدون تعديل الدقائق) */
+    static String ek(int y, int m, int d) { return y + "-" + (m + 1 < 10 ? "0" : "") + (m + 1) + "-" + (d < 10 ? "0" : "") + d; }
+
+    /** فرق التوقيت بالساعات للبلد المختار (سوريا: 3 دائماً) */
+    static int tzFor(JSONObject o, long ms) {
+        JSONObject x = o == null ? null : o.optJSONObject("ext");
+        if (x == null) return 3;
+        String id = x.optString("tz", "");
+        if (id.length() == 0) return x.optInt("tzo", 3);
+        return TimeZone.getTimeZone(id).getOffset(ms) / 3600000;
+    }
+
+    /** هل توجد مواقيت محفوظة لهذا اليوم؟ (سوريا: دائماً نعم لأنها تُحسب محلياً) */
+    static boolean hasDay(JSONObject o, int y, int m, int d) {
+        JSONObject x = o.optJSONObject("ext");
+        if (x == null) return true;
+        JSONObject tb = x.optJSONObject("tab");
+        JSONArray r = tb == null ? null : tb.optJSONArray(ek(y, m, d));
+        return r != null && r.length() == 6;
+    }
+
+    /** أمس واليوم وغداً متوفرة؟ */
+    static boolean hasAround(JSONObject o, long now) {
+        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        cal.setTimeInMillis(now + tzFor(o, now) * 3600000L);
+        for (int d = -1; d <= 1; d++) {
+            Calendar x = (Calendar) cal.clone();
+            x.add(Calendar.DAY_OF_MONTH, d);
+            if (!hasDay(o, x.get(Calendar.YEAR), x.get(Calendar.MONTH), x.get(Calendar.DAY_OF_MONTH))) return false;
+        }
+        return true;
+    }
+
     static double[] times(JSONObject o, int y, int m, int d) {
+        JSONObject ex = o.optJSONObject("ext");
+        double ddh = DDH, dmg = DMG;
+        if (ex != null) {
+            ddh = 0;
+            dmg = 0;
+            JSONObject tb = ex.optJSONObject("tab");
+            JSONArray r = tb == null ? null : tb.optJSONArray(ek(y, m, d));
+            if (r != null && r.length() == 6) {
+                double[] v = new double[6];
+                for (int i = 0; i < 6; i++) v[i] = r.optDouble(i);
+                return v;
+            }
+            throw new IllegalStateException("NO_DATA");
+        }
         double lat = o.optDouble("lat", 34.7324), lng = o.optDouble("lng", 36.7137);
         double fa = o.optDouble("fa", 18), ia = o.optDouble("ia", 17), im = o.optDouble("im", 0), af = o.optDouble("asr", 1);
         Calendar n = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
@@ -47,9 +93,9 @@ public class Scheduler {
                 - .5 * yy * yy * Math.sin(4 * l0) - 1.25 * ec * ec * Math.sin(2 * M)) / R / 60;
         double noon = 12 + TZ - lng / 15 - eq;
         double asr = Math.atan(1 / (af + Math.tan(Math.abs(lat * R - dec)))) / R;
-        double mg = noon + h(-.833, dec, lat) + DMG / 60;
+        double mg = noon + h(-.833, dec, lat) + dmg / 60;
         double is = im > 0 ? mg + im / 60 : noon + h(-ia, dec, lat);
-        return new double[]{noon - h(-fa, dec, lat), noon - h(-.833, dec, lat), noon + DDH / 60, noon + h(asr, dec, lat), mg, is};
+        return new double[]{noon - h(-fa, dec, lat), noon - h(-.833, dec, lat), noon + ddh / 60, noon + h(asr, dec, lat), mg, is};
     }
 
     /** أوقات اليوم بالميلي ثانية (UTC) بعد تطبيق تعديل الدقائق */
@@ -59,7 +105,7 @@ public class Scheduler {
         Calendar mid = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
         mid.clear();
         mid.set(y, m, d, 0, 0, 0);
-        long base = mid.getTimeInMillis() - TZ * 3600000L;
+        long base = mid.getTimeInMillis() - (o.optJSONObject("ext") != null ? tzFor(o, mid.getTimeInMillis() + 12 * 3600000L) : TZ) * 3600000L;
         long[] r = new long[6];
         for (int i = 0; i < 6; i++)
             r[i] = base + Math.round(t[i] * 60 + (adj != null ? adj.optDouble(i, 0) : 0)) * 60000L; // تقريب لأقرب دقيقة كما في واجهة التطبيق
@@ -119,6 +165,7 @@ public class Scheduler {
         for (int add = 0; add < 3; add++) {
             Calendar day = (Calendar) cal.clone();
             day.add(Calendar.DAY_OF_MONTH, add);
+            if (!hasDay(o, day.get(Calendar.YEAR), day.get(Calendar.MONTH), day.get(Calendar.DAY_OF_MONTH))) continue; // لا بيانات صحيحة لهذا اليوم: لا تنبيهات
             long[] r = dayMs(o, day.get(Calendar.YEAR), day.get(Calendar.MONTH), day.get(Calendar.DAY_OF_MONTH));
             for (int i : new int[]{0, 2, 3, 4, 5}) {
                 if (on != null && on.optInt(i, 1) == 0) continue;
@@ -139,6 +186,7 @@ public class Scheduler {
             // 6 = الثلث الأخير من الليل (من مغرب أمس إلى فجر اليوم)
             Calendar pd = (Calendar) day.clone();
             pd.add(Calendar.DAY_OF_MONTH, -1);
+            if (!hasDay(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH))) continue;
             long[] pr = dayMs(o, pd.get(Calendar.YEAR), pd.get(Calendar.MONTH), pd.get(Calendar.DAY_OF_MONTH));
             // 7 = تذكير صيام الغد (قضاء) بعد إقامة العشاء إن كان الغد من الأيام التي اختارها المستخدم
             // 8 = تذكير صيام التطوع غداً (اثنين/خميس/أيام بيض/عرفة/تاسوعاء/عاشوراء) بعد إقامة العشاء

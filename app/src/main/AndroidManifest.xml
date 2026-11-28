@@ -20,7 +20,7 @@
     </queries>
 
     <application
-        android:label="مواقيت الصلاة سوريا"
+        android:label="مواقيت الصلاة"
         android:icon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:hardwareAccelerated="true"
@@ -38,9 +38,7 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".AnnounceService"
-            android:exported="false">
+        <service android:name=".AnnounceService" android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -60,7 +58,7 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".WidgetProvider" android:exported="true" android:label="مواقيت الصلاة سوريا">
+        <receiver android:name=".WidgetProvider" android:exported="true" android:label="مواقيت الصلاة">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

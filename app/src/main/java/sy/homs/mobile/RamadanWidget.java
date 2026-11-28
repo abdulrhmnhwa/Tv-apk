@@ -46,6 +46,13 @@ public class RamadanWidget extends AppWidgetProvider {
             boolean cdOn = false;
             applyTheme(rv, "light".equals(o.optString("wth", "dark")));
             long target = now + 3600000L;
+            if (in && !Scheduler.hasAround(o, now)) { // لا بيانات صحيحة للموقع المختار
+                txt(rv, st, 0, R.id.rtitle, "🌙 مواقيت غير متاحة");
+                txt(rv, st, 1, R.id.rlab, "يلزم اتصال بالإنترنت");
+                txt(rv, st, 3, R.id.rtimes, "—");
+                wm.updateAppWidget(ids, rv);
+                return;
+            }
             if (in) {
                 long[] t0 = Scheduler.dayMs(o, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
                 Calendar nx = (Calendar) cal.clone();
